@@ -67,6 +67,35 @@
   .upgrade-nudge{background:#1a1a2e;border-left:4px solid #ffd700;padding:12px 15px;border-radius:0 8px 8px 0;margin:15px 0;font-size:13px;color:#ccc;display:none}
   .upgrade-nudge.show{display:flex;align-items:center;gap:10px}
   .upgrade-nudge button{background:#ffd700;color:#000;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600}
+  .billing-notice{background:#1a1a2e;border:1px solid #333;padding:12px;border-radius:8px;margin:12px 0;font-size:12px;color:#888}
+  .billing-notice strong{color:#f0f0f0}
+  .error-msg{color:#ff4444;font-size:12px;margin:8px 0;display:none}
+  .error-msg.show{display:block}
+  .success-msg{color:#00c853;font-size:12px;margin:8px 0;display:none}
+  .success-msg.show{display:block}
+  .loading{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-radius:50%;border-top-color:#fff;animation:spin 1s ease-in-out infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  
+  /* Admin Dashboard */
+  .admin-panel{display:none;position:fixed;inset:0;background:#0a0a0f;z-index:10000;overflow-y:auto}
+  .admin-panel.show{display:block}
+  .admin-header{padding:20px;background:#111118;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center}
+  .admin-header h2{background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;padding:20px}
+  .stat-card{background:#111118;padding:20px;border-radius:12px;border:1px solid #222}
+  .stat-card h3{color:#888;font-size:12px;margin-bottom:8px}
+  .stat-card .value{font-size:28px;font-weight:700;background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .admin-table{margin:20px;padding:20px;background:#111118;border-radius:12px}
+  .admin-table h3{margin-bottom:15px}
+  .admin-table table{width:100%;border-collapse:collapse}
+  .admin-table th,.admin-table td{padding:12px;text-align:left;border-bottom:1px solid #222}
+  .admin-table th{color:#888;font-size:12px}
+  .admin-table tr:hover{background:#1a1a24}
+  .status-badge{padding:4px 8px;border-radius:4px;font-size:11px}
+  .status-badge.pro{background:#ffd700;color:#000}
+  .status-badge.free{background:#333;color:#aaa}
+  .close-admin{background:#ff4444;border:none;color:#fff;padding:8px 16px;border-radius:6px;cursor:pointer}
+  
   @media(max-width:600px){
     .controls{flex-direction:column;align-items:stretch}
     .plan-cards{flex-direction:column}
@@ -89,7 +118,7 @@
     <div class="avatar" id="avatarLetter">U</div>
     <span id="userName" style="font-size:13px">User</span>
     <span class="badge" id="tierBadge">Free</span>
-    <button class="nav-btn" id="joinNavBtn" style="background:linear-gradient(135deg,#00c853,#009624);margin-left:8px;padding:5px 12px;font-size:12px;display:none" onclick="openModal('join')">✨ Join Pro</button>
+    <button class="nav-btn" id="adminBtn" style="background:#ffd700;color:#000;margin-left:8px;padding:5px 12px;font-size:12px;display:none" onclick="toggleAdmin()">📊 Admin</button>
     <button class="nav-btn" style="background:#ff4444;margin-left:8px;padding:5px 12px;font-size:12px" onclick="logout()">Logout</button>
   </div>
 </nav>
@@ -134,6 +163,7 @@
     <p>Access your saved cards and Higher Mind quotes.</p>
     <input type="email" id="loginEmail" placeholder="Email Address">
     <input type="password" id="loginPass" placeholder="Password">
+    <div class="error-msg" id="loginError"></div>
     <button class="btn-login" onclick="login()">Login</button>
     <div class="switch-text">New here? <span onclick="toggleAuth('join')">Join Pro for $6/mo</span></div>
   </div>
@@ -145,6 +175,9 @@
     <button class="close-modal" onclick="closeModal()">&times;</button>
     <h2>✨ Join QuoteCards Pro</h2>
     <p>Unlock Higher Mind quotes • Save downloads • Premium support</p>
+    
+    <input type="email" id="joinEmail" placeholder="Email Address" style="margin-bottom:12px">
+    
     <div class="plan-cards">
       <div class="plan-card selected" onclick="selectPlan(this,'monthly')">
         <div class="label">Monthly</div>
@@ -156,19 +189,110 @@
         <div class="save">Save 22%</div>
       </div>
     </div>
-    <input type="text" id="cardName" placeholder="Cardholder Name">
-    <input type="text" id="cardNumber" placeholder="Card Number">
-    <div style="display:flex;gap:8px">
-      <input type="text" id="cardExpiry" placeholder="MM/YY" style="flex:1">
-      <input type="text" id="cardCVV" placeholder="CVV" style="flex:1">
+    
+    <div class="billing-notice">
+      <strong>🔒 Secure Payment via Stripe</strong><br>
+      By subscribing, you agree to recurring billing. Cancel anytime. 
+      You will be redirected to Stripe's secure checkout.
     </div>
-    <button class="btn-join" id="payBtn" onclick="processPayment()">💳 Join Pro Now</button>
-    <p style="font-size:10px;color:#555;margin-top:6px;text-align:center">Demo mode. No real charges. Cancel anytime.</p>
+    
+    <div class="error-msg" id="paymentError"></div>
+    <div class="success-msg" id="paymentSuccess"></div>
+    
+    <button class="btn-join" id="payBtn" onclick="processPayment()">
+      <span id="payBtnText">💳 Subscribe Now</span>
+    </button>
+    
+    <p style="font-size:10px;color:#555;margin-top:6px;text-align:center">
+      Secured by Stripe. Cancel anytime. <a href="#" style="color:#6e3bfa">Terms</a> • 
+      <a href="#" style="color:#6e3bfa">Privacy</a>
+    </p>
+  </div>
+</div>
+
+<!-- Admin Dashboard -->
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-header">
+    <h2>📊 QuoteCards Admin Dashboard</h2>
+    <div>
+      <button class="nav-btn" onclick="refreshAdminData()">🔄 Refresh</button>
+      <button class="close-admin" onclick="toggleAdmin()">✕ Close</button>
+    </div>
+  </div>
+  
+  <div class="admin-stats" id="adminStats">
+    <div class="stat-card">
+      <h3>Total Users</h3>
+      <div class="value" id="statTotalUsers">0</div>
+    </div>
+    <div class="stat-card">
+      <h3>Pro Subscribers</h3>
+      <div class="value" id="statProUsers">0</div>
+    </div>
+    <div class="stat-card">
+      <h3>Monthly Revenue</h3>
+      <div class="value" id="statRevenue">$0</div>
+    </div>
+    <div class="stat-card">
+      <h3>Conversion Rate</h3>
+      <div class="value" id="statConversion">0%</div>
+    </div>
+  </div>
+  
+  <div class="admin-table">
+    <h3>👥 All Users</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Plan</th>
+          <th>Joined</th>
+          <th>Last Active</th>
+        </tr>
+      </thead>
+      <tbody id="usersTableBody"></tbody>
+    </table>
+  </div>
+  
+  <div class="admin-table">
+    <h3>💰 Recent Payments</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="paymentsTableBody"></tbody>
+    </table>
   </div>
 </div>
 
 <script>
-// Quotes: Free (preview) + Pro (Higher Mind)
+// Configuration
+const CONFIG = {
+  ADMIN_EMAIL: 'admin@quotecards.com',
+  ADMIN_PASSWORD: 'admin123',
+  
+  // Stripe Payment Links - UPDATE THESE WITH YOUR ACTUAL LINKS
+  STRIPE_PAYMENT_LINKS: {
+    monthly: 'https://buy.stripe.com/4gM8wR5Ebg8H1yUa56dAk00', // Your monthly link
+    yearly: 'https://buy.stripe.com/4gM8wR5Ebg8H1yUa56dAk00' // Replace with yearly link if different
+  },
+  
+  // Success URL (where Stripe redirects after payment)
+  SUCCESS_URL: window.location.origin + '/payment-success'
+};
+
+let selectedPlan = 'monthly';
+let user = null;
+let upgradeTimer = null;
+
+// Quotes
 const freeQ=[
   {t:"The only limit to our realization of tomorrow is our doubts of today.",a:"Franklin D. Roosevelt"},
   {t:"In the middle of every difficulty lies opportunity.",a:"Albert Einstein"},
@@ -187,7 +311,7 @@ const proQ=[
   {t:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"Chinese Proverb"}
 ];
 
-let quotes=[...freeQ],qIdx=0,isPro=false,speed=0.5,user=null,upgradeTimer=null;
+let quotes=[...freeQ],qIdx=0,isPro=false,speed=0.5;
 
 // Slider
 const track=document.getElementById('sliderTrack'),wrap=document.getElementById('sliderWrap'),dotsEl=document.getElementById('dots');
@@ -261,21 +385,54 @@ function downloadPNG(){
   }
 }
 
-// Auth & Storage
-const getUsers=()=>JSON.parse(localStorage.getItem('qc_users')||'[]');
-const saveUsers=u=>localStorage.setItem('qc_users',JSON.stringify(u));
-const getCurr=()=>JSON.parse(localStorage.getItem('qc_curr')||'null');
-const setCurr=u=>localStorage.setItem('qc_curr',JSON.stringify(u));
-
+// Auth
 function login(){
-  const e=loginEmail.value.trim(),p=loginPass.value;
-  const u=getUsers().find(x=>x.email===e&&x.pass===p);
-  if(!u)return alert('Invalid credentials');
-  setCurr(u);closeModal();applyAuth(u);
-}
-function logout(){
-  if(upgradeTimer)clearTimeout(upgradeTimer);
-  localStorage.removeItem('qc_curr');location.reload();
+  const email=document.getElementById('loginEmail').value.trim();
+  const password=document.getElementById('loginPass').value;
+  const errorEl=document.getElementById('loginError');
+  
+  if(!email||!email.includes('@')){
+    errorEl.textContent='Please enter a valid email';
+    errorEl.classList.add('show');
+    return;
+  }
+  if(!password){
+    errorEl.textContent='Please enter your password';
+    errorEl.classList.add('show');
+    return;
+  }
+  
+  errorEl.classList.remove('show');
+  
+  // Get users from localStorage
+  let users=JSON.parse(localStorage.getItem('qc_users')||'[]');
+  let existingUser=users.find(u=>u.email===email);
+  
+  if(!existingUser){
+    // Create new user
+    existingUser={
+      email,
+      name:email.split('@')[0],
+      password,
+      isPro:false,
+      plan:null,
+      createdAt:Date.now(),
+      lastActive:Date.now()
+    };
+    users.push(existingUser);
+    localStorage.setItem('qc_users',JSON.stringify(users));
+  }else{
+    if(existingUser.password!==password){
+      errorEl.textContent='Invalid password';
+      errorEl.classList.add('show');
+      return;
+    }
+    existingUser.lastActive=Date.now();
+  }
+  
+  localStorage.setItem('qc_current_user',JSON.stringify(existingUser));
+  closeModal();
+  applyAuth(existingUser);
 }
 
 function applyAuth(u){
@@ -285,32 +442,34 @@ function applyAuth(u){
   document.getElementById('avatarLetter').textContent=u.name[0].toUpperCase();
   document.getElementById('userName').textContent=u.name;
   
-  isPro=u.paid;
+  isPro=u.isPro;
   document.getElementById('tierBadge').textContent=isPro?'✨ Pro':'Free';
   document.getElementById('tierBadge').className='badge'+(isPro?' pro':'');
   document.getElementById('proBanner').classList.toggle('show',isPro);
   
-  // Show Join Pro button in nav if not paid
-  document.getElementById('joinNavBtn').style.display=isPro?'none':'block';
+  // Show admin button for admin user
+  const isAdmin=u.email===CONFIG.ADMIN_EMAIL;
+  document.getElementById('adminBtn').style.display=isAdmin?'inline-block':'none';
   
-  // Set quotes based on Pro status
   quotes=isPro?[...freeQ,...proQ]:[...freeQ];
   qIdx=0;buildSlider();renderCanvas();
   
-  // Show downloads section
   document.getElementById('downloadsSection').classList.add('show');
   renderDownloads();
   
-  // If NOT paid: show upgrade nudge + 6-min reminder
-  if(!isPro){
+  if(!isPro&&!isAdmin){
     document.getElementById('upgradeNudge').classList.add('show');
-    // Clear existing timer if any
     if(upgradeTimer)clearTimeout(upgradeTimer);
-    // Set 6-minute (360000ms) reminder to show join modal
-    upgradeTimer=setTimeout(()=>{
-      if(user&&!user.paid){openModal('join');}
-    },360000);
+    upgradeTimer=setTimeout(()=>{if(user&&!user.isPro)openModal('join');},360000);
+  }else{
+    document.getElementById('upgradeNudge').classList.remove('show');
   }
+}
+
+function logout(){
+  if(upgradeTimer)clearTimeout(upgradeTimer);
+  localStorage.removeItem('qc_current_user');
+  location.reload();
 }
 
 // Downloads
@@ -333,6 +492,10 @@ function renderDownloads(){
 function openModal(t){
   document.getElementById('loginModal').classList.remove('show');
   document.getElementById('joinModal').classList.remove('show');
+  document.getElementById('loginError').classList.remove('show');
+  document.getElementById('paymentError').classList.remove('show');
+  document.getElementById('paymentSuccess').classList.remove('show');
+  
   if(t==='login')document.getElementById('loginModal').classList.add('show');
   if(t==='join')document.getElementById('joinModal').classList.add('show');
 }
@@ -344,247 +507,208 @@ function toggleAuth(t){
   setTimeout(()=>openModal(t),100);
 }
 
-// Payments
-let selPlan='monthly';
 function selectPlan(el,p){
   document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
   el.classList.add('selected');
-  selPlan=p;
+  selectedPlan=p;
 }
 
+// Process Payment - Redirect to Stripe Payment Link
 function processPayment(){
-  // Your Stripe Payment Link (TEST MODE)
-  const STRIPE_LINK = 'https://buy.stripe.com/test_4gM8wR5Ebg8H1yUa56dAk00';
+  const email=document.getElementById('joinEmail').value.trim();
+  const errorEl=document.getElementById('paymentError');
   
-  // Get current user or email from login form
-  const currentUser = JSON.parse(localStorage.getItem('qc_curr') || 'null');
-  const emailInput = document.getElementById('loginEmail');
-  const email = currentUser?.email || (emailInput?.value || '').trim();
+  errorEl.classList.remove('show');
   
-  if(!email || !email.includes('@')){
-    return alert('Please enter a valid email to continue');
+  if(!email||!email.includes('@')){
+    errorEl.textContent='Please enter a valid email';
+    errorEl.classList.add('show');
+    return;
   }
   
-  // Save pending upgrade info for post-payment handling
-  localStorage.setItem('qc_pending_upgrade', JSON.stringify({
-    email: email,
-    plan: 'recurring',
-    timestamp: Date.now()
-  }));
+  const btn=document.getElementById('payBtn');
+  const btnText=document.getElementById('payBtnText');
+  btn.disabled=true;
+  btnText.innerHTML='<span class="loading"></span> Redirecting...';
   
-  // Show loading state
-  const btn = document.getElementById('payBtn');
-  const originalText = btn.textContent;
-  btn.textContent = '⏳ Redirecting to Stripe...';
-  btn.disabled = true;
+  // Save pending payment info
+  const pendingPayment={
+    email,
+    plan:selectedPlan,
+    timestamp:Date.now()
+  };
+  localStorage.setItem('qc_pending_payment',JSON.stringify(pendingPayment));
   
-  // Redirect to Stripe Checkout (with slight delay for UX)
-  setTimeout(() => {
-    window.location.href = STRIPE_LINK;
-  }, 300);
+  // Get the payment link for selected plan
+  const paymentLink=CONFIG.STRIPE_PAYMENT_LINKS[selectedPlan];
+  
+  if(!paymentLink){
+    errorEl.textContent='Payment link not configured. Please contact support.';
+    errorEl.classList.add('show');
+    btn.disabled=false;
+    btnText.innerHTML='💳 Subscribe Now';
+    return;
+  }
+  
+  // Add email as query parameter to prefill Stripe form
+  const separator=paymentLink.includes('?')?'&':'?';
+  const redirectUrl=`${paymentLink}${separator}prefilled_email=${encodeURIComponent(email)}&client_reference_id=${encodeURIComponent(email)}`;
+  
+  // Redirect to Stripe
+  setTimeout(()=>{
+    window.location.href=redirectUrl;
+  },500);
 }
 
+// Admin Dashboard
+function toggleAdmin(){
+  const panel=document.getElementById('adminPanel');
+  panel.classList.toggle('show');
+  if(panel.classList.contains('show')){
+    refreshAdminData();
+  }
+}
 
-
+function refreshAdminData(){
+  let users=JSON.parse(localStorage.getItem('qc_users')||'[]');
+  let payments=JSON.parse(localStorage.getItem('qc_payments')||'[]');
+  
+  // Update stats
+  document.getElementById('statTotalUsers').textContent=users.length;
+  document.getElementById('statProUsers').textContent=users.filter(u=>u.isPro).length;
+  
+  const revenue=payments.reduce((sum,p)=>sum+p.amount,0);
+  document.getElementById('statRevenue').textContent='$'+revenue;
+  
+  const conversion=users.length>0?Math.round((users.filter(u=>u.isPro).length/users.length)*100):0;
+  document.getElementById('statConversion').textContent=conversion+'%';
+  
+  // Update users table
+  const tbody=document.getElementById('usersTableBody');
+  tbody.innerHTML='';
+  users.forEach(u=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td>${u.email}</td>
+      <td>${u.name}</td>
+      <td><span class="status-badge ${u.isPro?'pro':'free'}">${u.isPro?'Pro':'Free'}</span></td>
+      <td>${u.plan||'N/A'}</td>
+      <td>${new Date(u.createdAt).toLocaleDateString()}</td>
+      <td>${new Date(u.lastActive||u.createdAt).toLocaleDateString()}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  
+  // Update payments table
+  const payTbody=document.getElementById('paymentsTableBody');
+  payTbody.innerHTML='';
+  payments.forEach(p=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td>${p.email}</td>
+      <td>$${p.amount}</td>
+      <td><span class="status-badge pro">${p.status}</span></td>
+      <td>${new Date(p.date).toLocaleDateString()}</td>
+    `;
+    payTbody.appendChild(tr);
+  });
+}
 
 // Init
-const cWidth=document.getElementById('cWidth'),cHeight=document.getElementById('cHeight'),fontSize=document.getElementById('fontSize'),bgColor=document.getElementById('bgColor');
 buildSlider();animate();renderCanvas();
 
-// Check for logged-in user on load
-const u=getCurr();
-if(u){
-  applyAuth(u);
+// Check for logged-in user
+const storedUser=localStorage.getItem('qc_current_user');
+if(storedUser){
+  applyAuth(JSON.parse(storedUser));
 }
 
+// Check for payment success
+const urlParams=new URLSearchParams(window.location.search);
+const sessionId=urlParams.get('session_id');
+const isCancelled=urlParams.get('canceled')==='true';
 
-// === ANALYTICS TRACKING ===
-(function(){
-  const ANALYTICS_KEY = 'qc_analytics';
-  const ACTIVE_KEY = 'qc_active_users';
-  const HEARTBEAT_INTERVAL = 30000; // 30 seconds
+if(sessionId){
+  // Payment successful - upgrade user
+  const pending=JSON.parse(localStorage.getItem('qc_pending_payment')||'null');
   
-  // Initialize analytics
-  function initAnalytics(){
-    let data = JSON.parse(localStorage.getItem(ANALYTICS_KEY) || '{"totalViews":0,"uniqueVisitors":0,"lastReset":null}');
+  if(pending&&pending.email){
+    // Get or create user
+    let users=JSON.parse(localStorage.getItem('qc_users')||'[]');
+    let existingUser=users.find(u=>u.email===pending.email);
     
-    // Track page view
-    data.totalViews = (data.totalViews || 0) + 1;
-    
-    // Track unique visitors (simple session-based)
-    if(!sessionStorage.getItem('qc_visited')){
-      data.uniqueVisitors = (data.uniqueVisitors || 0) + 1;
-      sessionStorage.setItem('qc_visited','1');
+    if(!existingUser){
+      existingUser={
+        email:pending.email,
+        name:pending.email.split('@')[0],
+        password:'stripe',
+        isPro:true,
+        plan:pending.plan,
+        createdAt:Date.now(),
+        lastActive:Date.now(),
+        paidAt:Date.now()
+      };
+      users.push(existingUser);
+    }else{
+      existingUser.isPro=true;
+      existingUser.plan=pending.plan;
+      existingUser.paidAt=Date.now();
     }
     
-    data.lastVisit = new Date().toISOString();
-    localStorage.setItem(ANALYTICS_KEY, JSON.stringify(data));
-  }
-  
-  // Active user heartbeat
-  function sendHeartbeat(){
-    const user = JSON.parse(localStorage.getItem('qc_curr') || 'null');
-    const active = JSON.parse(localStorage.getItem(ACTIVE_KEY) || '{}');
-    const userId = user ? user.email : 'guest_'+(sessionStorage.getItem('qc_visited')?'1':Math.random().toString(36).slice(2,8));
+    localStorage.setItem('qc_users',JSON.stringify(users));
+    localStorage.setItem('qc_current_user',JSON.stringify(existingUser));
     
-    active[userId] = {
-      lastSeen: Date.now(),
-      isPro: user?.paid || false,
-      userAgent: navigator.userAgent.slice(0,100)
-    };
-    
-    // Clean old entries (>2 min)
-    const now = Date.now();
-    Object.keys(active).forEach(key => {
-      if(now - active[key].lastSeen > 120000) delete active[key];
+    // Save payment record
+    const payments=JSON.parse(localStorage.getItem('qc_payments')||'[]');
+    payments.unshift({
+      email:pending.email,
+      amount:pending.plan==='monthly'?6:59,
+      plan:pending.plan,
+      status:'paid',
+      date:Date.now(),
+      sessionId
     });
+    localStorage.setItem('qc_payments',JSON.stringify(payments));
     
-    localStorage.setItem(ACTIVE_KEY, JSON.stringify(active));
+    // Clear pending
+    localStorage.removeItem('qc_pending_payment');
+    
+    // Show success and apply auth
+    showNotification('🎉 Welcome to Pro! All premium features unlocked.','success');
+    applyAuth(existingUser);
   }
   
-  // Start tracking
-  initAnalytics();
-  sendHeartbeat();
-  setInterval(sendHeartbeat, HEARTBEAT_INTERVAL);
-  
-  // Expose for admin panel
-  window.qcAnalytics = {
-    getData: () => JSON.parse(localStorage.getItem(ANALYTICS_KEY) || '{}'),
-    getActiveUsers: () => JSON.parse(localStorage.getItem(ACTIVE_KEY) || '{}')
-  };
-})();
+  // Clean URL
+  setTimeout(()=>{
+    window.history.replaceState({},document.title,window.location.pathname);
+  },3000);
+}else if(isCancelled){
+  showNotification('Payment was cancelled. You can try again anytime.','info');
+  localStorage.removeItem('qc_pending_payment');
+  setTimeout(()=>{
+    window.history.replaceState({},document.title,window.location.pathname);
+  },3000);
+}
 
-
-(function(){
-  // Run when page loads
-  document.addEventListener('DOMContentLoaded', checkPaymentResult);
+function showNotification(message,type='info'){
+  const existing=document.getElementById('qc-notification');
+  if(existing) existing.remove();
   
-  function checkPaymentResult(){
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // Stripe redirects here after payment with ?session_id=xxx
-    const sessionId = urlParams.get('session_id'); 
-    const isCancelled = urlParams.get('canceled') === 'true';
-    
-    if(isCancelled){
-      // User cancelled payment
-      localStorage.removeItem('qc_pending_upgrade');
-      showNotification('Payment cancelled. You can try again anytime.', 'info');
-      return;
-    }
-    
-    if(sessionId){
-      // Payment likely succeeded - upgrade the user
-      handleSuccessfulPayment(sessionId);
-    }
+  const notif=document.createElement('div');
+  notif.id='qc-notification';
+  notif.style.cssText=`position:fixed;top:20px;right:20px;padding:14px 20px;border-radius:10px;color:#fff;font-size:14px;font-weight:500;z-index:10001;animation:slideIn 0.3s ease;max-width:320px;box-shadow:0 4px 20px rgba(0,0,0,0.3);background:${type==='success'?'linear-gradient(135deg,#00c853,#009624)':type==='error'?'linear-gradient(135deg,#ff4444,#cc0000)':'linear-gradient(135deg,#6e3bfa,#4287ff)'}`;
+  notif.textContent=message;
+  document.body.appendChild(notif);
+  
+  setTimeout(()=>{notif.style.animation='slideOut 0.3s ease';setTimeout(()=>notif.remove(),300);},4000);
+  
+  if(!document.getElementById('qc-notification-styles')){
+    const style=document.createElement('style');
+    style.id='qc-notification-styles';
+    style.textContent=`@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}`;
+    document.head.appendChild(style);
   }
-  
-  function handleSuccessfulPayment(sessionId){
-    const pending = JSON.parse(localStorage.getItem('qc_pending_upgrade') || 'null');
-    
-    if(!pending?.email){
-      console.warn('No pending upgrade found');
-      return;
-    }
-    
-    // Upgrade user in localStorage (demo mode)
-    const users = JSON.parse(localStorage.getItem('qc_users') || '[]');
-    const userIndex = users.findIndex(u => u.email === pending.email);
-    
-    if(userIndex >= 0){
-      // Update existing user
-      users[userIndex].paid = true;
-      users[userIndex].plan = 'recurring';
-      users[userIndex].paidAt = Date.now();
-      users[userIndex].stripeSessionId = sessionId;
-    } else {
-      // Create new Pro user entry
-      users.push({
-        email: pending.email,
-        name: pending.email.split('@')[0],
-        paid: true,
-        plan: 'recurring',
-        paidAt: Date.now(),
-        stripeSessionId: sessionId,
-        createdAt: Date.now()
-      });
-    }
-    
-    localStorage.setItem('qc_users', JSON.stringify(users));
-    
-    // Update current session if this is the logged-in user
-    const current = JSON.parse(localStorage.getItem('qc_curr') || 'null');
-    if(current && current.email === pending.email){
-      current.paid = true;
-      current.plan = 'recurring';
-      localStorage.setItem('qc_curr', JSON.stringify(current));
-      
-      // Refresh UI if applyAuth exists
-      if(typeof applyAuth === 'function'){
-        applyAuth(current);
-      }
-    }
-    
-    // Clear pending and show success
-    localStorage.removeItem('qc_pending_upgrade');
-    
-    // Show celebration + redirect clean URL
-    showNotification('🎉 Welcome to Pro! All premium features unlocked.', 'success');
-    
-    // Clean the URL (remove ?session_id=xxx)
-    setTimeout(() => {
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }, 1000);
-  }
-  
-  function showNotification(message, type = 'info'){
-    // Remove existing notifications
-    const existing = document.getElementById('qc-notification');
-    if(existing) existing.remove();
-    
-    // Create notification element
-    const notif = document.createElement('div');
-    notif.id = 'qc-notification';
-    notif.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 14px 20px;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 14px;
-      font-weight: 500;
-      z-index: 9999;
-      animation: slideIn 0.3s ease;
-      max-width: 320px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      background: ${type === 'success' ? 'linear-gradient(135deg, #00c853, #009624)' : 
-                   type === 'error' ? 'linear-gradient(135deg, #ff4444, #cc0000)' :
-                   'linear-gradient(135deg, #6e3bfa, #4287ff)'};
-    `;
-    notif.textContent = message;
-    document.body.appendChild(notif);
-    
-    // Auto-remove after 4 seconds
-    setTimeout(() => {
-      notif.style.animation = 'slideOut 0.3s ease';
-      setTimeout(() => notif.remove(), 300);
-    }, 4000);
-    
-    // Add animations if not already present
-    if(!document.getElementById('qc-notification-styles')){
-      const style = document.createElement('style');
-      style.id = 'qc-notification-styles';
-      style.textContent = `
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
-      `;
-      document.head.appendChild(style);
-    }
-  }
-})();
-
-
+}
 </script>
 </body>
 </html>
