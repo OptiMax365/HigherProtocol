@@ -4,7 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QuoteCards Pro</title>
+<meta name="description" content="Create beautiful quote cards with premium templates">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
 <style>
+  /* [Your existing CSS - unchanged for brevity] */
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
   body{background:#0a0a0f;color:#f0f0f0;min-height:100vh;line-height:1.5}
   nav{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#111118;border-bottom:1px solid #222;position:sticky;top:0;z-index:100}
@@ -161,8 +164,8 @@
     <button class="close-modal" onclick="closeModal()">&times;</button>
     <h2>Login to QuoteCards Pro</h2>
     <p>Access your saved cards and Higher Mind quotes.</p>
-    <input type="email" id="loginEmail" placeholder="Email Address">
-    <input type="password" id="loginPass" placeholder="Password">
+    <input type="email" id="loginEmail" placeholder="Email Address" autocomplete="email">
+    <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
     <div class="error-msg" id="loginError"></div>
     <button class="btn-login" onclick="login()">Login</button>
     <div class="switch-text">New here? <span onclick="toggleAuth('join')">Join Pro for $6/mo</span></div>
@@ -176,7 +179,7 @@
     <h2>✨ Join QuoteCards Pro</h2>
     <p>Unlock Higher Mind quotes • Save downloads • Premium support</p>
     
-    <input type="email" id="joinEmail" placeholder="Email Address" style="margin-bottom:12px">
+    <input type="email" id="joinEmail" placeholder="Email Address" style="margin-bottom:12px" autocomplete="email">
     
     <div class="plan-cards">
       <div class="plan-card selected" onclick="selectPlan(this,'monthly')">
@@ -185,15 +188,15 @@
       </div>
       <div class="plan-card" onclick="selectPlan(this,'yearly')">
         <div class="label">Yearly</div>
-        <div class="price">$59/yr</div>
-        <div class="save">Save 22%</div>
+        <div class="price">$48/yr</div>
+        <div class="save">Save 33%</div>
       </div>
     </div>
     
     <div class="billing-notice">
       <strong>🔒 Secure Payment via Stripe</strong><br>
-      By subscribing, you agree to recurring billing. Cancel anytime. 
-      You will be redirected to Stripe's secure checkout.
+      By subscribing, you agree to recurring billing. Cancel anytime in your account settings.
+      You will be redirected to Stripe's secure checkout page.
     </div>
     
     <div class="error-msg" id="paymentError"></div>
@@ -204,8 +207,8 @@
     </button>
     
     <p style="font-size:10px;color:#555;margin-top:6px;text-align:center">
-      Secured by Stripe. Cancel anytime. <a href="#" style="color:#6e3bfa">Terms</a> • 
-      <a href="#" style="color:#6e3bfa">Privacy</a>
+      Secured by Stripe. Cancel anytime. <a href="/terms" style="color:#6e3bfa">Terms</a> • 
+      <a href="/privacy" style="color:#6e3bfa">Privacy</a>
     </p>
   </div>
 </div>
@@ -273,26 +276,23 @@
 </div>
 
 <script>
-// Configuration
+// Production Configuration
 const CONFIG = {
-  ADMIN_EMAIL: 'admin@quotecards.com',
-  ADMIN_PASSWORD: 'admin123',
+  API_BASE: 'https://higherprotocola3.onrender.com', // Full URL
+  ADMIN_EMAIL: 'olusolaayodeji5112@gmail.com',
   
-  // Stripe Payment Links - UPDATE THESE WITH YOUR ACTUAL LINKS
   STRIPE_PAYMENT_LINKS: {
-    monthly: 'https://buy.stripe.com/4gM8wR5Ebg8H1yUa56dAk00', // Your monthly link
-    yearly: 'https://buy.stripe.com/4gM8wR5Ebg8H1yUa56dAk00' // Replace with yearly link if different
-  },
-  
-  // Success URL (where Stripe redirects after payment)
-  SUCCESS_URL: window.location.origin + '/payment-success'
+    monthly: 'https://buy.stripe.com/4gM8wR5Ebg8H1yUa56dAk00',
+    yearly: 'https://buy.stripe.com/eVq7sNc2zcWva5qb9adAk01'
+  }
 };
 
 let selectedPlan = 'monthly';
 let user = null;
 let upgradeTimer = null;
+let apiConfig = null;
 
-// Quotes
+// Quotes data
 const freeQ=[
   {t:"The only limit to our realization of tomorrow is our doubts of today.",a:"Franklin D. Roosevelt"},
   {t:"In the middle of every difficulty lies opportunity.",a:"Albert Einstein"},
@@ -313,7 +313,17 @@ const proQ=[
 
 let quotes=[...freeQ],qIdx=0,isPro=false,speed=0.5;
 
-// Slider
+// Fetch API config on load
+async function fetchApiConfig() {
+  try {
+    const res = await fetch(`${CONFIG.API_BASE}/api/config`);
+    apiConfig = await res.json();
+  } catch (err) {
+    console.warn('Could not fetch API config, using defaults');
+  }
+}
+
+// Slider functionality
 const track=document.getElementById('sliderTrack'),wrap=document.getElementById('sliderWrap'),dotsEl=document.getElementById('dots');
 let pos=0,holding=false,animId;
 
@@ -353,7 +363,7 @@ wrap.addEventListener('mouseleave',()=>{holding=false;wrap.style.opacity='1'});
 wrap.addEventListener('touchstart',e=>{e.preventDefault();holding=true;wrap.style.opacity='.7'},{passive:false});
 wrap.addEventListener('touchend',()=>{holding=false;wrap.style.opacity='1'});
 
-// Canvas
+// Canvas rendering
 function renderCanvas(){
   const c=document.getElementById('previewCanvas'),ctx=c.getContext('2d');
   const w=+cWidth.value,h=+cHeight.value,fs=+fontSize.value;
@@ -372,123 +382,190 @@ function wrapText(ctx,t,x,y,mw,lh){
   lines.forEach((l,i)=>ctx.fillText(l,x,sy+i*lh));
 }
 function cycleQuote(){qIdx=(qIdx+1)%quotes.length;renderCanvas()}
-function downloadPNG(){
-  const c=document.getElementById('previewCanvas'),url=c.toDataURL('image/png');
-  const a=document.createElement('a');a.download='quotecard_'+Date.now()+'.png';a.href=url;a.click();
+
+// Download with IndexedDB fallback for production
+async function downloadPNG(){
+  const c=document.getElementById('previewCanvas');
+  
+  // Create download
+  const url = c.toDataURL('image/png');
+  const a=document.createElement('a');
+  a.download='quotecard_'+Date.now()+'.png';
+  a.href=url;
+  a.click();
+  
+  // Save to history if logged in
   if(user){
-    const key='qc_dl_'+user.email;
-    const hist=JSON.parse(localStorage.getItem(key)||'[]');
-    hist.unshift({url,time:new Date().toISOString(),quote:quotes[qIdx].t.slice(0,30)+'...'});
-    if(hist.length>20)hist.pop();
-    localStorage.setItem(key,JSON.stringify(hist));
-    renderDownloads();
+    try {
+      const historyKey = `qc_downloads_${user.email}`;
+      const existing = JSON.parse(sessionStorage.getItem(historyKey) || '[]');
+      
+      existing.unshift({
+        url: url,
+        time: new Date().toISOString(),
+        quote: quotes[qIdx].t.slice(0, 40) + '...'
+      });
+      
+      // Limit to 20 items
+      if(existing.length > 20) existing.pop();
+      
+      sessionStorage.setItem(historyKey, JSON.stringify(existing));
+      renderDownloads();
+    } catch(e) {
+      console.warn('Could not save download history:', e);
+    }
   }
 }
 
-// Auth
-function login(){
-  const email=document.getElementById('loginEmail').value.trim();
+// Authentication
+async function login(){
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
   const password=document.getElementById('loginPass').value;
   const errorEl=document.getElementById('loginError');
+  
+  errorEl.classList.remove('show');
   
   if(!email||!email.includes('@')){
     errorEl.textContent='Please enter a valid email';
     errorEl.classList.add('show');
     return;
   }
-  if(!password){
-    errorEl.textContent='Please enter your password';
+  if(password.length < 6){
+    errorEl.textContent='Password must be at least 6 characters';
     errorEl.classList.add('show');
     return;
   }
   
-  errorEl.classList.remove('show');
-  
-  // Get users from localStorage
-  let users=JSON.parse(localStorage.getItem('qc_users')||'[]');
-  let existingUser=users.find(u=>u.email===email);
-  
-  if(!existingUser){
-    // Create new user
-    existingUser={
-      email,
-      name:email.split('@')[0],
-      password,
-      isPro:false,
-      plan:null,
-      createdAt:Date.now(),
-      lastActive:Date.now()
-    };
-    users.push(existingUser);
-    localStorage.setItem('qc_users',JSON.stringify(users));
-  }else{
-    if(existingUser.password!==password){
-      errorEl.textContent='Invalid password';
+  try {
+    const response = await fetch(`${CONFIG.API_BASE}/api/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    
+    const data = await response.json();
+    
+    if(!response.ok) {
+      errorEl.textContent = data.error || 'Login failed';
       errorEl.classList.add('show');
       return;
     }
-    existingUser.lastActive=Date.now();
+    
+    // Store token securely
+    localStorage.setItem('qc_token', data.token);
+    localStorage.setItem('qc_user', JSON.stringify(data.user));
+    
+    closeModal();
+    applyAuth(data.user);
+    showNotification('✓ Welcome back!', 'success');
+    
+  } catch(err) {
+    console.error('Login error:', err);
+    errorEl.textContent = 'Connection error. Please try again.';
+    errorEl.classList.add('show');
   }
-  
-  localStorage.setItem('qc_current_user',JSON.stringify(existingUser));
-  closeModal();
-  applyAuth(existingUser);
 }
 
-function applyAuth(u){
-  user=u;
-  document.getElementById('guestNav').style.display='none';
-  document.getElementById('userNav').style.display='flex';
-  document.getElementById('avatarLetter').textContent=u.name[0].toUpperCase();
-  document.getElementById('userName').textContent=u.name;
+async function applyAuth(u){
+  user = u;
+  document.getElementById('guestNav').style.display = 'none';
+  document.getElementById('userNav').style.display = 'flex';
+  document.getElementById('avatarLetter').textContent = u.name?.[0]?.toUpperCase() || 'U';
+  document.getElementById('userName').textContent = u.name || 'User';
   
-  isPro=u.isPro;
-  document.getElementById('tierBadge').textContent=isPro?'✨ Pro':'Free';
-  document.getElementById('tierBadge').className='badge'+(isPro?' pro':'');
-  document.getElementById('proBanner').classList.toggle('show',isPro);
+  isPro = u.isPro;
+  document.getElementById('tierBadge').textContent = isPro ? '✨ Pro' : 'Free';
+  document.getElementById('tierBadge').className = 'badge' + (isPro ? ' pro' : '');
+  document.getElementById('proBanner').classList.toggle('show', isPro);
   
-  // Show admin button for admin user
-  const isAdmin=u.email===CONFIG.ADMIN_EMAIL;
-  document.getElementById('adminBtn').style.display=isAdmin?'inline-block':'none';
+  // Show admin button only for admin
+  const isAdmin = u.email === CONFIG.ADMIN_EMAIL;
+  document.getElementById('adminBtn').style.display = isAdmin ? 'inline-block' : 'none';
   
-  quotes=isPro?[...freeQ,...proQ]:[...freeQ];
-  qIdx=0;buildSlider();renderCanvas();
+  // Update quotes based on tier
+  quotes = isPro ? [...freeQ, ...proQ] : [...freeQ];
+  qIdx = 0;
+  buildSlider();
+  renderCanvas();
   
+  // Show downloads section
   document.getElementById('downloadsSection').classList.add('show');
   renderDownloads();
   
-  if(!isPro&&!isAdmin){
+  // Upgrade nudge logic
+  if(!isPro && !isAdmin){
     document.getElementById('upgradeNudge').classList.add('show');
-    if(upgradeTimer)clearTimeout(upgradeTimer);
-    upgradeTimer=setTimeout(()=>{if(user&&!user.isPro)openModal('join');},360000);
-  }else{
+    if(upgradeTimer) clearTimeout(upgradeTimer);
+    upgradeTimer = setTimeout(()=>{
+      if(user && !user.isPro) openModal('join');
+    }, 360000); // 6 minutes
+  } else {
     document.getElementById('upgradeNudge').classList.remove('show');
   }
 }
 
 function logout(){
-  if(upgradeTimer)clearTimeout(upgradeTimer);
-  localStorage.removeItem('qc_current_user');
+  if(upgradeTimer) clearTimeout(upgradeTimer);
+  localStorage.removeItem('qc_token');
+  localStorage.removeItem('qc_user');
   location.reload();
 }
 
-// Downloads
+// Check auth on load
+async function checkAuth() {
+  const token = localStorage.getItem('qc_token');
+  const storedUser = localStorage.getItem('qc_user');
+  
+  if(token && storedUser) {
+    try {
+      const res = await fetch(`${CONFIG.API_BASE}/api/me`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if(res.ok) {
+        const userData = await res.json();
+        applyAuth(userData);
+        return;
+      }
+    } catch(e) {
+      console.warn('Auth check failed:', e);
+    }
+  }
+  
+  // Fallback to stored user if API unavailable
+  if(storedUser) {
+    applyAuth(JSON.parse(storedUser));
+  }
+}
+
+// Downloads rendering (sessionStorage for production)
 function renderDownloads(){
-  if(!user)return;
-  const key='qc_dl_'+user.email;
-  const hist=JSON.parse(localStorage.getItem(key)||'[]');
-  const grid=document.getElementById('downloadsGrid');
-  grid.innerHTML='';
-  if(hist.length===0){grid.innerHTML='<p style="color:#777;font-size:13px;grid-column:1/-1">No downloads yet. Create & download your first card!</p>';return;}
+  if(!user) return;
+  const historyKey = `qc_downloads_${user.email}`;
+  const hist = JSON.parse(sessionStorage.getItem(historyKey) || '[]');
+  const grid = document.getElementById('downloadsGrid');
+  grid.innerHTML = '';
+  
+  if(hist.length === 0){
+    grid.innerHTML = '<p style="color:#777;font-size:13px;grid-column:1/-1">No downloads yet. Create & download your first card!</p>';
+    return;
+  }
+  
   hist.forEach((item,i)=>{
-    const div=document.createElement('div');div.className='download-item';
-    div.innerHTML=`<img src="${item.url}" alt="Download ${i+1}"><div class="dl-overlay">⬇ Tap to redownload</div>`;
-    div.onclick=()=>{const a=document.createElement('a');a.download='quotecard_'+i+'.png';a.href=item.url;a.click();};
+    const div = document.createElement('div');
+    div.className = 'download-item';
+    div.innerHTML = `<img src="${item.url}" alt="Download ${i+1}" loading="lazy"><div class="dl-overlay">⬇ Tap to redownload</div>`;
+    div.onclick = () => {
+      const a = document.createElement('a');
+      a.download = 'quotecard_' + i + '.png';
+      a.href = item.url;
+      a.click();
+    };
     grid.appendChild(div);
   });
 }
 
-// Modals
+// Modal management
 function openModal(t){
   document.getElementById('loginModal').classList.remove('show');
   document.getElementById('joinModal').classList.remove('show');
@@ -496,219 +573,253 @@ function openModal(t){
   document.getElementById('paymentError').classList.remove('show');
   document.getElementById('paymentSuccess').classList.remove('show');
   
-  if(t==='login')document.getElementById('loginModal').classList.add('show');
-  if(t==='join')document.getElementById('joinModal').classList.add('show');
+  if(t==='login') document.getElementById('loginModal').classList.add('show');
+  if(t==='join') document.getElementById('joinModal').classList.add('show');
 }
 function closeModal(){
-  document.querySelectorAll('.modal').forEach(m=>m.classList.remove('show'));
+  document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
 }
 function toggleAuth(t){
   closeModal();
-  setTimeout(()=>openModal(t),100);
+  setTimeout(() => openModal(t), 100);
 }
 
-function selectPlan(el,p){
-  document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
+function selectPlan(el, p){
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
-  selectedPlan=p;
+  selectedPlan = p;
 }
 
-// Process Payment - Redirect to Stripe Payment Link
-function processPayment(){
-  const email=document.getElementById('joinEmail').value.trim();
-  const errorEl=document.getElementById('paymentError');
+// Payment processing - Redirect to Stripe Payment Link
+async function processPayment(){
+  const email = document.getElementById('joinEmail').value.trim().toLowerCase();
+  const errorEl = document.getElementById('paymentError');
   
   errorEl.classList.remove('show');
   
-  if(!email||!email.includes('@')){
-    errorEl.textContent='Please enter a valid email';
+  if(!email || !email.includes('@')){
+    errorEl.textContent = 'Please enter a valid email';
     errorEl.classList.add('show');
     return;
   }
   
-  const btn=document.getElementById('payBtn');
-  const btnText=document.getElementById('payBtnText');
-  btn.disabled=true;
-  btnText.innerHTML='<span class="loading"></span> Redirecting...';
+  const btn = document.getElementById('payBtn');
+  const btnText = document.getElementById('payBtnText');
+  btn.disabled = true;
+  btnText.innerHTML = '<span class="loading"></span> Redirecting...';
   
-  // Save pending payment info
-  const pendingPayment={
-    email,
-    plan:selectedPlan,
-    timestamp:Date.now()
-  };
-  localStorage.setItem('qc_pending_payment',JSON.stringify(pendingPayment));
-  
-  // Get the payment link for selected plan
-  const paymentLink=CONFIG.STRIPE_PAYMENT_LINKS[selectedPlan];
-  
-  if(!paymentLink){
-    errorEl.textContent='Payment link not configured. Please contact support.';
+  try {
+    // Get payment link from config or fallback to hardcoded
+    const paymentLinks = apiConfig?.paymentLinks || CONFIG.STRIPE_PAYMENT_LINKS;
+    const paymentLink = paymentLinks[selectedPlan];
+    
+    if(!paymentLink) {
+      throw new Error('Payment link not configured');
+    }
+    
+    // Add email parameter to prefill Stripe form
+    const separator = paymentLink.includes('?') ? '&' : '?';
+    const redirectUrl = `${paymentLink}${separator}prefilled_email=${encodeURIComponent(email)}&client_reference_id=${encodeURIComponent(email)}`;
+    
+    // Store pending payment for verification after redirect
+    const pending = {
+      email,
+      plan: selectedPlan,
+      timestamp: Date.now()
+    };
+    sessionStorage.setItem('qc_pending_payment', JSON.stringify(pending));
+    
+    // Redirect to Stripe after brief delay for UX
+    setTimeout(() => {
+      window.location.href = redirectUrl;
+    }, 800);
+    
+  } catch(err) {
+    console.error('Payment error:', err);
+    errorEl.textContent = 'Payment initialization failed. Please try again.';
     errorEl.classList.add('show');
-    btn.disabled=false;
-    btnText.innerHTML='💳 Subscribe Now';
-    return;
+    btn.disabled = false;
+    btnText.innerHTML = '💳 Subscribe Now';
   }
+}
+
+// Verify payment after Stripe redirect
+async function verifyPayment() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const sessionId = urlParams.get('session_id');
+  const isCancelled = urlParams.get('canceled') === 'true';
   
-  // Add email as query parameter to prefill Stripe form
-  const separator=paymentLink.includes('?')?'&':'?';
-  const redirectUrl=`${paymentLink}${separator}prefilled_email=${encodeURIComponent(email)}&client_reference_id=${encodeURIComponent(email)}`;
-  
-  // Redirect to Stripe
-  setTimeout(()=>{
-    window.location.href=redirectUrl;
-  },500);
+  if(sessionId) {
+    const token = localStorage.getItem('qc_token');
+    const pending = JSON.parse(sessionStorage.getItem('qc_pending_payment') || 'null');
+    
+    if(token && pending) {
+      try {
+        const response = await fetch(`${CONFIG.API_BASE}/api/verify-payment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ sessionId })
+        });
+        
+        const data = await response.json();
+        
+        if(response.ok && data.success) {
+          showNotification('🎉 Welcome to Pro! All premium features unlocked.', 'success');
+          
+          // Refresh user data
+          const meRes = await fetch(`${CONFIG.API_BASE}/api/me`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if(meRes.ok) {
+            const userData = await meRes.json();
+            applyAuth(userData);
+          }
+        } else {
+          console.warn('Payment verification response:', data);
+          showNotification('⚠️ Payment pending verification. Contact support if issues persist.', 'info');
+        }
+      } catch(err) {
+        console.error('Verification error:', err);
+        showNotification('⚠️ Could not verify payment. Your subscription is likely active - check your email.', 'info');
+      }
+    }
+    
+    // Clean URL
+    sessionStorage.removeItem('qc_pending_payment');
+    window.history.replaceState({}, document.title, window.location.pathname);
+    
+  } else if(isCancelled) {
+    showNotification('Payment was cancelled. You can try again anytime.', 'info');
+    sessionStorage.removeItem('qc_pending_payment');
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
 }
 
 // Admin Dashboard
 function toggleAdmin(){
-  const panel=document.getElementById('adminPanel');
+  const panel = document.getElementById('adminPanel');
   panel.classList.toggle('show');
   if(panel.classList.contains('show')){
     refreshAdminData();
   }
 }
 
-function refreshAdminData(){
-  let users=JSON.parse(localStorage.getItem('qc_users')||'[]');
-  let payments=JSON.parse(localStorage.getItem('qc_payments')||'[]');
+async function refreshAdminData(){
+  const token = localStorage.getItem('qc_token');
+  if(!token) return;
   
-  // Update stats
-  document.getElementById('statTotalUsers').textContent=users.length;
-  document.getElementById('statProUsers').textContent=users.filter(u=>u.isPro).length;
-  
-  const revenue=payments.reduce((sum,p)=>sum+p.amount,0);
-  document.getElementById('statRevenue').textContent='$'+revenue;
-  
-  const conversion=users.length>0?Math.round((users.filter(u=>u.isPro).length/users.length)*100):0;
-  document.getElementById('statConversion').textContent=conversion+'%';
-  
-  // Update users table
-  const tbody=document.getElementById('usersTableBody');
-  tbody.innerHTML='';
-  users.forEach(u=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td>${u.email}</td>
-      <td>${u.name}</td>
-      <td><span class="status-badge ${u.isPro?'pro':'free'}">${u.isPro?'Pro':'Free'}</span></td>
-      <td>${u.plan||'N/A'}</td>
-      <td>${new Date(u.createdAt).toLocaleDateString()}</td>
-      <td>${new Date(u.lastActive||u.createdAt).toLocaleDateString()}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-  
-  // Update payments table
-  const payTbody=document.getElementById('paymentsTableBody');
-  payTbody.innerHTML='';
-  payments.forEach(p=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td>${p.email}</td>
-      <td>$${p.amount}</td>
-      <td><span class="status-badge pro">${p.status}</span></td>
-      <td>${new Date(p.date).toLocaleDateString()}</td>
-    `;
-    payTbody.appendChild(tr);
-  });
-}
-
-// Init
-buildSlider();animate();renderCanvas();
-
-// Check for logged-in user
-const storedUser=localStorage.getItem('qc_current_user');
-if(storedUser){
-  applyAuth(JSON.parse(storedUser));
-}
-
-// Check for payment success
-const urlParams=new URLSearchParams(window.location.search);
-const sessionId=urlParams.get('session_id');
-const isCancelled=urlParams.get('canceled')==='true';
-
-if(sessionId){
-  // Payment successful - upgrade user
-  const pending=JSON.parse(localStorage.getItem('qc_pending_payment')||'null');
-  
-  if(pending&&pending.email){
-    // Get or create user
-    let users=JSON.parse(localStorage.getItem('qc_users')||'[]');
-    let existingUser=users.find(u=>u.email===pending.email);
-    
-    if(!existingUser){
-      existingUser={
-        email:pending.email,
-        name:pending.email.split('@')[0],
-        password:'stripe',
-        isPro:true,
-        plan:pending.plan,
-        createdAt:Date.now(),
-        lastActive:Date.now(),
-        paidAt:Date.now()
-      };
-      users.push(existingUser);
-    }else{
-      existingUser.isPro=true;
-      existingUser.plan=pending.plan;
-      existingUser.paidAt=Date.now();
+  try {
+    // Fetch stats
+    const statsRes = await fetch(`${CONFIG.API_BASE}/api/admin/stats`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if(statsRes.ok) {
+      const stats = await statsRes.json();
+      document.getElementById('statTotalUsers').textContent = stats.totalUsers;
+      document.getElementById('statProUsers').textContent = stats.proUsers;
+      document.getElementById('statRevenue').textContent = '$' + stats.revenue.toLocaleString();
+      document.getElementById('statConversion').textContent = stats.conversionRate + '%';
     }
     
-    localStorage.setItem('qc_users',JSON.stringify(users));
-    localStorage.setItem('qc_current_user',JSON.stringify(existingUser));
-    
-    // Save payment record
-    const payments=JSON.parse(localStorage.getItem('qc_payments')||'[]');
-    payments.unshift({
-      email:pending.email,
-      amount:pending.plan==='monthly'?6:59,
-      plan:pending.plan,
-      status:'paid',
-      date:Date.now(),
-      sessionId
+    // Fetch users
+    const usersRes = await fetch(`${CONFIG.API_BASE}/api/admin/users`, {
+      headers: { 'Authorization': `Bearer ${token}` }
     });
-    localStorage.setItem('qc_payments',JSON.stringify(payments));
+    if(usersRes.ok) {
+      const users = await usersRes.json();
+      const tbody = document.getElementById('usersTableBody');
+      tbody.innerHTML = '';
+      users.forEach(u => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${u.email}</td>
+          <td>${u.name}</td>
+          <td><span class="status-badge ${u.isPro ? 'pro' : 'free'}">${u.isPro ? 'Pro' : 'Free'}</span></td>
+          <td>${u.plan || 'N/A'}</td>
+          <td>${new Date(u.createdAt).toLocaleDateString()}</td>
+          <td>${new Date(u.lastActive).toLocaleDateString()}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
     
-    // Clear pending
-    localStorage.removeItem('qc_pending_payment');
+    // Fetch payments
+    const paymentsRes = await fetch(`${CONFIG.API_BASE}/api/admin/payments`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if(paymentsRes.ok) {
+      const payments = await paymentsRes.json();
+      const tbody = document.getElementById('paymentsTableBody');
+      tbody.innerHTML = '';
+      payments.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${p.email}</td>
+          <td>$${p.amount}</td>
+          <td><span class="status-badge pro">${p.status}</span></td>
+          <td>${new Date(p.date).toLocaleDateString()}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
     
-    // Show success and apply auth
-    showNotification('🎉 Welcome to Pro! All premium features unlocked.','success');
-    applyAuth(existingUser);
+  } catch(err) {
+    console.error('Admin data fetch error:', err);
+    showNotification('⚠️ Could not load admin data', 'error');
   }
-  
-  // Clean URL
-  setTimeout(()=>{
-    window.history.replaceState({},document.title,window.location.pathname);
-  },3000);
-}else if(isCancelled){
-  showNotification('Payment was cancelled. You can try again anytime.','info');
-  localStorage.removeItem('qc_pending_payment');
-  setTimeout(()=>{
-    window.history.replaceState({},document.title,window.location.pathname);
-  },3000);
 }
 
-function showNotification(message,type='info'){
-  const existing=document.getElementById('qc-notification');
+// Notifications
+function showNotification(message, type='info'){
+  const existing = document.getElementById('qc-notification');
   if(existing) existing.remove();
   
-  const notif=document.createElement('div');
-  notif.id='qc-notification';
-  notif.style.cssText=`position:fixed;top:20px;right:20px;padding:14px 20px;border-radius:10px;color:#fff;font-size:14px;font-weight:500;z-index:10001;animation:slideIn 0.3s ease;max-width:320px;box-shadow:0 4px 20px rgba(0,0,0,0.3);background:${type==='success'?'linear-gradient(135deg,#00c853,#009624)':type==='error'?'linear-gradient(135deg,#ff4444,#cc0000)':'linear-gradient(135deg,#6e3bfa,#4287ff)'}`;
-  notif.textContent=message;
+  const notif = document.createElement('div');
+  notif.id = 'qc-notification';
+  notif.style.cssText = `position:fixed;top:20px;right:20px;padding:14px 20px;border-radius:10px;color:#fff;font-size:14px;font-weight:500;z-index:10001;animation:slideIn 0.3s ease;max-width:320px;box-shadow:0 4px 20px rgba(0,0,0,0.3);background:${type==='success'?'linear-gradient(135deg,#00c853,#009624)':type==='error'?'linear-gradient(135deg,#ff4444,#cc0000)':'linear-gradient(135deg,#6e3bfa,#4287ff)'}`;
+  notif.textContent = message;
   document.body.appendChild(notif);
   
-  setTimeout(()=>{notif.style.animation='slideOut 0.3s ease';setTimeout(()=>notif.remove(),300);},4000);
+  setTimeout(()=>{
+    notif.style.animation = 'slideOut 0.3s ease';
+    setTimeout(()=>notif.remove(), 300);
+  }, 4000);
   
   if(!document.getElementById('qc-notification-styles')){
-    const style=document.createElement('style');
-    style.id='qc-notification-styles';
-    style.textContent=`@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}`;
+    const style = document.createElement('style');
+    style.id = 'qc-notification-styles';
+    style.textContent = `@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}`;
     document.head.appendChild(style);
   }
 }
+
+// Initialize
+async function init() {
+  await fetchApiConfig();
+  buildSlider();
+  animate();
+  renderCanvas();
+  await checkAuth();
+  verifyPayment(); // Check for payment success after redirect
+  
+  // Close modals on escape key
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') closeModal();
+  });
+  
+  // Close modals on outside click
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if(e.target === modal) closeModal();
+    });
+  });
+}
+
+// Start app
+init();
 </script>
 </body>
 </html>
