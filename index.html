@@ -351,31 +351,41 @@ function selectPlan(el,p){
   el.classList.add('selected');
   selPlan=p;
 }
+
 function processPayment(){
-  const fields=[cardName,cardNumber,cardExpiry,cardCVV];
-  if(fields.some(f=>!f.value.trim()))return alert('Fill all fields');
+  // Your Stripe Payment Link (TEST MODE)
+  const STRIPE_LINK = 'https://buy.stripe.com/test_4gM8wR5Ebg8H1yUa56dAk00';
   
-  const btn=document.getElementById('payBtn');
-  btn.textContent='⏳ Processing...';btn.disabled=true;
+  // Get current user or email from login form
+  const currentUser = JSON.parse(localStorage.getItem('qc_curr') || 'null');
+  const emailInput = document.getElementById('loginEmail');
+  const email = currentUser?.email || (emailInput?.value || '').trim();
   
-  setTimeout(()=>{
-    if(user){
-      user.plan=selPlan;user.paid=true;user.paidAt=Date.now();
-      setCurr(user);
-      const users=getUsers();const i=users.findIndex(x=>x.email===user.email);
-      if(i>=0){users[i]=user;saveUsers(users);}
-    }
-    btn.textContent='✅ Welcome to Pro!';
-    setTimeout(()=>{
-      closeModal();
-      btn.textContent='💳 Join Pro Now';
-      btn.disabled=false;
-      if(user)applyAuth(user);
-      // Clear upgrade timer since they're now Pro
-      if(upgradeTimer){clearTimeout(upgradeTimer);upgradeTimer=null;}
-    },1200);
-  },1500);
+  if(!email || !email.includes('@')){
+    return alert('Please enter a valid email to continue');
+  }
+  
+  // Save pending upgrade info for post-payment handling
+  localStorage.setItem('qc_pending_upgrade', JSON.stringify({
+    email: email,
+    plan: 'recurring',
+    timestamp: Date.now()
+  }));
+  
+  // Show loading state
+  const btn = document.getElementById('payBtn');
+  const originalText = btn.textContent;
+  btn.textContent = '⏳ Redirecting to Stripe...';
+  btn.disabled = true;
+  
+  // Redirect to Stripe Checkout (with slight delay for UX)
+  setTimeout(() => {
+    window.location.href = STRIPE_LINK;
+  }, 300);
 }
+
+
+
 
 // Init
 const cWidth=document.getElementById('cWidth'),cHeight=document.getElementById('cHeight'),fontSize=document.getElementById('fontSize'),bgColor=document.getElementById('bgColor');
@@ -442,6 +452,136 @@ if(u){
     getData: () => JSON.parse(localStorage.getItem(ANALYTICS_KEY) || '{}'),
     getActiveUsers: () => JSON.parse(localStorage.getItem(ACTIVE_KEY) || '{}')
   };
+})();
+
+
+(function(){
+  // Run when page loads
+  document.addEventListener('DOMContentLoaded', checkPaymentResult);
+  
+  function checkPaymentResult(){
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Stripe redirects here after payment with ?session_id=xxx
+    const sessionId = urlParams.get('session_id'); 
+    const isCancelled = urlParams.get('canceled') === 'true';
+    
+    if(isCancelled){
+      // User cancelled payment
+      localStorage.removeItem('qc_pending_upgrade');
+      showNotification('Payment cancelled. You can try again anytime.', 'info');
+      return;
+    }
+    
+    if(sessionId){
+      // Payment likely succeeded - upgrade the user
+      handleSuccessfulPayment(sessionId);
+    }
+  }
+  
+  function handleSuccessfulPayment(sessionId){
+    const pending = JSON.parse(localStorage.getItem('qc_pending_upgrade') || 'null');
+    
+    if(!pending?.email){
+      console.warn('No pending upgrade found');
+      return;
+    }
+    
+    // Upgrade user in localStorage (demo mode)
+    const users = JSON.parse(localStorage.getItem('qc_users') || '[]');
+    const userIndex = users.findIndex(u => u.email === pending.email);
+    
+    if(userIndex >= 0){
+      // Update existing user
+      users[userIndex].paid = true;
+      users[userIndex].plan = 'recurring';
+      users[userIndex].paidAt = Date.now();
+      users[userIndex].stripeSessionId = sessionId;
+    } else {
+      // Create new Pro user entry
+      users.push({
+        email: pending.email,
+        name: pending.email.split('@')[0],
+        paid: true,
+        plan: 'recurring',
+        paidAt: Date.now(),
+        stripeSessionId: sessionId,
+        createdAt: Date.now()
+      });
+    }
+    
+    localStorage.setItem('qc_users', JSON.stringify(users));
+    
+    // Update current session if this is the logged-in user
+    const current = JSON.parse(localStorage.getItem('qc_curr') || 'null');
+    if(current && current.email === pending.email){
+      current.paid = true;
+      current.plan = 'recurring';
+      localStorage.setItem('qc_curr', JSON.stringify(current));
+      
+      // Refresh UI if applyAuth exists
+      if(typeof applyAuth === 'function'){
+        applyAuth(current);
+      }
+    }
+    
+    // Clear pending and show success
+    localStorage.removeItem('qc_pending_upgrade');
+    
+    // Show celebration + redirect clean URL
+    showNotification('🎉 Welcome to Pro! All premium features unlocked.', 'success');
+    
+    // Clean the URL (remove ?session_id=xxx)
+    setTimeout(() => {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }, 1000);
+  }
+  
+  function showNotification(message, type = 'info'){
+    // Remove existing notifications
+    const existing = document.getElementById('qc-notification');
+    if(existing) existing.remove();
+    
+    // Create notification element
+    const notif = document.createElement('div');
+    notif.id = 'qc-notification';
+    notif.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 14px 20px;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 9999;
+      animation: slideIn 0.3s ease;
+      max-width: 320px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      background: ${type === 'success' ? 'linear-gradient(135deg, #00c853, #009624)' : 
+                   type === 'error' ? 'linear-gradient(135deg, #ff4444, #cc0000)' :
+                   'linear-gradient(135deg, #6e3bfa, #4287ff)'};
+    `;
+    notif.textContent = message;
+    document.body.appendChild(notif);
+    
+    // Auto-remove after 4 seconds
+    setTimeout(() => {
+      notif.style.animation = 'slideOut 0.3s ease';
+      setTimeout(() => notif.remove(), 300);
+    }, 4000);
+    
+    // Add animations if not already present
+    if(!document.getElementById('qc-notification-styles')){
+      const style = document.createElement('style');
+      style.id = 'qc-notification-styles';
+      style.textContent = `
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+      `;
+      document.head.appendChild(style);
+    }
+  }
 })();
 
 
