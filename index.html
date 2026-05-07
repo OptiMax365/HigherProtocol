@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuoteCards Pro</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+  body{background:#0a0a0f;color:#f0f0f0;min-height:100vh;line-height:1.5}
+  nav{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#111118;border-bottom:1px solid #222;position:sticky;top:0;z-index:100}
+  nav .logo{font-size:18px;font-weight:700;background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  nav .nav-btn{background:#6e3bfa;border:none;color:#fff;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px}
+  nav .nav-btn:hover{background:#5a2fd4}
+  .badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;margin-left:6px;background:#333;color:#aaa}
+  .badge.pro{background:linear-gradient(135deg,#ffd700,#ff9800);color:#000}
+  .slider-section{padding:20px 15px}
+  .slider-wrap{position:relative;overflow:hidden;max-width:700px;margin:0 auto;border-radius:14px;cursor:grab;user-select:none;background:#111118}
+  .slider-wrap:active{cursor:grabbing}
+  .slider-track{display:flex;will-change:transform}
+  .slide{min-width:100%;display:flex;flex-direction:column;align-items:center;padding:25px 20px}
+  .quote-card{width:100%;max-width:550px;min-height:220px;display:flex;align-items:center;justify-content:center;border-radius:12px;padding:25px;text-align:center;font-size:17px;color:#e0e0e0;pointer-events:none;background:linear-gradient(145deg,#1a1a2e,#16213e)}
+  .quote-card .author{display:block;margin-top:12px;font-size:11px;color:#999}
+  .dots{text-align:center;margin-top:8px}
+  .dot{height:7px;width:7px;margin:0 4px;border-radius:50%;display:inline-block;background:#444;cursor:pointer}
+  .dot.active{background:#6e3bfa}
+  .editor-section{max-width:700px;margin:20px auto;padding:18px;background:#111118;border-radius:14px}
+  .editor-section h2{margin-bottom:12px;font-size:18px}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+  .ctrl-group{display:flex;flex-direction:column;gap:3px}
+  .controls label{font-size:11px;color:#aaa}
+  .controls input[type=number]{width:70px;padding:5px 8px;background:#1a1a24;border:1px solid #333;color:#fff;border-radius:6px;font-size:13px}
+  .controls input[type=color]{width:36px;height:32px;padding:0;border:none;cursor:pointer;border-radius:6px;background:#1a1a24}
+  .controls button{background:#4287ff;border:none;color:#fff;padding:7px 14px;border-radius:7px;cursor:pointer;font-size:13px}
+  .controls button:hover{background:#2e6fd9}
+  #previewCanvas{border:1px solid #333;border-radius:8px;display:block;margin:0 auto;max-width:100%;height:auto}
+  .download-btn{margin-top:12px;background:#6e3bfa;width:100%;padding:11px;border:none;color:#fff;border-radius:9px;cursor:pointer;font-size:14px;font-weight:600}
+  .download-btn:hover{background:#5a2fd4}
+  .downloads-section{max-width:700px;margin:20px auto;padding:18px;background:#111118;border-radius:14px;display:none}
+  .downloads-section.show{display:block}
+  .downloads-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:12px}
+  .download-item{position:relative;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .2s}
+  .download-item:hover{border-color:#6e3bfa}
+  .download-item img{width:100%;height:120px;object-fit:cover;display:block}
+  .download-item .dl-overlay{position:absolute;bottom:0;left:0;right:0;padding:6px;background:rgba(0,0,0,.7);font-size:10px;text-align:center}
+  .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;align-items:center;justify-content:center;padding:15px}
+  .modal.show{display:flex}
+  .modal-box{background:#1a1a24;padding:25px;border-radius:14px;width:100%;max-width:420px;border:1px solid #222;position:relative}
+  .modal-box h2{margin-bottom:15px;background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:20px}
+  .modal-box p{color:#aaa;font-size:13px;margin:8px 0}
+  .modal-box input{width:100%;padding:9px;margin:8px 0;background:#111118;border:1px solid #333;color:#fff;border-radius:7px;font-size:14px}
+  .modal-box button{width:100%;padding:10px;border:none;border-radius:7px;color:#fff;font-size:14px;cursor:pointer;margin-top:5px}
+  .btn-join{background:linear-gradient(135deg,#00c853,#009624);font-weight:600}
+  .btn-login{background:#6e3bfa}
+  .close-modal{position:absolute;top:10px;right:14px;background:none;border:none;color:#fff;font-size:20px;cursor:pointer}
+  .plan-cards{display:flex;gap:10px;margin:12px 0}
+  .plan-card{flex:1;padding:12px;background:#111118;border:2px solid transparent;border-radius:9px;cursor:pointer;text-align:center}
+  .plan-card.selected{border-color:#6e3bfa}
+  .plan-card .price{font-size:18px;font-weight:700;margin:5px 0}
+  .plan-card .label{font-size:11px;color:#888}
+  .plan-card .save{font-size:10px;color:#00c853}
+  .switch-text{text-align:center;margin-top:10px;font-size:12px;color:#888;cursor:pointer}
+  .switch-text span{color:#4287ff}
+  .user-status{display:none;align-items:center;gap:6px}
+  .user-status .avatar{width:28px;height:28px;border-radius:50%;background:#6e3bfa;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+  .pro-banner{background:linear-gradient(135deg,#6e3bfa,#4287ff);color:#fff;padding:8px 15px;border-radius:8px;text-align:center;font-size:13px;margin:15px 0;display:none}
+  .pro-banner.show{display:block}
+  .upgrade-nudge{background:#1a1a2e;border-left:4px solid #ffd700;padding:12px 15px;border-radius:0 8px 8px 0;margin:15px 0;font-size:13px;color:#ccc;display:none}
+  .upgrade-nudge.show{display:flex;align-items:center;gap:10px}
+  .upgrade-nudge button{background:#ffd700;color:#000;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600}
+  @media(max-width:600px){
+    .controls{flex-direction:column;align-items:stretch}
+    .plan-cards{flex-direction:column}
+    nav{padding:10px 15px}
+    .quote-card{min-height:200px;font-size:16px;padding:20px}
+    .editor-section,.downloads-section{margin:15px;padding:15px}
+    .upgrade-nudge{flex-direction:column;align-items:stretch}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">QuoteCards Pro</div>
+  <div id="guestNav">
+    <button class="nav-btn" onclick="openModal('login')">Login</button>
+    <button class="nav-btn" style="background:linear-gradient(135deg,#00c853,#009624);margin-left:6px" onclick="openModal('join')">✨ Join Pro</button>
+  </div>
+  <div class="user-status" id="userNav">
+    <div class="avatar" id="avatarLetter">U</div>
+    <span id="userName" style="font-size:13px">User</span>
+    <span class="badge" id="tierBadge">Free</span>
+    <button class="nav-btn" id="joinNavBtn" style="background:linear-gradient(135deg,#00c853,#009624);margin-left:8px;padding:5px 12px;font-size:12px;display:none" onclick="openModal('join')">✨ Join Pro</button>
+    <button class="nav-btn" style="background:#ff4444;margin-left:8px;padding:5px 12px;font-size:12px" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<div class="pro-banner" id="proBanner">✨ Pro Active: Higher Mind Quotes Unlocked</div>
+<div class="upgrade-nudge" id="upgradeNudge">
+  <span>🔒 Unlock 50+ Higher Mind quotes. Join Pro for $6/mo.</span>
+  <button onclick="openModal('join')">Upgrade Now</button>
+</div>
+
+<section class="slider-section">
+  <div class="slider-wrap" id="sliderWrap">
+    <div class="slider-track" id="sliderTrack"></div>
+  </div>
+  <div class="dots" id="dots"></div>
+</section>
+
+<section class="editor-section">
+  <h2>🎨 Card Editor</h2>
+  <div class="controls">
+    <div class="ctrl-group"><label>Width</label><input type="number" id="cWidth" value="1080" min="400" max="4000"></div>
+    <div class="ctrl-group"><label>Height</label><input type="number" id="cHeight" value="1080" min="400" max="4000"></div>
+    <div class="ctrl-group"><label>Font</label><input type="number" id="fontSize" value="48" min="16" max="150"></div>
+    <div class="ctrl-group"><label>BG</label><input type="color" id="bgColor" value="#1a1a2e"></div>
+    <button onclick="renderCanvas()">Render</button>
+    <button onclick="cycleQuote()" style="background:#6e3bfa">New Quote</button>
+  </div>
+  <canvas id="previewCanvas"></canvas>
+  <button class="download-btn" onclick="downloadPNG()">⬇ Download PNG</button>
+</section>
+
+<section class="downloads-section" id="downloadsSection">
+  <h2>📁 My Downloads</h2>
+  <div class="downloads-grid" id="downloadsGrid"></div>
+</section>
+
+<!-- Login Modal -->
+<div class="modal" id="loginModal">
+  <div class="modal-box">
+    <button class="close-modal" onclick="closeModal()">&times;</button>
+    <h2>Login to QuoteCards Pro</h2>
+    <p>Access your saved cards and Higher Mind quotes.</p>
+    <input type="email" id="loginEmail" placeholder="Email Address">
+    <input type="password" id="loginPass" placeholder="Password">
+    <button class="btn-login" onclick="login()">Login</button>
+    <div class="switch-text">New here? <span onclick="toggleAuth('join')">Join Pro for $6/mo</span></div>
+  </div>
+</div>
+
+<!-- Join Pro Modal -->
+<div class="modal" id="joinModal">
+  <div class="modal-box">
+    <button class="close-modal" onclick="closeModal()">&times;</button>
+    <h2>✨ Join QuoteCards Pro</h2>
+    <p>Unlock Higher Mind quotes • Save downloads • Premium support</p>
+    <div class="plan-cards">
+      <div class="plan-card selected" onclick="selectPlan(this,'monthly')">
+        <div class="label">Monthly</div>
+        <div class="price">$6/mo</div>
+      </div>
+      <div class="plan-card" onclick="selectPlan(this,'yearly')">
+        <div class="label">Yearly</div>
+        <div class="price">$59/yr</div>
+        <div class="save">Save 22%</div>
+      </div>
+    </div>
+    <input type="text" id="cardName" placeholder="Cardholder Name">
+    <input type="text" id="cardNumber" placeholder="Card Number">
+    <div style="display:flex;gap:8px">
+      <input type="text" id="cardExpiry" placeholder="MM/YY" style="flex:1">
+      <input type="text" id="cardCVV" placeholder="CVV" style="flex:1">
+    </div>
+    <button class="btn-join" id="payBtn" onclick="processPayment()">💳 Join Pro Now</button>
+    <p style="font-size:10px;color:#555;margin-top:6px;text-align:center">Demo mode. No real charges. Cancel anytime.</p>
+  </div>
+</div>
+
+<script>
+// Quotes: Free (preview) + Pro (Higher Mind)
+const freeQ=[
+  {t:"The only limit to our realization of tomorrow is our doubts of today.",a:"Franklin D. Roosevelt"},
+  {t:"In the middle of every difficulty lies opportunity.",a:"Albert Einstein"},
+  {t:"It does not matter how slowly you go as long as you do not stop.",a:"Confucius"},
+  {t:"Believe you can and you're halfway there.",a:"Theodore Roosevelt"},
+  {t:"Act as if what you do makes a difference. It does.",a:"William James"}
+];
+const proQ=[
+  {t:"The unexamined life is not worth living.",a:"Socrates"},
+  {t:"He who has a why to live can bear almost any how.",a:"Nietzsche"},
+  {t:"The mind is everything. What you think you become.",a:"Buddha"},
+  {t:"We are what we repeatedly do. Excellence is a habit.",a:"Aristotle"},
+  {t:"The greatest glory is rising every time we fall.",a:"Nelson Mandela"},
+  {t:"Your vision becomes clear when you look into your heart.",a:"Carl Jung"},
+  {t:"What lies behind us and what lies before us are tiny matters.",a:"Emerson"},
+  {t:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"Chinese Proverb"}
+];
+
+let quotes=[...freeQ],qIdx=0,isPro=false,speed=0.5,user=null,upgradeTimer=null;
+
+// Slider
+const track=document.getElementById('sliderTrack'),wrap=document.getElementById('sliderWrap'),dotsEl=document.getElementById('dots');
+let pos=0,holding=false,animId;
+
+function buildSlider(){
+  track.innerHTML='';dotsEl.innerHTML='';
+  const pool=[...quotes,...quotes];
+  pool.forEach(q=>{
+    const d=document.createElement('div');d.className='slide';
+    d.innerHTML=`<div class="quote-card">${q.t}<span class="author">— ${q.a}</span></div>`;
+    track.appendChild(d);
+  });
+  pool.forEach((_,i)=>{
+    const dot=document.createElement('span');dot.className='dot';
+    dot.onclick=()=>{pos=(i%quotes.length)*slideW();updateDots();};
+    dotsEl.appendChild(dot);
+  });
+  updateDots();
+}
+function slideW(){return track.children[0]?.offsetWidth||700}
+function updateDots(){
+  const idx=Math.round((pos/slideW())%quotes.length);
+  dotsEl.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+}
+function animate(){
+  if(!holding){
+    pos+=speed;
+    const limit=slideW()*quotes.length;
+    if(pos>=limit)pos-=limit;
+    track.style.transform=`translateX(-${pos}px)`;
+    updateDots();
+  }
+  animId=requestAnimationFrame(animate);
+}
+wrap.addEventListener('mousedown',()=>{holding=true;wrap.style.opacity='.7'});
+wrap.addEventListener('mouseup',()=>{holding=false;wrap.style.opacity='1'});
+wrap.addEventListener('mouseleave',()=>{holding=false;wrap.style.opacity='1'});
+wrap.addEventListener('touchstart',e=>{e.preventDefault();holding=true;wrap.style.opacity='.7'},{passive:false});
+wrap.addEventListener('touchend',()=>{holding=false;wrap.style.opacity='1'});
+
+// Canvas
+function renderCanvas(){
+  const c=document.getElementById('previewCanvas'),ctx=c.getContext('2d');
+  const w=+cWidth.value,h=+cHeight.value,fs=+fontSize.value;
+  c.width=w;c.height=h;
+  ctx.fillStyle=bgColor.value;ctx.fillRect(0,0,w,h);
+  ctx.fillStyle='#e0e0e0';ctx.font=`bold ${fs}px Segoe UI,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+  wrapText(ctx,quotes[qIdx].t,w/2,h/2-25,w-70,fs*1.3);
+  ctx.fillStyle='#999';ctx.font=`${fs*.5}px Segoe UI,sans-serif`;
+  ctx.fillText('— '+quotes[qIdx].a,w/2,h/2+fs*1.8);
+  ctx.fillStyle='#6e3bfa';ctx.font=`bold ${fs*.35}px sans-serif`;ctx.fillText('QuoteCards',w/2,h-fs*.5);
+}
+function wrapText(ctx,t,x,y,mw,lh){
+  const words=t.split(' ');let line='',lines=[];
+  words.forEach(w=>{let test=line+w+' ';if(ctx.measureText(test).width>mw&&line){lines.push(line.trim());line=w+' '}else line=test});
+  lines.push(line.trim());let sy=y-((lines.length-1)*lh)/2;
+  lines.forEach((l,i)=>ctx.fillText(l,x,sy+i*lh));
+}
+function cycleQuote(){qIdx=(qIdx+1)%quotes.length;renderCanvas()}
+function downloadPNG(){
+  const c=document.getElementById('previewCanvas'),url=c.toDataURL('image/png');
+  const a=document.createElement('a');a.download='quotecard_'+Date.now()+'.png';a.href=url;a.click();
+  if(user){
+    const key='qc_dl_'+user.email;
+    const hist=JSON.parse(localStorage.getItem(key)||'[]');
+    hist.unshift({url,time:new Date().toISOString(),quote:quotes[qIdx].t.slice(0,30)+'...'});
+    if(hist.length>20)hist.pop();
+    localStorage.setItem(key,JSON.stringify(hist));
+    renderDownloads();
+  }
+}
+
+// Auth & Storage
+const getUsers=()=>JSON.parse(localStorage.getItem('qc_users')||'[]');
+const saveUsers=u=>localStorage.setItem('qc_users',JSON.stringify(u));
+const getCurr=()=>JSON.parse(localStorage.getItem('qc_curr')||'null');
+const setCurr=u=>localStorage.setItem('qc_curr',JSON.stringify(u));
+
+function login(){
+  const e=loginEmail.value.trim(),p=loginPass.value;
+  const u=getUsers().find(x=>x.email===e&&x.pass===p);
+  if(!u)return alert('Invalid credentials');
+  setCurr(u);closeModal();applyAuth(u);
+}
+function logout(){
+  if(upgradeTimer)clearTimeout(upgradeTimer);
+  localStorage.removeItem('qc_curr');location.reload();
+}
+
+function applyAuth(u){
+  user=u;
+  document.getElementById('guestNav').style.display='none';
+  document.getElementById('userNav').style.display='flex';
+  document.getElementById('avatarLetter').textContent=u.name[0].toUpperCase();
+  document.getElementById('userName').textContent=u.name;
+  
+  isPro=u.paid;
+  document.getElementById('tierBadge').textContent=isPro?'✨ Pro':'Free';
+  document.getElementById('tierBadge').className='badge'+(isPro?' pro':'');
+  document.getElementById('proBanner').classList.toggle('show',isPro);
+  
+  // Show Join Pro button in nav if not paid
+  document.getElementById('joinNavBtn').style.display=isPro?'none':'block';
+  
+  // Set quotes based on Pro status
+  quotes=isPro?[...freeQ,...proQ]:[...freeQ];
+  qIdx=0;buildSlider();renderCanvas();
+  
+  // Show downloads section
+  document.getElementById('downloadsSection').classList.add('show');
+  renderDownloads();
+  
+  // If NOT paid: show upgrade nudge + 6-min reminder
+  if(!isPro){
+    document.getElementById('upgradeNudge').classList.add('show');
+    // Clear existing timer if any
+    if(upgradeTimer)clearTimeout(upgradeTimer);
+    // Set 6-minute (360000ms) reminder to show join modal
+    upgradeTimer=setTimeout(()=>{
+      if(user&&!user.paid){openModal('join');}
+    },360000);
+  }
+}
+
+// Downloads
+function renderDownloads(){
+  if(!user)return;
+  const key='qc_dl_'+user.email;
+  const hist=JSON.parse(localStorage.getItem(key)||'[]');
+  const grid=document.getElementById('downloadsGrid');
+  grid.innerHTML='';
+  if(hist.length===0){grid.innerHTML='<p style="color:#777;font-size:13px;grid-column:1/-1">No downloads yet. Create & download your first card!</p>';return;}
+  hist.forEach((item,i)=>{
+    const div=document.createElement('div');div.className='download-item';
+    div.innerHTML=`<img src="${item.url}" alt="Download ${i+1}"><div class="dl-overlay">⬇ Tap to redownload</div>`;
+    div.onclick=()=>{const a=document.createElement('a');a.download='quotecard_'+i+'.png';a.href=item.url;a.click();};
+    grid.appendChild(div);
+  });
+}
+
+// Modals
+function openModal(t){
+  document.getElementById('loginModal').classList.remove('show');
+  document.getElementById('joinModal').classList.remove('show');
+  if(t==='login')document.getElementById('loginModal').classList.add('show');
+  if(t==='join')document.getElementById('joinModal').classList.add('show');
+}
+function closeModal(){
+  document.querySelectorAll('.modal').forEach(m=>m.classList.remove('show'));
+}
+function toggleAuth(t){
+  closeModal();
+  setTimeout(()=>openModal(t),100);
+}
+
+// Payments
+let selPlan='monthly';
+function selectPlan(el,p){
+  document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  selPlan=p;
+}
+function processPayment(){
+  const fields=[cardName,cardNumber,cardExpiry,cardCVV];
+  if(fields.some(f=>!f.value.trim()))return alert('Fill all fields');
+  
+  const btn=document.getElementById('payBtn');
+  btn.textContent='⏳ Processing...';btn.disabled=true;
+  
+  setTimeout(()=>{
+    if(user){
+      user.plan=selPlan;user.paid=true;user.paidAt=Date.now();
+      setCurr(user);
+      const users=getUsers();const i=users.findIndex(x=>x.email===user.email);
+      if(i>=0){users[i]=user;saveUsers(users);}
+    }
+    btn.textContent='✅ Welcome to Pro!';
+    setTimeout(()=>{
+      closeModal();
+      btn.textContent='💳 Join Pro Now';
+      btn.disabled=false;
+      if(user)applyAuth(user);
+      // Clear upgrade timer since they're now Pro
+      if(upgradeTimer){clearTimeout(upgradeTimer);upgradeTimer=null;}
+    },1200);
+  },1500);
+}
+
+// Init
+const cWidth=document.getElementById('cWidth'),cHeight=document.getElementById('cHeight'),fontSize=document.getElementById('fontSize'),bgColor=document.getElementById('bgColor');
+buildSlider();animate();renderCanvas();
+
+// Check for logged-in user on load
+const u=getCurr();
+if(u){
+  applyAuth(u);
+}
+
+
+// === ANALYTICS TRACKING ===
+(function(){
+  const ANALYTICS_KEY = 'qc_analytics';
+  const ACTIVE_KEY = 'qc_active_users';
+  const HEARTBEAT_INTERVAL = 30000; // 30 seconds
+  
+  // Initialize analytics
+  function initAnalytics(){
+    let data = JSON.parse(localStorage.getItem(ANALYTICS_KEY) || '{"totalViews":0,"uniqueVisitors":0,"lastReset":null}');
+    
+    // Track page view
+    data.totalViews = (data.totalViews || 0) + 1;
+    
+    // Track unique visitors (simple session-based)
+    if(!sessionStorage.getItem('qc_visited')){
+      data.uniqueVisitors = (data.uniqueVisitors || 0) + 1;
+      sessionStorage.setItem('qc_visited','1');
+    }
+    
+    data.lastVisit = new Date().toISOString();
+    localStorage.setItem(ANALYTICS_KEY, JSON.stringify(data));
+  }
+  
+  // Active user heartbeat
+  function sendHeartbeat(){
+    const user = JSON.parse(localStorage.getItem('qc_curr') || 'null');
+    const active = JSON.parse(localStorage.getItem(ACTIVE_KEY) || '{}');
+    const userId = user ? user.email : 'guest_'+(sessionStorage.getItem('qc_visited')?'1':Math.random().toString(36).slice(2,8));
+    
+    active[userId] = {
+      lastSeen: Date.now(),
+      isPro: user?.paid || false,
+      userAgent: navigator.userAgent.slice(0,100)
+    };
+    
+    // Clean old entries (>2 min)
+    const now = Date.now();
+    Object.keys(active).forEach(key => {
+      if(now - active[key].lastSeen > 120000) delete active[key];
+    });
+    
+    localStorage.setItem(ACTIVE_KEY, JSON.stringify(active));
+  }
+  
+  // Start tracking
+  initAnalytics();
+  sendHeartbeat();
+  setInterval(sendHeartbeat, HEARTBEAT_INTERVAL);
+  
+  // Expose for admin panel
+  window.qcAnalytics = {
+    getData: () => JSON.parse(localStorage.getItem(ANALYTICS_KEY) || '{}'),
+    getActiveUsers: () => JSON.parse(localStorage.getItem(ACTIVE_KEY) || '{}')
+  };
+})();
+
+
+</script>
+</body>
+</html>
