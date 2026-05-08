@@ -309,10 +309,17 @@ const api = {
     if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
     try {
       const res = await fetch(`${API}${endpoint}`, { ...opts, headers });
-      if (!res.ok && res.status === 401) { this.logout(); return null; }
-      return res.json();
-    } catch (e) { console.warn(`API ${endpoint} failed:`, e); return null; }
-  },
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 401) { this.logout(); return null; }
+      if (!res.ok) return { error: data.error || `HTTP ${res.status}: ${res.statusText}` };
+      return data;
+    } catch (e) {
+      console.warn(`API ${endpoint} failed:`, e);
+      return { error: 'Connection failed. Check your internet or server status.' };
+    }
+},
+
+  
   async signup(data) { return this.req('/api/signup', { method: 'POST', body: JSON.stringify(data) }); },
   async login(data) { return this.req('/api/login', { method: 'POST', body: JSON.stringify(data) }); },
   async me() { return this.req('/api/me'); },
@@ -484,17 +491,35 @@ async function login() {
 async function signup() {
   const name = $('signupName').value.trim(), email = $('signupEmail').value.trim().toLowerCase();
   const pass = $('signupPass').value, confirm = $('signupPassConfirm').value;
-  const err = $('signupError'), ok = $('signupSuccess');
+  const err = $('signupError'), ok = $('signupSuccess'), btn = event.target;
   err.classList.remove('show'); ok.classList.remove('show');
   
-  if (name.length < 2 || !email.includes('@') || pass.length < 6 || pass !== confirm) {
-    err.textContent = !name ? 'Enter name' : !email.includes('@') ? 'Valid email' : pass.length < 6 ? '6+ char password' : 'Passwords mismatch';
-    err.classList.add('show'); return;
-  }
+  if (name.length < 2) { err.textContent = 'Enter your full name'; err.classList.add('show'); return; }
+  if (!email.includes('@')) { err.textContent = 'Enter a valid email'; err.classList.add('show'); return; }
+  if (pass.length < 6) { err.textContent = 'Password must be 6+ characters'; err.classList.add('show'); return; }
+  if (pass !== confirm) { err.textContent = 'Passwords do not match'; err.classList.add('show'); return; }
   
-  const res = await api.signup({ name, email, password: pass });
-  if (res?.token) { applyAuth(res.user, res.token); closeModal(); notify(`✓ Welcome, ${name.split(' ')[0]}!`, 'success'); }
-  else { err.textContent = res?.error || 'Signup failed'; err.classList.add('show'); }
+  btn.disabled = true;
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<span class="loading"></span> Creating...';
+  
+  try {
+    const res = await api.signup({ name, email, password: pass });
+    if (res?.token) {
+      applyAuth(res.user, res.token);
+      closeModal();
+      notify(`✓ Welcome, ${name.split(' ')[0]}!`, 'success');
+    } else {
+      err.textContent = res?.error || 'Signup failed - email may already exist';
+      err.classList.add('show');
+    }
+  } catch(e) {
+    err.textContent = 'Connection error. Please try again.';
+    err.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
 }
 
 function forgotPassword() {
