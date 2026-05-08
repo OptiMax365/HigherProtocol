@@ -123,7 +123,7 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", 'https://js.stripe.com'],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", 'data:', 'https:'],
-      connectSrc: ["'self'", 'https://api.stripe.com', process.env.CORS_ORIGIN, 'https://higherprotocola3.onrender.com'],      
+      connectSrc: ["'self'", 'https://api.stripe.com', process.env.CORS_ORIGIN],
       frameSrc: ["'self'", 'https://buy.stripe.com']
     }
   }
@@ -167,14 +167,10 @@ app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().
 
 // === AUTH ENDPOINTS ===
 
-// SIGNUP - Enhanced with debugging
+// SIGNUP
 app.post('/api/signup', authLimiter, async (req, res) => {
-  console.log('📝 Signup attempt:', req.body?.email, 'from IP:', getIP(req)); // Debug log
-  
   try {
     const { email, password, name } = req.body;
-    
-    // Validate input
     if (!email?.includes('@') || !password || password.length < 6 || !name) {
       return res.status(400).json({ error: 'Valid name, email, and 6+ char password required' });
     }
@@ -182,7 +178,6 @@ app.post('/api/signup', authLimiter, async (req, res) => {
     // Check if user exists
     const existing = await pool.query('SELECT email FROM users WHERE email = $1', [email]);
     if (existing.rows.length > 0) {
-      console.log('⚠️ Email already registered:', email);
       return res.status(400).json({ error: 'Email already registered' });
     }
     
@@ -195,12 +190,11 @@ app.post('/api/signup', authLimiter, async (req, res) => {
     const user = result.rows[0];
     const token = jwt.sign({ email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
     
-    console.log('✅ User created:', email);
+    console.log(`✅ New user: ${email}`);
     res.json({ token, user });
-    
   } catch (err) {
-    console.error('❌ Signup error:', err.message, err.stack);
-    res.status(500).json({ error: 'Signup failed: ' + err.message });
+    console.error('Signup error:', err);
+    res.status(500).json({ error: 'Signup failed' });
   }
 });
 
