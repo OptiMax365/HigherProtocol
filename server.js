@@ -165,6 +165,37 @@ app.get('/health', (req, res) => {
 
 // === AUTH ENDPOINTS ===
 
+
+
+
+// === AUTH ENDPOINTS ===
+// SIGNUP
+app.post('/api/signup', authLimiter, async (req, res) => {
+  try {
+    const { email, password, name } = req.body;
+    if (!email?.includes('@') || !password || password.length < 6 || !name) {
+      return res.status(400).json({ error: 'Valid name, email, and 6+ char password required' });
+    }
+    const existing = await pool.query('SELECT email FROM users WHERE email = $1', [email]);
+    if (existing.rows.length > 0) return res.status(400).json({ error: 'Email already registered' });
+
+    const passwordHash = await bcrypt.hash(password, 12);
+    const result = await pool.query(
+      `INSERT INTO users (email, name, password_hash) VALUES ($1, $2, $3) RETURNING email, name, is_pro as "isPro", plan, created_at`,
+      [email, name, passwordHash]
+    );
+    const user = result.rows[0];
+    const token = jwt.sign({ email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
+    console.log(`✅ New user: ${email}`);
+    res.json({ token, user });
+  } catch (err) {
+    console.error('Signup error:', err);
+    res.status(500).json({ error: 'Signup failed' });
+  }
+});
+
+
+
 app.post('/api/login', authLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
