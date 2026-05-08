@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuoteCards Pro • Admin Dashboard</title>
+  <style>
+    :root { --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --accent: #6366f1; --accent-hover: #4f46e5; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --border: #334155; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; padding: 20px; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    
+    /* Login */
+    #login-screen { display: flex; align-items: center; justify-content: center; min-height: 80vh; }
+    .login-box { background: var(--card); padding: 2rem; border-radius: 12px; width: 100%; max-width: 400px; border: 1px solid var(--border); }
+    .login-box h2 { margin-bottom: 1.5rem; text-align: center; }
+    input { width: 100%; padding: 10px; margin-bottom: 1rem; background: #0f172a; border: 1px solid var(--border); color: var(--text); border-radius: 6px; }
+    button { width: 100%; padding: 10px; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+    button:hover { background: var(--accent-hover); }
+    .error { color: var(--danger); margin-top: 0.5rem; text-align: center; font-size: 0.9rem; }
+
+    /* Dashboard */
+    #dashboard { display: none; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card { background: var(--card); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border); }
+    .stat-card h3 { font-size: 0.9rem; color: #94a3b8; margin-bottom: 0.5rem; }
+    .stat-card p { font-size: 1.8rem; font-weight: bold; }
+
+    .controls { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .search { flex: 1; min-width: 250px; padding: 10px; background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 6px; }
+    .btn-secondary { background: #334155; width: auto; padding: 0 1rem; }
+    
+    .table-wrap { overflow-x: auto; background: var(--card); border-radius: 8px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; min-width: 800px; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: #0f172a; font-weight: 600; color: #94a3b8; }
+    tr:hover { background: #2a3549; }
+    
+    .status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 12px; font-size: 0.85rem; }
+    .status.active { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+    .status.offline { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+    .status.pro { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+    .status.free { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+
+    .action-btn { background: transparent; color: var(--accent); border: 1px solid var(--accent); width: auto; padding: 6px 12px; font-size: 0.85rem; }
+    .action-btn:hover { background: var(--accent); color: white; }
+    .loading { text-align: center; padding: 2rem; color: #94a3b8; }
+    .toast { position: fixed; bottom: 20px; right: 20px; background: var(--success); color: white; padding: 12px 20px; border-radius: 6px; opacity: 0; transition: 0.3s; transform: translateY(10px); }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen">
+    <div class="login-box">
+      <h2>🔐 Admin Login</h2>
+      <form id="login-form">
+        <input type="email" id="email" placeholder="Admin Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Sign In</button>
+        <div id="login-error" class="error"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="container">
+    <header>
+      <h1>📊 QuoteCards Admin</h1>
+      <button onclick="logout()" class="btn-secondary">Logout</button>
+    </header>
+
+    <div class="stats">
+      <div class="stat-card"><h3>Total Users</h3><p id="stat-total">-</p></div>
+      <div class="stat-card"><h3>Pro Subscribers</h3><p id="stat-pro">-</p></div>
+      <div class="stat-card"><h3>Revenue</h3><p id="stat-revenue">$0</p></div>
+      <div class="stat-card"><h3>Conversion</h3><p id="stat-conversion">0%</p></div>
+    </div>
+
+    <div class="controls">
+      <input type="text" id="search-input" class="search" placeholder="🔍 Search by email or name...">
+      <button onclick="refreshData()" class="btn-secondary">🔄 Refresh</button>
+    </div>
+
+    <div class="table-wrap">
+      <table id="users-table">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Plan</th>
+            <th>Joined</th>
+            <th>Last Active</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="users-tbody">
+          <tr><td colspan="7" class="loading">Loading users...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // 🔧 CONFIG: Replace with your Render backend URL
+    const API_BASE = 'https://higherprotocola3.onrender.com'; // ← UPDATE THIS
+    let authToken = localStorage.getItem('admin_token');
+
+    // Check session on load
+    if (authToken) {
+      initDashboard();
+    }
+
+    // LOGIN
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorEl = document.getElementById('login-error');
+
+      try {
+        const res = await fetch(`${API_BASE}/api/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Invalid credentials');
+        
+        authToken = data.token;
+        localStorage.setItem('admin_token', authToken);
+        initDashboard();
+      } catch (err) {
+        errorEl.textContent = err.message;
+      }
+    });
+
+    async function initDashboard() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      await Promise.all([fetchStats(), fetchUsers()]);
+      // Auto refresh every 30s
+      setInterval(refreshData, 30000);
+    }
+
+    function logout() {
+      localStorage.removeItem('admin_token');
+      authToken = null;
+      location.reload();
+    }
+
+    // FETCH STATS
+    async function fetchStats() {
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/stats`, {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        if (!res.ok) throw new Error('Unauthorized or server error');
+        const stats = await res.json();
+        document.getElementById('stat-total').textContent = stats.totalUsers;
+        document.getElementById('stat-pro').textContent = stats.proUsers;
+        document.getElementById('stat-revenue').textContent = `$${stats.revenue}`;
+        document.getElementById('stat-conversion').textContent = `${stats.conversionRate}%`;
+      } catch (err) {
+        console.error('Stats fetch failed:', err);
+      }
+    }
+
+    // FETCH USERS
+    async function fetchUsers() {
+      const tbody = document.getElementById('users-tbody');
+      tbody.innerHTML = '<tr><td colspan="7" class="loading">Syncing users...</td></tr>';
+      
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/users`, {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        if (!res.ok) throw new Error('Failed to fetch users');
+        const { users } = await res.json();
+        renderUsers(users);
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" class="error">${err.message}</td></tr>`;
+      }
+    }
+
+    function renderUsers(users) {
+      const tbody = document.getElementById('users-tbody');
+      tbody.innerHTML = '';
+      
+      users.forEach(user => {
+        const lastActive = new Date(user.lastActive);
+        const now = new Date();
+        const diffMs = now - lastActive;
+        const isActive = diffMs < 10 * 60 * 1000; // 10 mins threshold
+        const statusClass = isActive ? 'active' : 'offline';
+        const statusText = isActive ? '🟢 Active' : '⚫ Offline';
+        const planClass = user.isPro ? 'pro' : 'free';
+        const planText = user.isPro ? `⭐ ${user.plan || 'Pro'}` : 'Free';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${user.email}</td>
+          <td>${user.name || '-'}</td>
+          <td><span class="status ${statusClass}">${statusText}</span></td>
+          <td><span class="status ${planClass}">${planText}</span></td>
+          <td>${formatDate(user.createdAt)}</td>
+          <td>${formatDate(user.lastActive)}</td>
+          <td><button class="action-btn" onclick="sendReset('${user.email}')">🔑 Reset Password</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Setup search
+      document.getElementById('search-input').oninput = (e) => {
+        const term = e.target.value.toLowerCase();
+        const rows = tbody.querySelectorAll('tr');
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(term) ? '' : 'none';
+        });
+      };
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return 'Never';
+      return new Date(dateStr).toLocaleString();
+    }
+
+    async function sendReset(email) {
+      if (!confirm(`Send password reset link to ${email}?`)) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/send-recovery`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, adminEmail: 'Admin' })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        showToast(`✅ Reset email sent to ${email}`);
+      } catch (err) {
+        showToast(`❌ Failed: ${err.message}`, true);
+      }
+    }
+
+    async function refreshData() {
+      await Promise.all([fetchStats(), fetchUsers()]);
+    }
+
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.background = isError ? '#ef4444' : '#10b981';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+  </script>
+</body>
+</html>
