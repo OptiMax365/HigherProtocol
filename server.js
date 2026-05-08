@@ -209,7 +209,14 @@ app.get('/health', (req, res) =>
 
 // ===== AUTH ENDPOINTS =====
 
-// SIGNUP - Fixed with proper error handling
+
+
+
+
+
+
+// ===== AUTH ENDPOINTS =====
+// SIGNUP - Stores user with is_pro = false by default
 app.post('/api/signup', authLimiter, async (req, res) => {
   try {
     const { email, password, name } = req.body;
@@ -225,10 +232,10 @@ app.post('/api/signup', authLimiter, async (req, res) => {
     
     const passwordHash = await bcrypt.hash(password, 12);
     const result = await pool.query(
-      `INSERT INTO users (email, name, password_hash) 
-       VALUES ($1, $2, $3) 
+      `INSERT INTO users (email, name, password_hash, is_pro) 
+       VALUES ($1, $2, $3, $4) 
        RETURNING email, name, is_pro as "isPro", plan, created_at`,
-      [email, name, passwordHash]
+      [email, name, passwordHash, false] // Explicitly set is_pro = false
     );
     
     const user = result.rows[0];
@@ -243,7 +250,8 @@ app.post('/api/signup', authLimiter, async (req, res) => {
   }
 });
 
-// LOGIN
+
+// LOGIN - Returns user with isPro status from database
 app.post('/api/login', authLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -269,12 +277,13 @@ app.post('/api/login', authLimiter, async (req, res) => {
     
     const token = jwt.sign({ email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
     
+    // Return isPro status so frontend knows which environment to show
     res.json({
       token,
       user: {
         email: user.email,
         name: user.name,
-        isPro: user.is_pro,
+        isPro: user.is_pro,  // ← KEY: This determines Pro vs Free environment
         plan: user.plan
       }
     });
@@ -285,7 +294,9 @@ app.post('/api/login', authLimiter, async (req, res) => {
   }
 });
 
-// GET CURRENT USER
+
+
+// GET CURRENT USER - Returns membership status
 app.get('/api/me', authMiddleware, async (req, res) => {
   try {
     const result = await pool.query(
@@ -297,6 +308,7 @@ app.get('/api/me', authMiddleware, async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
     
+    // Return isPro so frontend can apply correct theme
     res.json(result.rows[0]);
     
   } catch (err) {
@@ -304,6 +316,7 @@ app.get('/api/me', authMiddleware, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch profile' });
   }
 });
+
 
 // ===== PASSWORD RESET =====
 app.post('/api/forgot-password', authLimiter, async (req, res) => {
@@ -457,7 +470,7 @@ app.get('/api/downloads', authMiddleware, async (req, res) => {
   }
 });
 
-// ===== PAYMENTS =====
+// ===== PAYMENT VERIFICATION - Updates user to Pro status =====
 app.post('/api/verify-payment', authMiddleware, async (req, res) => {
   try {
     const { sessionId } = req.body;
@@ -478,6 +491,7 @@ app.post('/api/verify-payment', authMiddleware, async (req, res) => {
     
     const plan = session.metadata?.plan || 'monthly';
     
+    // ===== KEY: Update user to Pro status in database =====
     await pool.query(
       `UPDATE users SET is_pro = TRUE, plan = $1, stripe_subscription_id = $2, paid_at = NOW() WHERE email = $3`,
       [plan, session.subscription, req.user.email]
@@ -489,7 +503,7 @@ app.post('/api/verify-payment', authMiddleware, async (req, res) => {
       [req.user.email, session.amount_total ? session.amount_total / 100 : 0, plan, session.id]
     );
     
-    console.log(`✅ Payment verified: ${req.user.email}`);
+    console.log(`✅ Payment verified: ${req.user.email} → Pro status activated`);
     res.json({ success: true });
     
   } catch (err) {
@@ -497,6 +511,7 @@ app.post('/api/verify-payment', authMiddleware, async (req, res) => {
     res.status(500).json({ error: 'Failed to verify payment' });
   }
 });
+
 
 // ===== ADMIN ENDPOINTS =====
 app.get('/api/admin/stats', authMiddleware, adminMiddleware, async (req, res) => {
