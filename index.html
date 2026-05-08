@@ -21,6 +21,12 @@
       color: #f0f0f0;
       min-height: 100vh;
       line-height: 1.5;
+      transition: opacity 0.15s ease;
+    }
+
+    body.loading {
+      opacity: 0.7;
+      pointer-events: none;
     }
 
     /* ===== NAVIGATION ===== */
@@ -71,8 +77,8 @@
     }
 
     .badge.pro {
-      background: linear-gradient(135deg, #ffd700, #ff9800);
-      color: #000;
+      background: linear-gradient(135deg, #00c853, #009624);
+      color: #fff;
     }
 
     /* ===== SLIDER SECTION ===== */
@@ -126,8 +132,10 @@
       transition: background 0.3s ease;
     }
 
+    /* Pro quote cards - GREEN THEME */
     .quote-card.pro {
       background: linear-gradient(145deg, #1a472a, #0d3b22);
+      border: 2px solid #00c853;
     }
 
     .quote-card .author {
@@ -135,6 +143,10 @@
       margin-top: 12px;
       font-size: 11px;
       color: #999;
+    }
+
+    .quote-card.pro .author {
+      color: #88c9a1;
     }
 
     .dots {
@@ -462,8 +474,13 @@
       font-weight: 600;
     }
 
+    .user-status.pro .avatar {
+      background: linear-gradient(135deg, #00c853, #009624);
+    }
+
+    /* ===== PRO BANNER & UPGRADE NUDGE ===== */
     .pro-banner {
-      background: linear-gradient(135deg, #6e3bfa, #4287ff);
+      background: linear-gradient(135deg, #00c853, #009624);
       color: #fff;
       padding: 8px 15px;
       border-radius: 8px;
@@ -652,8 +669,8 @@
     }
 
     .status-badge.pro {
-      background: #ffd700;
-      color: #000;
+      background: #00c853;
+      color: #fff;
     }
 
     .status-badge.free {
@@ -729,6 +746,7 @@
 
   <!-- Pro Banner & Upgrade Nudge -->
   <div class="pro-banner" id="proBanner">✨ Pro Active: Higher Mind Quotes Unlocked</div>
+  
   <div class="upgrade-nudge" id="upgradeNudge">
     <span>🔒 Unlock 50+ Higher Mind quotes. Join Pro for $6/mo.</span>
     <button onclick="openModal('join')">Upgrade Now</button>
@@ -957,6 +975,7 @@
       { t: "Act as if what you do makes a difference. It does.", a: "William James" }
     ];
 
+    // ===== EXCLUSIVE PRO QUOTES =====
     const PRO_Q = [
       { t: "The unexamined life is not worth living.", a: "Socrates" },
       { t: "He who has a why to live can bear almost any how.", a: "Nietzsche" },
@@ -965,7 +984,9 @@
       { t: "The greatest glory is rising every time we fall.", a: "Nelson Mandela" },
       { t: "Your vision becomes clear when you look into your heart.", a: "Carl Jung" },
       { t: "What lies behind us and what lies before us are tiny matters.", a: "Emerson" },
-      { t: "The best time to plant a tree was 20 years ago. The second best time is now.", a: "Chinese Proverb" }
+      { t: "The best time to plant a tree was 20 years ago. The second best time is now.", a: "Chinese Proverb" },
+      { t: "Wisdom begins in wonder.", a: "Socrates" },
+      { t: "The only true wisdom is in knowing you know nothing.", a: "Socrates" }
     ];
 
     // ===== API CLIENT =====
@@ -1072,7 +1093,10 @@
       pool.forEach(q => {
         const d = document.createElement('div');
         d.className = 'slide';
+        
+        // Check if quote is from PRO_Q array for green styling
         const isProQuote = PRO_Q.some(pq => pq.t === q.t);
+        
         d.innerHTML = `<div class="quote-card${isProQuote ? ' pro' : ''}">${q.t}<span class="author">— ${q.a}</span></div>`;
         track.appendChild(d);
       });
@@ -1141,6 +1165,7 @@
         ctx.font = `${fs*.5}px Segoe UI,sans-serif`;
         ctx.fillText('— ' + state.quotes[state.qIdx].a, w/2, h/2+fs*1.8);
         
+        // Green branding for Pro users
         ctx.fillStyle = state.isPro ? '#00c853' : '#6e3bfa';
         ctx.font = `bold ${fs*.35}px sans-serif`;
         ctx.fillText('QuoteCards', w/2, h-fs*.5);
@@ -1235,12 +1260,12 @@
 
     // ===== AUTHENTICATION =====
     async function applyAuth(u, token) {
-      // Prevent UI flicker with loading state
+      // Prevent UI flicker: add loading state before DOM updates
       document.body.classList.add('loading');
       
       state.user = u;
       state.token = token;
-      state.isPro = u?.isPro;
+      state.isPro = u?.isPro === true;
       
       // Update navigation visibility
       $('guestNav').style.display = state.user ? 'none' : 'block';
@@ -1252,17 +1277,20 @@
         $('tierBadge').textContent = state.isPro ? '✨ Pro' : 'Free';
         $('tierBadge').className = 'badge' + (state.isPro ? ' pro' : '');
         
+        // Add pro class to user nav for green avatar
+        $('userNav').className = 'user-status' + (state.isPro ? ' pro' : '');
+        
         show($('proBanner'), state.isPro);
         $('adminBtn').style.display = (u?.email === ADMIN_EMAIL) ? 'inline-block' : 'none';
         
-        // Hide Join Pro button for Pro users
+        // ===== KEY FIX: Hide Join Pro button for paid members =====
         const joinProBtn = $('joinProBtn');
         if (joinProBtn) {
           joinProBtn.style.display = state.isPro ? 'none' : 'inline-block';
         }
       }
       
-      // Load quotes based on tier
+      // Load quotes based on membership tier
       state.quotes = state.isPro ? [...FREE_Q, ...PRO_Q] : [...FREE_Q];
       state.qIdx = 0;
       buildSlider();
@@ -1271,7 +1299,7 @@
       $('downloadsSection').classList.add('show');
       renderDownloads();
       
-      // Show upgrade nudge only for non-Pro, non-admin users
+      // Show upgrade nudge ONLY for non-Pro, non-admin users
       show($('upgradeNudge'), !state.isPro && u?.email !== ADMIN_EMAIL);
       
       // Cache auth state
@@ -1280,7 +1308,7 @@
         cache.set('qc_user', u);
       }
       
-      // Remove loading state for smooth transition
+      // Remove loading state after brief delay for smooth transition
       setTimeout(() => document.body.classList.remove('loading'), 150);
     }
     
@@ -1337,12 +1365,7 @@
         const res = await api.signup({ name, email, password: pass });
         
         if (res?.error) {
-          // Handle endpoint not found or other API errors
-          if (res.error.includes('Endpoint') || res.error.includes('404')) {
-            err.textContent = 'Server connection issue. Please try again in a moment.';
-          } else {
-            err.textContent = res.error;
-          }
+          err.textContent = res.error;
           err.classList.add('show');
         } else if (res?.token) {
           applyAuth(res.user, res.token);
