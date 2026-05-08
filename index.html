@@ -8,86 +8,83 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
-body{background:#0a0a0f;color:#f0f0f0;min-height:100vh;line-height:1.5;overflow-x:hidden}
-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#111118;border-bottom:1px solid #222;position:sticky;top:0;z-index:100;transition:opacity 0.15s ease}
+body{background:#0a0a0f;color:#f0f0f0;min-height:100vh;line-height:1.5;transition:opacity 0.2s ease}
+body.auth-loading{opacity:0.6;pointer-events:none}
+nav{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#111118;border-bottom:1px solid #222;position:sticky;top:0;z-index:100;will-change:transform}
 nav .logo{font-size:18px;font-weight:700;background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-nav .nav-btn{background:#6e3bfa;border:none;color:#fff;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px;min-width:100px;text-align:center;transition:background 0.2s ease,transform 0.1s ease}
+nav .nav-btn{background:#6e3bfa;border:none;color:#fff;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px;transition:background 0.2s}
 nav .nav-btn:hover{background:#5a2fd4}
-.badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;margin-left:6px;background:#333;color:#aaa}
+.badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;margin-left:6px;background:#333;color:#aaa;transition:all 0.2s}
 .badge.pro{background:linear-gradient(135deg,#ffd700,#ff9800);color:#000}
 .slider-section{padding:20px 15px}
-.slider-wrap{position:relative;overflow:hidden;max-width:700px;margin:0 auto;border-radius:14px;cursor:grab;user-select:none;background:#111118;contain:layout style paint;transform:translateZ(0);backface-visibility:hidden;will-change:transform}
+.slider-wrap{position:relative;overflow:hidden;max-width:700px;margin:0 auto;border-radius:14px;cursor:grab;user-select:none;background:#111118;contain:layout}
 .slider-wrap:active{cursor:grabbing}
-.slider-track{display:flex;will-change:transform;transform:translateZ(0)}
+.slider-track{display:flex;will-change:transform;transition:transform 0.1s linear}
 .slide{min-width:100%;display:flex;flex-direction:column;align-items:center;padding:25px 20px}
-.quote-card{width:100%;max-width:550px;min-height:220px;display:flex;align-items:center;justify-content:center;border-radius:12px;padding:25px;text-align:center;font-size:17px;color:#e0e0e0;pointer-events:none;background:linear-gradient(145deg,#1a1a2e,#16213e);transition:background 0.3s ease,border 0.3s ease}
-.quote-card.pro-quote{background:linear-gradient(145deg,#1a472a,#0d3b20)!important;border:2px solid #4ade80;box-shadow:0 4px 20px rgba(74,222,128,0.3);position:relative;overflow:hidden}
-.quote-card.pro-quote::before{content:"✨ PRO";position:absolute;top:12px;right:12px;background:linear-gradient(135deg,#ffd700,#ff9800);color:#000;font-size:10px;font-weight:700;padding:3px 8px;border-radius:12px;letter-spacing:0.5px;z-index:2}
+.quote-card{width:100%;max-width:550px;min-height:220px;display:flex;align-items:center;justify-content:center;border-radius:12px;padding:25px;text-align:center;font-size:17px;color:#e0e0e0;pointer-events:none;background:linear-gradient(145deg,#1a1a2e,#16213e);transition:background 0.3s}
+.quote-card.pro-quote{background:linear-gradient(145deg,#0d4d2a,#0a3a20);border:2px solid #00c853}
 .quote-card .author{display:block;margin-top:12px;font-size:11px;color:#999}
-.quote-card .pro-badge{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#ffd700,#ff9800);color:#000;font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px}
+.quote-card .pro-badge{display:inline-block;padding:2px 8px;background:#00c853;color:#000;border-radius:4px;font-size:9px;font-weight:700;margin-top:8px}
 .dots{text-align:center;margin-top:8px}
-.dot{height:7px;width:7px;margin:0 4px;border-radius:50%;display:inline-block;background:#444;cursor:pointer;transition:background 0.2s ease}
+.dot{height:7px;width:7px;margin:0 4px;border-radius:50%;display:inline-block;background:#444;cursor:pointer;transition:background 0.2s}
 .dot.active{background:#6e3bfa}
-.dot.pro{background:linear-gradient(135deg,#4ade80,#22c55e);box-shadow:0 0 0 2px rgba(74,222,128,0.3)}
-.editor-section{max-width:700px;margin:20px auto;padding:18px;background:#111118;border-radius:14px;contain:content}
+.editor-section{max-width:700px;margin:20px auto;padding:18px;background:#111118;border-radius:14px;transition:opacity 0.2s}
 .editor-section h2{margin-bottom:12px;font-size:18px}
 .controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
 .ctrl-group{display:flex;flex-direction:column;gap:3px}
 .controls label{font-size:11px;color:#aaa}
 .controls input[type=number]{width:70px;padding:5px 8px;background:#1a1a24;border:1px solid #333;color:#fff;border-radius:6px;font-size:13px}
-.controls input[type=number]:focus{outline:none;border-color:#6e3bfa}
 .controls input[type=color]{width:36px;height:32px;padding:0;border:none;cursor:pointer;border-radius:6px;background:#1a1a24}
-.controls button{background:#4287ff;border:none;color:#fff;padding:7px 14px;border-radius:7px;cursor:pointer;font-size:13px;transition:background 0.2s ease}
+.controls button{background:#4287ff;border:none;color:#fff;padding:7px 14px;border-radius:7px;cursor:pointer;font-size:13px;transition:background 0.2s}
 .controls button:hover{background:#2e6fd9}
-#previewCanvas{border:1px solid #333;border-radius:8px;display:block;margin:0 auto;max-width:100%;height:auto;contain:paint}
-.download-btn{margin-top:12px;background:#6e3bfa;width:100%;padding:11px;border:none;color:#fff;border-radius:9px;cursor:pointer;font-size:14px;font-weight:600;transition:background 0.2s ease}
+#previewCanvas{border:1px solid #333;border-radius:8px;display:block;margin:0 auto;max-width:100%;height:auto}
+.download-btn{margin-top:12px;background:#6e3bfa;width:100%;padding:11px;border:none;color:#fff;border-radius:9px;cursor:pointer;font-size:14px;font-weight:600;transition:background 0.2s}
 .download-btn:hover{background:#5a2fd4}
-.downloads-section{max-width:700px;margin:20px auto;padding:18px;background:#111118;border-radius:14px;display:none;contain:content}
+.downloads-section{max-width:700px;margin:20px auto;padding:18px;background:#111118;border-radius:14px;display:none;transition:opacity 0.3s}
 .downloads-section.show{display:block}
 .downloads-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:12px}
-.download-item{position:relative;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .2s}
+.download-item{position:relative;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color 0.2s}
 .download-item:hover{border-color:#6e3bfa}
 .download-item img{width:100%;height:120px;object-fit:cover;display:block}
 .download-item .dl-overlay{position:absolute;bottom:0;left:0;right:0;padding:6px;background:rgba(0,0,0,.7);font-size:10px;text-align:center}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;align-items:center;justify-content:center;padding:15px;transition:opacity 0.2s ease;opacity:0;pointer-events:none}
-.modal.show{display:flex;opacity:1;pointer-events:auto}
-.modal-box{background:#1a1a24;padding:25px;border-radius:14px;width:100%;max-width:420px;border:1px solid #222;position:relative;transform:translateY(0);transition:transform 0.2s ease}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;align-items:center;justify-content:center;padding:15px;transition:opacity 0.2s}
+.modal.show{display:flex}
+.modal-box{background:#1a1a24;padding:25px;border-radius:14px;width:100%;max-width:420px;border:1px solid #222;position:relative;animation:modalIn 0.2s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
 .modal-box h2{margin-bottom:15px;background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:20px}
 .modal-box p{color:#aaa;font-size:13px;margin:8px 0}
-.modal-box input{width:100%;padding:9px;margin:8px 0;background:#111118;border:1px solid #333;color:#fff;border-radius:7px;font-size:14px;transition:border-color 0.2s ease}
-.modal-box input:focus{outline:none;border-color:#6e3bfa}
-.modal-box button{width:100%;padding:10px;border:none;border-radius:7px;color:#fff;font-size:14px;cursor:pointer;margin-top:5px;transition:opacity 0.2s ease}
-.modal-box button:disabled{opacity:0.7;cursor:not-allowed}
+.modal-box input{width:100%;padding:9px;margin:8px 0;background:#111118;border:1px solid #333;color:#fff;border-radius:7px;font-size:14px}
+.modal-box button{width:100%;padding:10px;border:none;border-radius:7px;color:#fff;font-size:14px;cursor:pointer;margin-top:5px;transition:opacity 0.2s}
 .btn-join{background:linear-gradient(135deg,#00c853,#009624);font-weight:600}
 .btn-login{background:#6e3bfa}
 #signupModal .modal-box input,#forgotModal .modal-box input{width:100%;padding:9px;margin:4px 0;background:#111118;border:1px solid #333;color:#fff;border-radius:7px;font-size:14px}
 #signupModal .modal-box input:focus,#forgotModal .modal-box input:focus{outline:none;border-color:#6e3bfa}
-.close-modal{position:absolute;top:10px;right:14px;background:none;border:none;color:#fff;font-size:20px;cursor:pointer;transition:color 0.2s ease}
-.close-modal:hover{color:#6e3bfa}
+.close-modal{position:absolute;top:10px;right:14px;background:none;border:none;color:#fff;font-size:20px;cursor:pointer}
 .plan-cards{display:flex;gap:10px;margin:12px 0}
-.plan-card{flex:1;padding:12px;background:#111118;border:2px solid transparent;border-radius:9px;cursor:pointer;text-align:center;transition:border-color 0.2s ease}
+.plan-card{flex:1;padding:12px;background:#111118;border:2px solid transparent;border-radius:9px;cursor:pointer;text-align:center;transition:border-color 0.2s}
 .plan-card.selected{border-color:#6e3bfa}
 .plan-card .price{font-size:18px;font-weight:700;margin:5px 0}
 .plan-card .label{font-size:11px;color:#888}
 .plan-card .save{font-size:10px;color:#00c853}
 .switch-text{text-align:center;margin-top:10px;font-size:12px;color:#888;cursor:pointer}
-.switch-text span{color:#4287ff;transition:color 0.2s ease}
-.switch-text span:hover{color:#6e3bfa}
-.user-status{display:none;align-items:center;gap:6px;transition:opacity 0.15s ease}
+.switch-text span{color:#4287ff}
+.user-status{display:none;align-items:center;gap:6px;transition:opacity 0.2s}
 .user-status .avatar{width:28px;height:28px;border-radius:50%;background:#6e3bfa;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
-.pro-banner{background:linear-gradient(135deg,#6e3bfa,#4287ff);color:#fff;padding:8px 15px;border-radius:8px;text-align:center;font-size:13px;margin:15px 0;display:none;transition:opacity 0.2s ease}
-.pro-banner.show{display:block}
-.upgrade-nudge{background:#1a1a2e;border-left:4px solid #ffd700;padding:12px 15px;border-radius:0 8px 8px 0;margin:15px 0;font-size:13px;color:#ccc;display:none;transition:opacity 0.2s ease}
-.upgrade-nudge.show{display:flex;align-items:center;gap:10px}
-.upgrade-nudge button{background:#ffd700;color:#000;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:transform 0.1s ease}
-.upgrade-nudge button:hover{transform:scale(1.05)}
+.pro-banner{background:linear-gradient(135deg,#6e3bfa,#4287ff);color:#fff;padding:8px 15px;border-radius:8px;text-align:center;font-size:13px;margin:15px 0;display:none;transition:all 0.3s ease}
+.pro-banner.show{display:block;animation:slideDown 0.3s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.upgrade-nudge{background:#1a1a2e;border-left:4px solid #ffd700;padding:12px 15px;border-radius:0 8px 8px 0;margin:15px 0;font-size:13px;color:#ccc;display:none;transition:all 0.3s ease}
+.upgrade-nudge.show{display:flex;align-items:center;gap:10px;animation:slideIn 0.3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+.upgrade-nudge button{background:#ffd700;color:#000;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600}
 .billing-notice{background:#1a1a2e;border:1px solid #333;padding:12px;border-radius:8px;margin:12px 0;font-size:12px;color:#888}
 .billing-notice strong{color:#f0f0f0}
-.error-msg{color:#ff4444;font-size:12px;margin:8px 0;display:none;transition:opacity 0.2s ease}
-.error-msg.show{display:block}
-.success-msg{color:#00c853;font-size:12px;margin:8px 0;display:none;transition:opacity 0.2s ease}
+.error-msg{color:#ff4444;font-size:12px;margin:8px 0;display:none}
+.error-msg.show{display:block;animation:shake 0.3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.success-msg{color:#00c853;font-size:12px;margin:8px 0;display:none}
 .success-msg.show{display:block}
-.loading{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-radius:50%;border-top-color:#fff;animation:spin 1s ease-in-out infinite;vertical-align:middle;margin-right:6px}
+.loading{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-radius:50%;border-top-color:#fff;animation:spin 1s ease-in-out infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .admin-panel{display:none;position:fixed;inset:0;background:#0a0a0f;z-index:10000;overflow-y:auto}
 .admin-panel.show{display:block}
@@ -106,26 +103,24 @@ nav .nav-btn:hover{background:#5a2fd4}
 .status-badge{padding:4px 8px;border-radius:4px;font-size:11px}
 .status-badge.pro{background:#ffd700;color:#000}
 .status-badge.free{background:#333;color:#aaa}
-.close-admin{background:#ff4444;border:none;color:#fff;padding:8px 16px;border-radius:6px;cursor:pointer;transition:background 0.2s ease}
-.close-admin:hover{background:#cc0000}
+.close-admin{background:#ff4444;border:none;color:#fff;padding:8px 16px;border-radius:6px;cursor:pointer}
 @media(max-width:600px){
 .controls{flex-direction:column;align-items:stretch}
 .plan-cards{flex-direction:column}
 nav{padding:10px 15px}
-.quote-card{min-height:200px;font-size:16px;padding:20px;contain:strict}
+.quote-card{min-height:200px;font-size:16px;padding:20px}
 .editor-section,.downloads-section{margin:15px;padding:15px}
 .upgrade-nudge{flex-direction:column;align-items:stretch}
-input:focus{font-size:16px}
 }
 </style>
 </head>
-<body>
+<body class="auth-loading">
 <nav>
 <div class="logo">QuoteCards Pro</div>
 <div id="guestNav">
 <button class="nav-btn" style="background:#4287ff;margin-left:6px" onclick="openModal('signup')">Sign Up</button>
 <button class="nav-btn" onclick="openModal('login')">SignIn</button>
-<button class="nav-btn" id="joinProBtn" style="background:linear-gradient(135deg,#00c853,#009624);margin-left:6px" onclick="openModal('join')">✨ Join Pro</button>
+<button class="nav-btn" style="background:linear-gradient(135deg,#00c853,#009624);margin-left:6px" onclick="openModal('join')">✨ Join Pro</button>
 </div>
 <div class="user-status" id="userNav">
 <div class="avatar" id="avatarLetter">U</div>
@@ -189,7 +184,7 @@ input:focus{font-size:16px}
 <input type="password" id="signupPassConfirm" placeholder="Confirm Password" autocomplete="new-password">
 <div class="error-msg" id="signupError"></div>
 <div class="success-msg" id="signupSuccess"></div>
-<button class="btn-join" onclick="signup(event)">Create Account</button>
+<button class="btn-join" id="signupBtn" onclick="signup(event)">Create Account</button>
 <div class="switch-text">Already have an account? <span onclick="toggleAuth('login')">Sign In</span></div>
 </div>
 </div>
@@ -280,16 +275,17 @@ const PAYMENT_LINKS = {
 };
 let state = {
   user: null, token: null, isPro: false, quotes: [], qIdx: 0,
-  speed: 0.5, selectedPlan: 'monthly', slider: { pos: 0, holding: false, animId: null }
+  speed: 0.5, selectedPlan: 'monthly', slider: { pos: 0, holding: false, animId: null },
+  authResolved: false
 };
 
 // === QUOTES DATA ===
 const FREE_Q = [
-  {t:"The only limit to our realization of tomorrow is our doubts of today.",a:"Franklin D. Roosevelt", isPro: false},
-  {t:"In the middle of every difficulty lies opportunity.",a:"Albert Einstein", isPro: false},
-  {t:"It does not matter how slowly you go as long as you do not stop.",a:"Confucius", isPro: false},
-  {t:"Believe you can and you're halfway there.",a:"Theodore Roosevelt", isPro: false},
-  {t:"Act as if what you do makes a difference. It does.",a:"William James", isPro: false}
+  {t:"The only limit to our realization of tomorrow is our doubts of today.",a:"Franklin D. Roosevelt"},
+  {t:"In the middle of every difficulty lies opportunity.",a:"Albert Einstein"},
+  {t:"It does not matter how slowly you go as long as you do not stop.",a:"Confucius"},
+  {t:"Believe you can and you're halfway there.",a:"Theodore Roosevelt"},
+  {t:"Act as if what you do makes a difference. It does.",a:"William James"}
 ];
 const PRO_Q = [
   {t:"The unexamined life is not worth living.",a:"Socrates", isPro: true},
@@ -308,27 +304,13 @@ const api = {
     const headers = { 'Content-Type': 'application/json', ...opts.headers };
     if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
-      const res = await fetch(`${API}${endpoint}`, { ...opts, headers, signal: controller.signal, credentials: 'include' });
-      clearTimeout(timeoutId);
-      const contentType = res.headers.get('content-type');
-      let data = {};
-      if (contentType && contentType.includes('application/json')) {
-        data = await res.json().catch(() => ({}));
-      }
+      const res = await fetch(`${API}${endpoint}`, { ...opts, headers });
+      const data = await res.json().catch(() => ({}));
       if (res.status === 401) { this.logout(); return null; }
-      if (res.status === 404) { 
-        console.error(`❌ Endpoint not found: ${endpoint}`);
-        return { error: 'Service temporarily unavailable. Please try again.' }; 
-      }
       if (!res.ok) return { error: data.error || `HTTP ${res.status}: ${res.statusText}` };
       return data;
     } catch (e) {
       console.warn(`API ${endpoint} failed:`, e);
-      if (e.name === 'AbortError') {
-        return { error: 'Request timed out. Check your connection.' };
-      }
       return { error: 'Connection failed. Check your internet or server status.' };
     }
   },
@@ -343,7 +325,7 @@ const api = {
   logout() { localStorage.removeItem('qc_token'); localStorage.removeItem('qc_user'); location.reload(); }
 };
 
-// === CACHE ===
+// === CACHE HELPERS ===
 const cache = {
   get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
@@ -365,20 +347,6 @@ const notify = (msg, type = 'info') => {
   }
 };
 
-// === UI STABILITY ===
-function withStableUI(callback) {
-  const wasHolding = state.slider.holding;
-  state.slider.holding = true;
-  document.body.classList.add('auth-transition');
-  try { return callback(); }
-  finally {
-    requestAnimationFrame(() => {
-      state.slider.holding = wasHolding;
-      document.body.classList.remove('auth-transition');
-    });
-  }
-}
-
 // === SLIDER ===
 const track = $('sliderTrack'), wrap = $('sliderWrap'), dotsEl = $('dots');
 function slideW() { return track.children[0]?.offsetWidth || 700; }
@@ -391,13 +359,12 @@ function buildSlider() {
   const pool = [...state.quotes, ...state.quotes];
   pool.forEach(q => {
     const d = document.createElement('div'); d.className = 'slide';
-    const isProQuote = q.isPro === true;
-    const proBadge = isProQuote ? '<span class="pro-badge">✨ Pro</span>' : '';
-    d.innerHTML = `<div class="quote-card ${isProQuote ? 'pro-quote' : ''}">${q.t}<span class="author">— ${q.a}</span>${proBadge}</div>`;
+    const isPro = q.isPro && state.isPro;
+    d.innerHTML = `<div class="quote-card${isPro?' pro-quote':''}">${q.t}<span class="author">— ${q.a}</span>${isPro?'<span class="pro-badge">✨ PRO</span>':''}</div>`;
     track.appendChild(d);
   });
-  state.quotes.forEach((q, i) => {
-    const dot = document.createElement('span'); dot.className = 'dot' + (q.isPro ? ' pro' : '');
+  pool.forEach((_, i) => {
+    const dot = document.createElement('span'); dot.className = 'dot';
     dot.onclick = () => { state.slider.pos = (i % state.quotes.length) * slideW(); updateDots(); };
     dotsEl.appendChild(dot);
   });
@@ -413,35 +380,76 @@ function animate() {
   }
   state.slider.animId = requestAnimationFrame(animate);
 }
-['mousedown','touchstart'].forEach(ev => wrap.addEventListener(ev, (e) => { e.preventDefault(); state.slider.holding = true; wrap.style.opacity = '.7'; }, { passive: false }));
+['mousedown','touchstart'].forEach(ev => wrap.addEventListener(ev, (e) => { e.preventDefault(); state.slider.holding = true; wrap.style.opacity = '.7'; }, { passive: true }));
 ['mouseup','mouseleave','touchend'].forEach(ev => wrap.addEventListener(ev, () => { state.slider.holding = false; wrap.style.opacity = '1'; }));
 
-// === CANVAS ===
+// === CANVAS (with Pro Quote Styling) ===
+let renderTimeout;
 function renderCanvas() {
-  const c = $('previewCanvas'), ctx = c.getContext('2d');
-  const w = +$('cWidth').value, h = +$('cHeight').value, fs = +$('fontSize').value;
-  c.width = w; c.height = h;
-  const currentQuote = state.quotes[state.qIdx];
-  const isProQuote = currentQuote?.isPro === true && state.isPro;
-  ctx.fillStyle = isProQuote ? ($('bgColor').value === '#1a1a2e' ? '#1a472a' : $('bgColor').value) : $('bgColor').value;
-  ctx.fillRect(0, 0, w, h);
-  ctx.fillStyle = '#e0e0e0'; ctx.font = `bold ${fs}px Segoe UI,sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  wrapText(ctx, currentQuote.t, w/2, h/2-25, w-70, fs*1.3);
-  ctx.fillStyle = isProQuote ? '#4ade80' : '#999'; ctx.font = `${fs*.5}px Segoe UI,sans-serif`;
-  ctx.fillText('— ' + currentQuote.a, w/2, h/2+fs*1.8);
-  ctx.fillStyle = '#6e3bfa'; ctx.font = `bold ${fs*.35}px sans-serif`; ctx.fillText('QuoteCards', w/2, h-fs*.5);
-  if (isProQuote) {
-    ctx.fillStyle = '#ffd700'; ctx.font = `bold ${fs*.3}px sans-serif`;
-    ctx.fillText('✨ PRO', w - fs*1.5, fs*0.8);
-  }
+  if (renderTimeout) clearTimeout(renderTimeout);
+  renderTimeout = setTimeout(() => {
+    const c = $('previewCanvas'), ctx = c.getContext('2d');
+    const w = +$('cWidth').value, h = +$('cHeight').value, fs = +$('fontSize').value;
+    c.width = w; c.height = h;
+    
+    const quote = state.quotes[state.qIdx];
+    const isProQuote = quote?.isPro && state.isPro;
+    
+    // Background with pro styling
+    if (isProQuote) {
+      const grad = ctx.createLinearGradient(0, 0, w, h);
+      grad.addColorStop(0, '#0d4d2a');
+      grad.addColorStop(1, '#0a3a20');
+      ctx.fillStyle = grad;
+    } else {
+      ctx.fillStyle = $('bgColor').value;
+    }
+    ctx.fillRect(0, 0, w, h);
+    
+    // Pro border
+    if (isProQuote) {
+      ctx.strokeStyle = '#00c853';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(2, 2, w-4, h-4);
+    }
+    
+    // Quote text
+    ctx.fillStyle = '#e0e0e0';
+    ctx.font = `bold ${fs}px Segoe UI,sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    wrapText(ctx, quote.t, w/2, h/2-25, w-70, fs*1.3);
+    
+    // Author
+    ctx.fillStyle = '#999';
+    ctx.font = `${fs*.5}px Segoe UI,sans-serif`;
+    ctx.fillText('— ' + quote.a, w/2, h/2+fs*1.8);
+    
+    // Pro badge on canvas
+    if (isProQuote) {
+      ctx.fillStyle = '#00c853';
+      ctx.font = `bold ${fs*.3}px sans-serif`;
+      ctx.fillText('✨ PRO QUOTE', w/2, h-fs*.7);
+    }
+    
+    // Branding
+    ctx.fillStyle = isProQuote ? '#00c853' : '#6e3bfa';
+    ctx.font = `bold ${fs*.35}px sans-serif`;
+    ctx.fillText('QuoteCards', w/2, h-fs*.5);
+  }, 50);
 }
+
 function wrapText(ctx, t, x, y, mw, lh) {
   const words = t.split(' '); let line = '', lines = [];
   words.forEach(w => { const test = line + w + ' '; if (ctx.measureText(test).width > mw && line) { lines.push(line.trim()); line = w + ' '; } else line = test; });
   lines.push(line.trim()); let sy = y - ((lines.length - 1) * lh) / 2;
   lines.forEach((l, i) => ctx.fillText(l, x, sy + i * lh));
 }
-function cycleQuote() { state.qIdx = (state.qIdx + 1) % state.quotes.length; renderCanvas(); }
+
+function cycleQuote() { 
+  state.qIdx = (state.qIdx + 1) % state.quotes.length; 
+  renderCanvas(); 
+}
 
 // === DOWNLOADS ===
 async function downloadPNG() {
@@ -461,6 +469,7 @@ async function downloadPNG() {
     renderDownloads();
   }
 }
+
 async function renderDownloads() {
   if (!state.user) return;
   const grid = $('downloadsGrid'); grid.innerHTML = '';
@@ -478,65 +487,95 @@ async function renderDownloads() {
   });
 }
 
-// === AUTH ===
+// === AUTH (Fixed for Pro Recognition & No Flicker) ===
 async function applyAuth(u, token) {
-  withStableUI(() => {
-    state.user = u; state.token = token; state.isPro = !!u?.isPro;
-    $('guestNav').style.display = state.user ? 'none' : 'flex';
-    $('userNav').style.display = state.user ? 'flex' : 'none';
-    $('avatarLetter').textContent = u?.name?.[0]?.toUpperCase() || 'U';
-    $('userName').textContent = u?.name || 'User';
-    $('tierBadge').textContent = state.isPro ? '✨ Pro' : 'Free';
-    $('tierBadge').className = 'badge' + (state.isPro ? ' pro' : '');
-    show($('proBanner'), state.isPro);
-    show($('upgradeNudge'), !state.isPro);
-    const joinProBtn = $('joinProBtn');
-    if (joinProBtn) joinProBtn.style.display = state.isPro ? 'none' : 'inline-block';
-    $('adminBtn').style.display = (u?.email === ADMIN_EMAIL) ? 'inline-block' : 'none';
-    state.quotes = state.isPro ? [...FREE_Q, ...PRO_Q] : [...FREE_Q];
-    state.qIdx = 0; buildSlider(); renderCanvas();
-    $('downloadsSection').classList.toggle('show', !!state.user);
-    if (state.user) renderDownloads();
-    if (token && u) { cache.set('qc_token', token); cache.set('qc_user', u); }
-    void $('userNav').offsetWidth;
-  });
+  state.user = u; 
+  state.token = token; 
+  state.isPro = !!u?.isPro; // Ensure boolean
+  
+  // Update navigation
+  $('guestNav').style.display = 'none';
+  $('userNav').style.display = 'flex';
+  
+  // Update user info
+  $('avatarLetter').textContent = u?.name?.[0]?.toUpperCase() || 'U';
+  $('userName').textContent = u?.name || 'User';
+  $('tierBadge').textContent = state.isPro ? '✨ Pro' : 'Free';
+  $('tierBadge').className = 'badge' + (state.isPro ? ' pro' : '');
+  
+  // Pro banner - show only for pro users
+  show($('proBanner'), state.isPro);
+  
+  // Admin button
+  $('adminBtn').style.display = (u?.email === ADMIN_EMAIL) ? 'inline-block' : 'none';
+  
+  // Load quotes (pro users get pro quotes)
+  state.quotes = state.isPro ? [...FREE_Q, ...PRO_Q] : [...FREE_Q];
+  state.qIdx = 0;
+  buildSlider();
+  renderCanvas();
+  
+  // Downloads section
+  $('downloadsSection').classList.add('show');
+  renderDownloads();
+  
+  // Upgrade nudge - HIDE for pro users AND admin
+  // Only show for: logged-in, NOT pro, NOT admin
+  const shouldShowNudge = !state.isPro && u?.email !== ADMIN_EMAIL;
+  show($('upgradeNudge'), shouldShowNudge);
+  
+  // Remove auth loading state
+  document.body.classList.remove('auth-loading');
+  state.authResolved = true;
+  
+  // Cache auth
+  if (token) { cache.set('qc_token', token); cache.set('qc_user', u); }
 }
+
 async function login() {
   const email = $('loginEmail').value.trim().toLowerCase(), pass = $('loginPass').value;
   const err = $('loginError'); err.classList.remove('show');
   if (!email.includes('@') || pass.length < 6) { err.textContent = 'Invalid email or password'; err.classList.add('show'); return; }
   const res = await api.login({ email, password: pass });
-  if (res?.token) { applyAuth(res.user, res.token); closeModal(); notify('✓ Welcome back!', 'success'); }
-  else { err.textContent = res?.error || 'Authentication failed'; err.classList.add('show'); }
+  if (res?.token) { 
+    applyAuth(res.user, res.token); 
+    closeModal(); 
+    notify('✓ Welcome back!', 'success'); 
+  } else { 
+    err.textContent = res?.error || 'Authentication failed'; 
+    err.classList.add('show'); 
+  }
 }
+
 async function signup(event) {
+  // Prevent default and get button safely
+  if (event) event.preventDefault();
+  const btn = document.getElementById('signupBtn');
+  
   const name = $('signupName').value.trim(), email = $('signupEmail').value.trim().toLowerCase();
   const pass = $('signupPass').value, confirm = $('signupPassConfirm').value;
-  const err = $('signupError'), ok = $('signupSuccess'), btn = event?.target || document.querySelector('#signupModal button.btn-join');
+  const err = $('signupError'), ok = $('signupSuccess');
+  
   err.classList.remove('show'); ok.classList.remove('show');
+  
   if (name.length < 2) { err.textContent = 'Enter your full name'; err.classList.add('show'); return; }
   if (!email.includes('@')) { err.textContent = 'Enter a valid email'; err.classList.add('show'); return; }
   if (pass.length < 6) { err.textContent = 'Password must be 6+ characters'; err.classList.add('show'); return; }
   if (pass !== confirm) { err.textContent = 'Passwords do not match'; err.classList.add('show'); return; }
-  const originalText = btn.innerHTML;
+  
   btn.disabled = true;
+  const originalText = btn.innerHTML;
   btn.innerHTML = '<span class="loading"></span> Creating...';
+  
   try {
     const res = await api.signup({ name, email, password: pass });
     if (res?.token) {
       applyAuth(res.user, res.token);
       closeModal();
       notify(`✓ Welcome, ${name.split(' ')[0]}!`, 'success');
-      if (state.token) {
-        api.req('/api/activity', {
-          method: 'POST',
-          body: JSON.stringify({ page: 'signup-complete', userAgent: navigator.userAgent })
-        });
-      }
     } else {
       err.textContent = res?.error || 'Signup failed - email may already exist';
       err.classList.add('show');
-      setTimeout(() => err.classList.remove('show'), 5000);
     }
   } catch(e) {
     err.textContent = 'Connection error. Please try again.';
@@ -546,26 +585,48 @@ async function signup(event) {
     btn.innerHTML = originalText;
   }
 }
+
 function forgotPassword() {
   const email = $('forgotEmail').value.trim().toLowerCase();
   if (!email.includes('@')) { $('forgotError').textContent = 'Valid email required'; $('forgotError').classList.add('show'); return; }
   $('forgotSuccess').textContent = `✓ Reset link sent to ${email} (if account exists)`; $('forgotSuccess').classList.add('show');
   setTimeout(() => { $('forgotEmail').value = ''; closeModal(); }, 2000);
 }
+
 async function checkAuth() {
   const token = cache.get('qc_token'), stored = cache.get('qc_user');
-  if (!token || !stored) return;
+  
+  // If no stored auth, resolve immediately and show guest UI
+  if (!token || !stored) {
+    document.body.classList.remove('auth-loading');
+    state.authResolved = true;
+    // Ensure guest nav is visible
+    $('guestNav').style.display = 'flex';
+    $('userNav').style.display = 'none';
+    return;
+  }
+  
+  // Check with backend
   const u = await api.me();
-  if (u?.email) applyAuth(u, token);
-  else { cache.clear(); applyAuth(stored, token); }
+  if (u?.email) {
+    applyAuth(u, token);
+  } else { 
+    // Fallback to cache if API fails
+    cache.clear(); 
+    applyAuth(stored, token); 
+  }
 }
-function logout() { api.logout(); }
+
+function logout() { 
+  api.logout(); 
+}
 
 // === PAYMENTS ===
 function selectPlan(el, plan) {
   document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected'); state.selectedPlan = plan;
 }
+
 async function processPayment() {
   const email = $('joinEmail').value.trim().toLowerCase();
   if (!email.includes('@')) { $('paymentError').textContent = 'Valid email required'; $('paymentError').classList.add('show'); return; }
@@ -582,28 +643,18 @@ async function processPayment() {
     btn.disabled = false; txt.textContent = '💳 Subscribe Now';
   }
 }
+
 async function verifyPayment() {
   const params = new URLSearchParams(window.location.search);
   const sid = params.get('session_id'), canceled = params.get('canceled') === 'true';
   if (sid && state.token) {
-    const btn = $('payBtn'), txt = $('payBtnText');
-    if (btn) { btn.disabled = true; if (txt) txt.innerHTML = '<span class="loading"></span> Verifying...'; }
-    try {
-      const res = await api.verifyPayment({ sessionId: sid });
-      if (res?.success) {
-        const u = await api.me(); if (u) applyAuth(u, state.token);
-        notify('🎉 Pro activated! All features unlocked.', 'success');
-      }
-      cache.set('qc_pending', null);
-      window.history.replaceState({}, '', location.pathname);
-    } catch (e) {
-      console.error('Payment verify error:', e);
-      if ($('paymentError')) {
-        $('paymentError').textContent = 'Verification failed. Contact support.'; $('paymentError').classList.add('show');
-      }
-    } finally {
-      if (btn) { btn.disabled = false; if (txt) txt.textContent = '💳 Subscribe Now'; }
+    const res = await api.verifyPayment({ sessionId: sid });
+    if (res?.success) {
+      const u = await api.me(); if (u) applyAuth(u, state.token);
+      notify('🎉 Pro activated! All features unlocked.', 'success');
     }
+    cache.set('qc_pending', null);
+    window.history.replaceState({}, '', location.pathname);
   } else if (canceled) {
     notify('Payment cancelled. Try again anytime.', 'info');
     cache.set('qc_pending', null);
@@ -648,13 +699,33 @@ function toggleAuth(m) { closeModal(); setTimeout(() => openModal(m), 100); }
 
 // === INIT ===
 async function init() {
-  state.quotes = [...FREE_Q]; buildSlider(); animate(); renderCanvas();
+  // Build slider with free quotes initially
+  state.quotes = [...FREE_Q]; 
+  buildSlider(); 
+  animate(); 
+  renderCanvas();
+  
+  // Check auth (this will remove auth-loading class when done)
   await checkAuth();
+  
+  // Verify payment redirect
   await verifyPayment();
+  
+  // Event listeners
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
   document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m) closeModal(); }));
-  ['cWidth','cHeight','fontSize','bgColor'].forEach(id => $(id)?.addEventListener('input', renderCanvas));
+  
+  // Debounced canvas re-render on input
+  ['cWidth','cHeight','fontSize','bgColor'].forEach(id => {
+    const el = $(id);
+    if (el) el.addEventListener('input', () => {
+      if (renderTimeout) clearTimeout(renderTimeout);
+      renderTimeout = setTimeout(renderCanvas, 50);
+    });
+  });
 }
+
+// Start everything
 init();
 </script>
 </body>
