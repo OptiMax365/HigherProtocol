@@ -11,20 +11,19 @@
   body{background:#0a0a0f;color:#f0f0f0;min-height:100vh;line-height:1.5}
   nav{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#111118;border-bottom:1px solid #222;position:sticky;top:0;z-index:100}
   nav .logo{font-size:18px;font-weight:700;background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-  nav .nav-btn{background:#6e3bfa;border:none;color:#fff;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px;transition:all 0.2s}
-  nav .nav-btn:hover{background:#5a2fd4;transform:translateY(-1px)}
-  nav .nav-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+  nav .nav-btn{background:#6e3bfa;border:none;color:#fff;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px}
+  nav .nav-btn:hover{background:#5a2fd4}
   .badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;margin-left:6px;background:#333;color:#aaa}
   .badge.pro{background:linear-gradient(135deg,#ffd700,#ff9800);color:#000}
   .slider-section{padding:20px 15px}
   .slider-wrap{position:relative;overflow:hidden;max-width:700px;margin:0 auto;border-radius:14px;cursor:grab;user-select:none;background:#111118}
   .slider-wrap:active{cursor:grabbing}
-  .slider-track{display:flex;will-change:transform;transition:transform 0.1s linear}
+  .slider-track{display:flex;will-change:transform}
   .slide{min-width:100%;display:flex;flex-direction:column;align-items:center;padding:25px 20px}
-  .quote-card{width:100%;max-width:550px;min-height:220px;display:flex;align-items:center;justify-content:center;border-radius:12px;padding:25px;text-align:center;font-size:17px;color:#e0e0e0;pointer-events:none;background:linear-gradient(145deg,#1a1a2e,#16213e);box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+  .quote-card{width:100%;max-width:550px;min-height:220px;display:flex;align-items:center;justify-content:center;border-radius:12px;padding:25px;text-align:center;font-size:17px;color:#e0e0e0;pointer-events:none;background:linear-gradient(145deg,#1a1a2e,#16213e)}
   .quote-card .author{display:block;margin-top:12px;font-size:11px;color:#999}
   .dots{text-align:center;margin-top:8px}
-  .dot{height:7px;width:7px;margin:0 4px;border-radius:50%;display:inline-block;background:#444;cursor:pointer;transition:background 0.2s}
+  .dot{height:7px;width:7px;margin:0 4px;border-radius:50%;display:inline-block;background:#444;cursor:pointer}
   .dot.active{background:#6e3bfa}
   .editor-section{max-width:700px;margin:20px auto;padding:18px;background:#111118;border-radius:14px}
   .editor-section h2{margin-bottom:12px;font-size:18px}
@@ -33,13 +32,11 @@
   .controls label{font-size:11px;color:#aaa}
   .controls input[type=number]{width:70px;padding:5px 8px;background:#1a1a24;border:1px solid #333;color:#fff;border-radius:6px;font-size:13px}
   .controls input[type=color]{width:36px;height:32px;padding:0;border:none;cursor:pointer;border-radius:6px;background:#1a1a24}
-  .controls button{background:#4287ff;border:none;color:#fff;padding:7px 14px;border-radius:7px;cursor:pointer;font-size:13px;transition:all 0.2s}
+  .controls button{background:#4287ff;border:none;color:#fff;padding:7px 14px;border-radius:7px;cursor:pointer;font-size:13px}
   .controls button:hover{background:#2e6fd9}
-  .controls button:disabled{opacity:0.5;cursor:not-allowed}
   #previewCanvas{border:1px solid #333;border-radius:8px;display:block;margin:0 auto;max-width:100%;height:auto}
-  .download-btn{margin-top:12px;background:#6e3bfa;width:100%;padding:11px;border:none;color:#fff;border-radius:9px;cursor:pointer;font-size:14px;font-weight:600;transition:all 0.2s}
+  .download-btn{margin-top:12px;background:#6e3bfa;width:100%;padding:11px;border:none;color:#fff;border-radius:9px;cursor:pointer;font-size:14px;font-weight:600}
   .download-btn:hover{background:#5a2fd4}
-  .download-btn:disabled{opacity:0.6;cursor:not-allowed}
   .downloads-section{max-width:700px;margin:20px auto;padding:18px;background:#111118;border-radius:14px;display:none}
   .downloads-section.show{display:block}
   .downloads-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:12px}
@@ -47,63 +44,47 @@
   .download-item:hover{border-color:#6e3bfa}
   .download-item img{width:100%;height:120px;object-fit:cover;display:block}
   .download-item .dl-overlay{position:absolute;bottom:0;left:0;right:0;padding:6px;background:rgba(0,0,0,.7);font-size:10px;text-align:center}
-  .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;align-items:center;justify-content:center;padding:15px;backdrop-filter:blur(4px)}
-  .modal.show{display:flex;animation:modalFadeIn 0.2s ease}
-  @keyframes modalFadeIn{from{opacity:0}to{opacity:1}}
-  .modal-box{background:#1a1a24;padding:25px;border-radius:14px;width:100%;max-width:420px;border:1px solid #222;position:relative;animation:modalSlideIn 0.3s ease}
-  @keyframes modalSlideIn{from{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;align-items:center;justify-content:center;padding:15px}
+  .modal.show{display:flex}
+  .modal-box{background:#1a1a24;padding:25px;border-radius:14px;width:100%;max-width:420px;border:1px solid #222;position:relative}
   .modal-box h2{margin-bottom:15px;background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:20px}
   .modal-box p{color:#aaa;font-size:13px;margin:8px 0}
-  .modal-box input{width:100%;padding:9px;margin:8px 0;background:#111118;border:1px solid #333;color:#fff;border-radius:7px;font-size:14px;transition:border-color 0.2s}
-  .modal-box input:focus{outline:none;border-color:#6e3bfa}
-  .modal-box button{width:100%;padding:10px;border:none;border-radius:7px;color:#fff;font-size:14px;cursor:pointer;margin-top:5px;transition:all 0.2s}
-  .modal-box button:disabled{opacity:0.6;cursor:not-allowed}
+  .modal-box input{width:100%;padding:9px;margin:8px 0;background:#111118;border:1px solid #333;color:#fff;border-radius:7px;font-size:14px}
+  .modal-box button{width:100%;padding:10px;border:none;border-radius:7px;color:#fff;font-size:14px;cursor:pointer;margin-top:5px}
   .btn-join{background:linear-gradient(135deg,#00c853,#009624);font-weight:600}
-  .btn-join:hover{background:linear-gradient(135deg,#00b34a,#008a1f)}
   .btn-login{background:#6e3bfa}
-  .btn-login:hover{background:#5a2fd4}
-  .close-modal{position:absolute;top:10px;right:14px;background:none;border:none;color:#fff;font-size:20px;cursor:pointer;transition:color 0.2s}
-  .close-modal:hover{color:#6e3bfa}
+  #signupModal .modal-box input,#forgotModal .modal-box input{width:100%;padding:9px;margin:4px 0;background:#111118;border:1px solid #333;color:#fff;border-radius:7px;font-size:14px}
+  #signupModal .modal-box input:focus,#forgotModal .modal-box input:focus{outline:none;border-color:#6e3bfa}
+  .close-modal{position:absolute;top:10px;right:14px;background:none;border:none;color:#fff;font-size:20px;cursor:pointer}
   .plan-cards{display:flex;gap:10px;margin:12px 0}
-  .plan-card{flex:1;padding:12px;background:#111118;border:2px solid transparent;border-radius:9px;cursor:pointer;text-align:center;transition:all 0.2s}
-  .plan-card:hover{border-color:#444}
-  .plan-card.selected{border-color:#6e3bfa;background:#1a1a2e}
+  .plan-card{flex:1;padding:12px;background:#111118;border:2px solid transparent;border-radius:9px;cursor:pointer;text-align:center}
+  .plan-card.selected{border-color:#6e3bfa}
   .plan-card .price{font-size:18px;font-weight:700;margin:5px 0}
   .plan-card .label{font-size:11px;color:#888}
   .plan-card .save{font-size:10px;color:#00c853}
   .switch-text{text-align:center;margin-top:10px;font-size:12px;color:#888;cursor:pointer}
-  .switch-text span{color:#4287ff;transition:color 0.2s}
-  .switch-text span:hover{color:#6e3bfa}
+  .switch-text span{color:#4287ff}
   .user-status{display:none;align-items:center;gap:6px}
   .user-status .avatar{width:28px;height:28px;border-radius:50%;background:#6e3bfa;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
-  .pro-banner{background:linear-gradient(135deg,#6e3bfa,#4287ff);color:#fff;padding:8px 15px;border-radius:8px;text-align:center;font-size:13px;margin:15px 0;display:none;animation:pulse 2s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.9}}
+  .pro-banner{background:linear-gradient(135deg,#6e3bfa,#4287ff);color:#fff;padding:8px 15px;border-radius:8px;text-align:center;font-size:13px;margin:15px 0;display:none}
   .pro-banner.show{display:block}
-  .upgrade-nudge{background:#1a1a2e;border-left:4px solid #ffd700;padding:12px 15px;border-radius:0 8px 8px 0;margin:15px 0;font-size:13px;color:#ccc;display:none;align-items:center;gap:10px}
-  .upgrade-nudge.show{display:flex}
-  .upgrade-nudge button{background:#ffd700;color:#000;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all 0.2s}
-  .upgrade-nudge button:hover{background:#e6c200}
+  .upgrade-nudge{background:#1a1a2e;border-left:4px solid #ffd700;padding:12px 15px;border-radius:0 8px 8px 0;margin:15px 0;font-size:13px;color:#ccc;display:none}
+  .upgrade-nudge.show{display:flex;align-items:center;gap:10px}
+  .upgrade-nudge button{background:#ffd700;color:#000;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600}
   .billing-notice{background:#1a1a2e;border:1px solid #333;padding:12px;border-radius:8px;margin:12px 0;font-size:12px;color:#888}
   .billing-notice strong{color:#f0f0f0}
-  .error-msg{color:#ff6b6b;font-size:12px;margin:8px 0;display:none;animation:shake 0.3s}
-  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+  .error-msg{color:#ff4444;font-size:12px;margin:8px 0;display:none}
   .error-msg.show{display:block}
   .success-msg{color:#00c853;font-size:12px;margin:8px 0;display:none}
   .success-msg.show{display:block}
-  .loading{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-radius:50%;border-top-color:#fff;animation:spin 1s ease-in-out infinite;vertical-align:middle}
+  .loading{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-radius:50%;border-top-color:#fff;animation:spin 1s ease-in-out infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .loading-full{position:fixed;inset:0;background:rgba(10,10,15,0.9);display:none;align-items:center;justify-content:center;z-index:10000;flex-direction:column;gap:15px}
-  .loading-full.show{display:flex}
-  .loading-full .spinner{width:40px;height:40px;border:4px solid rgba(110,59,250,0.3);border-radius:50%;border-top-color:#6e3bfa;animation:spin 1s linear infinite}
-  .loading-full p{color:#aaa;font-size:14px}
   .admin-panel{display:none;position:fixed;inset:0;background:#0a0a0f;z-index:10000;overflow-y:auto}
-  .admin-panel.show{display:block;animation:slideIn 0.3s ease}
-  @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
-  .admin-header{padding:20px;background:#111118;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+  .admin-panel.show{display:block}
+  .admin-header{padding:20px;background:#111118;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center}
   .admin-header h2{background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
   .admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;padding:20px}
-  .stat-card{background:#111118;padding:20px;border-radius:12px;border:1px solid #222;transition:transform 0.2s}
-  .stat-card:hover{transform:translateY(-2px)}
+  .stat-card{background:#111118;padding:20px;border-radius:12px;border:1px solid #222}
   .stat-card h3{color:#888;font-size:12px;margin-bottom:8px}
   .stat-card .value{font-size:28px;font-weight:700;background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
   .admin-table{margin:20px;padding:20px;background:#111118;border-radius:12px}
@@ -115,21 +96,7 @@
   .status-badge{padding:4px 8px;border-radius:4px;font-size:11px}
   .status-badge.pro{background:#ffd700;color:#000}
   .status-badge.free{background:#333;color:#aaa}
-  .status-badge.pending{background:#6e3bfa;color:#fff}
-  .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
-  .status-dot.online{background:#00c853;box-shadow:0 0 6px #00c853}
-  .status-dot.offline{background:#555}
-  .action-btn{padding:5px 10px;border:none;border-radius:5px;cursor:pointer;font-size:11px;margin:2px;transition:all 0.2s}
-  .action-btn.send-email{background:#00c853;color:#fff}
-  .action-btn.send-email:hover{background:#00b34a}
-  .action-btn.view{background:#4287ff;color:#fff}
-  .action-btn.view:hover{background:#2e6fd9}
-  .close-admin{background:#ff4444;border:none;color:#fff;padding:8px 16px;border-radius:6px;cursor:pointer;transition:background 0.2s}
-  .close-admin:hover{background:#e63e3e}
-  .reset-request{background:#1a1a2e;border-left:4px solid #ff6b6b;padding:12px;margin:10px 0;border-radius:0 8px 8px 0;display:flex;justify-content:space-between;align-items:center}
-  .reset-request .info{font-size:12px}
-  .reset-request .info strong{color:#f0f0f0}
-  .reset-request .info span{color:#888}
+  .close-admin{background:#ff4444;border:none;color:#fff;padding:8px 16px;border-radius:6px;cursor:pointer}
   @media(max-width:600px){
     .controls{flex-direction:column;align-items:stretch}
     .plan-cards{flex-direction:column}
@@ -137,17 +104,10 @@
     .quote-card{min-height:200px;font-size:16px;padding:20px}
     .editor-section,.downloads-section{margin:15px;padding:15px}
     .upgrade-nudge{flex-direction:column;align-items:stretch}
-    .admin-stats{grid-template-columns:1fr 1fr}
   }
 </style>
 </head>
 <body>
-
-<!-- Global Loading Overlay -->
-<div class="loading-full" id="globalLoading">
-  <div class="spinner"></div>
-  <p>Processing...</p>
-</div>
 
 <nav>
   <div class="logo">QuoteCards Pro</div>
@@ -206,7 +166,7 @@
     <input type="email" id="loginEmail" placeholder="Email Address" autocomplete="email">
     <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
     <div class="error-msg" id="loginError"></div>
-    <button class="btn-login" id="loginBtn" onclick="login()">SignIn</button>
+    <button class="btn-login" onclick="login()">SignIn</button>
     <div class="switch-text">Forgot password? <span onclick="toggleAuth('forgot')">Reset it</span></div>
     <div class="switch-text" style="margin-top:4px">New here? <span onclick="toggleAuth('signup')">Create account</span></div>
   </div>
@@ -224,7 +184,7 @@
     <input type="password" id="signupPassConfirm" placeholder="Confirm Password" autocomplete="new-password">
     <div class="error-msg" id="signupError"></div>
     <div class="success-msg" id="signupSuccess"></div>
-    <button class="btn-join" id="signupBtn" onclick="signup()">Create Account</button>
+    <button class="btn-join" onclick="signup()">Create Account</button>
     <div class="switch-text">Already have an account? <span onclick="toggleAuth('login')">Sign In</span></div>
   </div>
 </div>
@@ -238,7 +198,7 @@
     <input type="email" id="forgotEmail" placeholder="Email Address" autocomplete="email">
     <div class="error-msg" id="forgotError"></div>
     <div class="success-msg" id="forgotSuccess"></div>
-    <button class="btn-login" id="forgotBtn" onclick="forgotPassword()">Send Reset Link</button>
+    <button class="btn-login" onclick="forgotPassword()">Send Reset Link</button>
     <div class="switch-text">Remembered? <span onclick="toggleAuth('login')">Sign In</span></div>
   </div>
 </div>
@@ -293,17 +253,10 @@
     <div class="stat-card"><h3>Monthly Revenue</h3><div class="value" id="statRevenue">$0</div></div>
     <div class="stat-card"><h3>Conversion Rate</h3><div class="value" id="statConversion">0%</div></div>
   </div>
-  
-  <!-- Password Reset Requests -->
-  <div class="admin-table">
-    <h3>🔐 Password Reset Requests</h3>
-    <div id="resetRequestsList"></div>
-  </div>
-  
   <div class="admin-table">
     <h3>👥 All Users</h3>
     <table>
-      <thead><tr><th>Email</th><th>Name</th><th>Status</th><th>Plan</th><th>Joined</th><th>Last Active</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Email</th><th>Name</th><th>Status</th><th>Plan</th><th>Joined</th><th>Last Active</th></tr></thead>
       <tbody id="usersTableBody"></tbody>
     </table>
   </div>
@@ -327,8 +280,7 @@ const PAYMENT_LINKS = {
 
 let state = {
   user: null, token: null, isPro: false, quotes: [], qIdx: 0, 
-  speed: 0.5, selectedPlan: 'monthly', slider: { pos: 0, holding: false, animId: null },
-  activityTimer: null
+  speed: 0.5, selectedPlan: 'monthly', slider: { pos: 0, holding: false, animId: null }
 };
 
 // === QUOTES DATA ===
@@ -350,83 +302,49 @@ const PRO_Q = [
   {t:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"Chinese Proverb"}
 ];
 
-// === API CLIENT ===
+// === API CLIENT (Backend-First, Cache-Fallback) ===
 const api = {
   async req(endpoint, opts = {}) {
     const headers = { 'Content-Type': 'application/json', ...opts.headers };
     if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
     try {
       const res = await fetch(`${API}${endpoint}`, { ...opts, headers });
-      if (res.status === 401) { this.logout(); return null; }
-      return await res.json();
-    } catch (e) { 
-      console.warn(`API ${endpoint} failed:`, e); 
-      return { error: 'Connection failed' };
-    }
+      if (!res.ok && res.status === 401) { this.logout(); return null; }
+      return res.json();
+    } catch (e) { console.warn(`API ${endpoint} failed:`, e); return null; }
   },
   async signup(data) { return this.req('/api/signup', { method: 'POST', body: JSON.stringify(data) }); },
   async login(data) { return this.req('/api/login', { method: 'POST', body: JSON.stringify(data) }); },
-  async forgotPassword(data) { return this.req('/api/forgot-password', { method: 'POST', body: JSON.stringify(data) }); },
-  async sendRecoveryEmail(data) { return this.req('/api/admin/send-recovery', { method: 'POST', body: JSON.stringify(data) }); },
   async me() { return this.req('/api/me'); },
   async adminUsers() { return this.req('/api/admin/users'); },
   async adminStats() { return this.req('/api/admin/stats'); },
-  async adminResetRequests() { return this.req('/api/admin/reset-requests'); },
   async verifyPayment(data) { return this.req('/api/verify-payment', { method: 'POST', body: JSON.stringify(data) }); },
   async saveDownload(data) { return this.req('/api/downloads', { method: 'POST', body: JSON.stringify(data) }); },
   async getDownloads() { return this.req('/api/downloads'); },
-  async trackActivity() { 
-    if (!state.token) return;
-    return this.req('/api/activity', { method: 'POST', body: JSON.stringify({ 
-      email: state.user?.email, 
-      page: location.pathname,
-      userAgent: navigator.userAgent,
-      timestamp: new Date().toISOString()
-    })});
-  },
-  logout() { 
-    localStorage.removeItem('qc_token'); 
-    localStorage.removeItem('qc_user'); 
-    if (state.activityTimer) clearInterval(state.activityTimer);
-    location.reload(); 
-  }
+  logout() { localStorage.removeItem('qc_token'); localStorage.removeItem('qc_user'); location.reload(); }
+};
+
+// === CACHE HELPERS (localStorage as fallback only) ===
+const cache = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  clear() { ['qc_token','qc_user'].forEach(k => localStorage.removeItem(k)); }
 };
 
 // === UI HELPERS ===
 const $ = (id) => document.getElementById(id);
-const show = (el, s) => el?.classList?.toggle('show', s);
-const setLoading = (show) => $('globalLoading')?.classList?.toggle('show', show);
-
-const notify = (msg, type = 'info', duration = 4000) => {
+const show = (el, s) => el.classList.toggle('show', s);
+const notify = (msg, type = 'info') => {
   const n = document.createElement('div');
   n.style.cssText = `position:fixed;top:20px;right:20px;padding:14px 20px;border-radius:10px;color:#fff;font-size:14px;font-weight:500;z-index:10001;animation:slideIn .3s ease;max-width:320px;box-shadow:0 4px 20px rgba(0,0,0,.3);background:${type==='success'?'linear-gradient(135deg,#00c853,#009624)':type==='error'?'linear-gradient(135deg,#ff4444,#cc0000)':'linear-gradient(135deg,#6e3bfa,#4287ff)'}`;
-  n.textContent = msg; 
-  document.body.appendChild(n);
-  setTimeout(() => { 
-    n.style.animation = 'slideOut .3s ease'; 
-    setTimeout(() => n.remove(), 300); 
-  }, duration);
+  n.textContent = msg; document.body.appendChild(n);
+  setTimeout(() => { n.style.animation = 'slideOut .3s ease'; setTimeout(() => n.remove(), 300); }, 4000);
   if (!$('qc-styles')) {
     const s = document.createElement('style'); s.id = 'qc-styles';
     s.textContent = `@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}`;
     document.head.appendChild(s);
   }
 };
-
-// === ACTIVITY TRACKING ===
-function startActivityTracking() {
-  if (!state.user || !state.token) return;
-  // Track immediately
-  api.trackActivity();
-  // Track every 2 minutes while active
-  if (state.activityTimer) clearInterval(state.activityTimer);
-  state.activityTimer = setInterval(() => api.trackActivity(), 120000);
-  
-  // Track page visibility
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) api.trackActivity();
-  });
-}
 
 // === SLIDER ===
 const track = $('sliderTrack'), wrap = $('sliderWrap'), dotsEl = $('dots');
@@ -460,17 +378,8 @@ function animate() {
   }
   state.slider.animId = requestAnimationFrame(animate);
 }
-['mousedown','touchstart'].forEach(ev => wrap.addEventListener(ev, (e) => { 
-  e.preventDefault(); 
-  state.slider.holding = true; 
-  wrap.style.opacity = '.7'; 
-  if (state.slider.animId) cancelAnimationFrame(state.slider.animId);
-}, { passive: false }));
-['mouseup','mouseleave','touchend'].forEach(ev => wrap.addEventListener(ev, () => { 
-  state.slider.holding = false; 
-  wrap.style.opacity = '1';
-  animate();
-}));
+['mousedown','touchstart'].forEach(ev => wrap.addEventListener(ev, (e) => { e.preventDefault(); state.slider.holding = true; wrap.style.opacity = '.7'; }, { passive: false }));
+['mouseup','mouseleave','touchend'].forEach(ev => wrap.addEventListener(ev, () => { state.slider.holding = false; wrap.style.opacity = '1'; }));
 
 // === CANVAS ===
 function renderCanvas() {
@@ -492,57 +401,45 @@ function wrapText(ctx, t, x, y, mw, lh) {
 }
 function cycleQuote() { state.qIdx = (state.qIdx + 1) % state.quotes.length; renderCanvas(); }
 
-// === DOWNLOADS ===
+// === DOWNLOADS (Backend-Persisted) ===
 async function downloadPNG() {
-  const btn = $('download-btn');
-  const originalText = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="loading"></span> Generating...';
+  const c = $('previewCanvas'), url = c.toDataURL('image/png');
+  const a = document.createElement('a'); a.download = 'quotecard_' + Date.now() + '.png'; a.href = url; a.click();
   
-  try {
-    const c = $('previewCanvas'), url = c.toDataURL('image/png');
-    const a = document.createElement('a'); a.download = 'quotecard_' + Date.now() + '.png'; a.href = url; a.click();
-    
-    if (state.user) {
-      await api.saveDownload({ 
-        imageUrl: url, quote: state.quotes[state.qIdx].t, author: state.quotes[state.qIdx].a,
-        settings: { width: +$('cWidth').value, height: +$('cHeight').value, fontSize: +$('fontSize').value, bgColor: $('bgColor').value }
-      });
-      renderDownloads();
-    }
-    notify('✓ Download started!', 'success', 2000);
-  } catch(e) {
-    notify('✗ Download failed', 'error');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = originalText;
+  if (state.user) {
+    // Try backend first
+    const saved = await api.saveDownload({ 
+      imageUrl: url, quote: state.quotes[state.qIdx].t, author: state.quotes[state.qIdx].a,
+      settings: { width: +$('cWidth').value, height: +$('cHeight').value, fontSize: +$('fontSize').value, bgColor: $('bgColor').value }
+    });
+    if (saved) { renderDownloads(); return; }
+    // Fallback: local cache only
+    const key = `qc_dl_${state.user.email}`;
+    const hist = cache.get(key) || [];
+    hist.unshift({ url, time: new Date().toISOString(), quote: state.quotes[state.qIdx].t.slice(0, 40) + '...' });
+    if (hist.length > 20) hist.pop();
+    cache.set(key, hist);
+    renderDownloads();
   }
 }
 
 async function renderDownloads() {
   if (!state.user) return;
-  const grid = $('downloadsGrid'); 
-  grid.innerHTML = '<p style="color:#777;font-size:13px;grid-column:1/-1;text-align:center"><span class="loading"></span> Loading downloads...</p>';
+  const grid = $('downloadsGrid'); grid.innerHTML = '';
   
+  // Try backend first
   const dl = await api.getDownloads();
-  const items = dl?.downloads || [];
+  const items = dl?.downloads || cache.get(`qc_dl_${state.user.email}`) || [];
   
   if (!items.length) {
-    grid.innerHTML = '<p style="color:#777;font-size:13px;grid-column:1/-1;text-align:center">No downloads yet. Create & download your first card!</p>';
+    grid.innerHTML = '<p style="color:#777;font-size:13px;grid-column:1/-1">No downloads yet. Create & download your first card!</p>';
     return;
   }
   
-  grid.innerHTML = '';
   items.forEach((item, i) => {
     const div = document.createElement('div'); div.className = 'download-item';
     div.innerHTML = `<img src="${item.imageUrl || item.url}" alt="Download ${i+1}" loading="lazy"><div class="dl-overlay">⬇ Tap to redownload</div>`;
-    div.onclick = () => { 
-      const a = document.createElement('a'); 
-      a.download = 'quotecard_' + (item.id || i) + '.png'; 
-      a.href = item.imageUrl || item.url; 
-      a.click(); 
-      notify('✓ Downloading...', 'success', 1500);
-    };
+    div.onclick = () => { const a = document.createElement('a'); a.download = 'quotecard_' + i + '.png'; a.href = item.imageUrl || item.url; a.click(); };
     grid.appendChild(div);
   });
 }
@@ -552,8 +449,7 @@ async function applyAuth(u, token) {
   state.user = u; state.token = token; state.isPro = u?.isPro;
   
   // Update UI
-  $('guestNav').style.display = 'none'; 
-  $('userNav').style.display = 'flex';
+  $('guestNav').style.display = 'none'; $('userNav').style.display = 'flex';
   $('avatarLetter').textContent = u?.name?.[0]?.toUpperCase() || 'U';
   $('userName').textContent = u?.name || 'User';
   $('tierBadge').textContent = state.isPro ? '✨ Pro' : 'Free';
@@ -570,135 +466,51 @@ async function applyAuth(u, token) {
   // Pro nudge
   show($('upgradeNudge'), !state.isPro && u?.email !== ADMIN_EMAIL);
   
-  // Start activity tracking
-  startActivityTracking();
-  
   // Cache auth
-  if (token) { 
-    localStorage.setItem('qc_token', token); 
-    localStorage.setItem('qc_user', JSON.stringify(u)); 
-  }
+  if (token) { cache.set('qc_token', token); cache.set('qc_user', u); }
 }
 
 async function login() {
   const email = $('loginEmail').value.trim().toLowerCase(), pass = $('loginPass').value;
-  const err = $('loginError'), btn = $('loginBtn');
-  err.classList.remove('show');
+  const err = $('loginError'); err.classList.remove('show');
   
-  if (!email.includes('@') || pass.length < 6) { 
-    err.textContent = 'Valid email and 6+ char password required'; 
-    err.classList.add('show'); 
-    return; 
-  }
+  if (!email.includes('@') || pass.length < 6) { err.textContent = 'Invalid email or password'; err.classList.add('show'); return; }
   
-  btn.disabled = true;
-  btn.innerHTML = '<span class="loading"></span> Signing in...';
-  
-  try {
-    const res = await api.login({ email, password: pass });
-    if (res?.token) { 
-      applyAuth(res.user, res.token); 
-      closeModal(); 
-      notify('✓ Welcome back!', 'success'); 
-    } else { 
-      err.textContent = res?.error || 'Authentication failed'; 
-      err.classList.add('show'); 
-    }
-  } catch(e) {
-    err.textContent = 'Connection error. Please try again.';
-    err.classList.add('show');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = 'SignIn';
-  }
+  const res = await api.login({ email, password: pass });
+  if (res?.token) { applyAuth(res.user, res.token); closeModal(); notify('✓ Welcome back!', 'success'); }
+  else { err.textContent = res?.error || 'Authentication failed'; err.classList.add('show'); }
 }
 
 async function signup() {
   const name = $('signupName').value.trim(), email = $('signupEmail').value.trim().toLowerCase();
   const pass = $('signupPass').value, confirm = $('signupPassConfirm').value;
-  const err = $('signupError'), ok = $('signupSuccess'), btn = $('signupBtn');
+  const err = $('signupError'), ok = $('signupSuccess');
   err.classList.remove('show'); ok.classList.remove('show');
   
-  if (name.length < 2) { err.textContent = 'Enter your full name'; err.classList.add('show'); return; }
-  if (!email.includes('@')) { err.textContent = 'Enter a valid email'; err.classList.add('show'); return; }
-  if (pass.length < 6) { err.textContent = 'Password must be 6+ characters'; err.classList.add('show'); return; }
-  if (pass !== confirm) { err.textContent = 'Passwords do not match'; err.classList.add('show'); return; }
-  
-  btn.disabled = true;
-  btn.innerHTML = '<span class="loading"></span> Creating account...';
-  
-  try {
-    const res = await api.signup({ name, email, password: pass });
-    if (res?.token) { 
-      applyAuth(res.user, res.token); 
-      closeModal(); 
-      notify(`✓ Welcome, ${name.split(' ')[0]}!`, 'success'); 
-    } else { 
-      err.textContent = res?.error || 'Signup failed - email may already exist'; 
-      err.classList.add('show'); 
-    }
-  } catch(e) {
-    err.textContent = 'Connection error. Please try again.';
-    err.classList.add('show');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = 'Create Account';
+  if (name.length < 2 || !email.includes('@') || pass.length < 6 || pass !== confirm) {
+    err.textContent = !name ? 'Enter name' : !email.includes('@') ? 'Valid email' : pass.length < 6 ? '6+ char password' : 'Passwords mismatch';
+    err.classList.add('show'); return;
   }
+  
+  const res = await api.signup({ name, email, password: pass });
+  if (res?.token) { applyAuth(res.user, res.token); closeModal(); notify(`✓ Welcome, ${name.split(' ')[0]}!`, 'success'); }
+  else { err.textContent = res?.error || 'Signup failed'; err.classList.add('show'); }
 }
 
-async function forgotPassword() {
+function forgotPassword() {
   const email = $('forgotEmail').value.trim().toLowerCase();
-  const err = $('forgotError'), ok = $('forgotSuccess'), btn = $('forgotBtn');
-  
-  if (!email.includes('@')) { 
-    err.textContent = 'Enter a valid email address'; 
-    err.classList.add('show'); 
-    return; 
-  }
-  
-  btn.disabled = true;
-  btn.innerHTML = '<span class="loading"></span> Sending...';
-  err.classList.remove('show');
-  ok.classList.remove('show');
-  
-  try {
-    const res = await api.forgotPassword({ email });
-    if (res?.success) {
-      ok.textContent = `✓ Reset request sent! Admin notified for ${email}`; 
-      ok.classList.add('show');
-      $('forgotEmail').value = '';
-      // Auto-close after 3 seconds
-      setTimeout(() => { closeModal(); }, 3000);
-    } else {
-      err.textContent = res?.error || 'Failed to send reset request'; 
-      err.classList.add('show');
-    }
-  } catch(e) {
-    err.textContent = 'Connection error. Please try again.';
-    err.classList.add('show');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = 'Send Reset Link';
-  }
+  if (!email.includes('@')) { $('forgotError').textContent = 'Valid email required'; $('forgotError').classList.add('show'); return; }
+  $('forgotSuccess').textContent = `✓ Reset link sent to ${email} (if account exists)`; $('forgotSuccess').classList.add('show');
+  setTimeout(() => { $('forgotEmail').value = ''; closeModal(); }, 2000);
 }
 
 async function checkAuth() {
-  const token = localStorage.getItem('qc_token');
-  const stored = localStorage.getItem('qc_user');
+  const token = cache.get('qc_token'), stored = cache.get('qc_user');
   if (!token || !stored) return;
   
-  try {
-    const u = await api.me();
-    if (u?.email) {
-      applyAuth(u, token);
-    } else {
-      // Fallback to cached user
-      applyAuth(JSON.parse(stored), token);
-      notify('⚠️ Session expired. Please sign in again.', 'info');
-    }
-  } catch(e) {
-    applyAuth(JSON.parse(stored), token);
-  }
+  const u = await api.me();
+  if (u?.email) applyAuth(u, token);
+  else { cache.clear(); applyAuth(stored, token); } // Fallback to cache
 }
 
 function logout() { api.logout(); }
@@ -711,11 +523,7 @@ function selectPlan(el, plan) {
 
 async function processPayment() {
   const email = $('joinEmail').value.trim().toLowerCase();
-  if (!email.includes('@')) { 
-    $('paymentError').textContent = 'Valid email required'; 
-    $('paymentError').classList.add('show'); 
-    return; 
-  }
+  if (!email.includes('@')) { $('paymentError').textContent = 'Valid email required'; $('paymentError').classList.add('show'); return; }
   
   const btn = $('payBtn'), txt = $('payBtnText');
   btn.disabled = true; txt.innerHTML = '<span class="loading"></span> Redirecting...';
@@ -726,11 +534,10 @@ async function processPayment() {
     const url = `${link}${sep}prefilled_email=${encodeURIComponent(email)}&client_reference_id=${encodeURIComponent(email)}`;
     
     // Track pending
-    localStorage.setItem('qc_pending', JSON.stringify({ email, plan: state.selectedPlan, ts: Date.now() }));
+    cache.set('qc_pending', { email, plan: state.selectedPlan, ts: Date.now() });
     setTimeout(() => window.location.href = url, 800);
   } catch (e) {
-    $('paymentError').textContent = 'Payment setup failed'; 
-    $('paymentError').classList.add('show');
+    $('paymentError').textContent = 'Payment setup failed'; $('paymentError').classList.add('show');
     btn.disabled = false; txt.textContent = '💳 Subscribe Now';
   }
 }
@@ -740,127 +547,48 @@ async function verifyPayment() {
   const sid = params.get('session_id'), canceled = params.get('canceled') === 'true';
   
   if (sid && state.token) {
-    setLoading(true);
     const res = await api.verifyPayment({ sessionId: sid });
-    setLoading(false);
     if (res?.success) {
       const u = await api.me(); if (u) applyAuth(u, state.token);
       notify('🎉 Pro activated! All features unlocked.', 'success');
     }
-    localStorage.removeItem('qc_pending');
+    cache.set('qc_pending', null);
     window.history.replaceState({}, '', location.pathname);
   } else if (canceled) {
     notify('Payment cancelled. Try again anytime.', 'info');
-    localStorage.removeItem('qc_pending');
+    cache.set('qc_pending', null);
     window.history.replaceState({}, '', location.pathname);
   }
 }
 
 // === ADMIN ===
-function toggleAdmin() { 
-  const p = $('adminPanel'); 
-  p.classList.toggle('show'); 
-  if (p.classList.contains('show')) {
-    refreshAdminData();
-  }
-}
+function toggleAdmin() { const p = $('adminPanel'); p.classList.toggle('show'); if (p.classList.contains('show')) refreshAdminData(); }
 
 async function refreshAdminData() {
   if (!state.token || state.user?.email !== ADMIN_EMAIL) return;
   
-  setLoading(true);
-  try {
-    const [stats, users, payments, resetReqs] = await Promise.all([
-      api.adminStats(), 
-      api.adminUsers(), 
-      api.req('/api/admin/payments'),
-      api.adminResetRequests()
-    ]);
-    
-    if (stats) {
-      $('statTotalUsers').textContent = stats.totalUsers || 0;
-      $('statProUsers').textContent = stats.proUsers || 0;
-      $('statRevenue').textContent = '$' + (stats.revenue || 0).toLocaleString();
-      $('statConversion').textContent = (stats.conversionRate || 0) + '%';
-    }
-    
-    // Render reset requests
-    const resetList = $('resetRequestsList');
-    if (resetReqs?.requests?.length) {
-      resetList.innerHTML = resetReqs.requests.map(req => `
-        <div class="reset-request">
-          <div class="info">
-            <strong>${req.email}</strong> • <span>${new Date(req.requestedAt).toLocaleString()}</span>
-            ${req.ip ? ` • IP: ${req.ip}` : ''}
-          </div>
-          <button class="action-btn send-email" onclick="sendRecoveryEmail('${req.email}')">📧 Send Recovery</button>
-        </div>
-      `).join('');
-    } else {
-      resetList.innerHTML = '<p style="color:#777;font-size:13px">No pending reset requests</p>';
-    }
-    
-    // Render users table
-    const tbody = $('usersTableBody'); 
-    tbody.innerHTML = '';
-    (users?.users || []).forEach(u => {
-      const lastActive = u.lastActive ? new Date(u.lastActive) : null;
-      const isOnline = lastActive && (Date.now() - lastActive.getTime() < 120000); // 2 min
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${u.email}</td>
-        <td>${u.name}</td>
-        <td><span class="status-badge ${u.isPro?'pro':'free'}">${u.isPro?'Pro':'Free'}</span></td>
-        <td>${u.plan||'N/A'}</td>
-        <td>${new Date(u.createdAt).toLocaleDateString()}</td>
-        <td><span class="status-dot ${isOnline?'online':'offline'}"></span>${isOnline?'Online':(lastActive?lastActive.toLocaleDateString():'Never')}</td>
-        <td>
-          <button class="action-btn send-email" onclick="sendRecoveryEmail('${u.email}')">📧 Reset</button>
-          <button class="action-btn view" onclick="viewUserDownloads('${u.email}')">📁 View</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
-    
-    // Render payments
-    const payTbody = $('paymentsTableBody'); payTbody.innerHTML = '';
-    (payments?.payments || []).forEach(p => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${p.email}</td><td>$${p.amount}</td><td><span class="status-badge ${p.status==='paid'?'pro':'pending'}">${p.status}</span></td><td>${new Date(p.date).toLocaleDateString()}</td>`;
-      payTbody.appendChild(tr);
-    });
-    
-    notify('✓ Dashboard refreshed', 'success', 1500);
-  } catch(e) {
-    notify('✗ Failed to refresh dashboard', 'error');
-  } finally {
-    setLoading(false);
-  }
-}
-
-async function sendRecoveryEmail(userEmail) {
-  if (!confirm(`Send password recovery email to ${userEmail}?`)) return;
+  const [stats, users, payments] = await Promise.all([api.adminStats(), api.adminUsers(), api.req('/api/admin/payments')]);
   
-  setLoading(true);
-  try {
-    const res = await api.sendRecoveryEmail({ email: userEmail, adminEmail: ADMIN_EMAIL });
-    if (res?.success) {
-      notify(`✓ Recovery email sent to ${userEmail}`, 'success');
-      refreshAdminData(); // Refresh to clear the request
-    } else {
-      notify('✗ Failed to send recovery email', 'error');
-    }
-  } catch(e) {
-    notify('✗ Connection error', 'error');
-  } finally {
-    setLoading(false);
+  if (stats) {
+    $('statTotalUsers').textContent = stats.totalUsers || 0;
+    $('statProUsers').textContent = stats.proUsers || 0;
+    $('statRevenue').textContent = '$' + (stats.revenue || 0).toLocaleString();
+    $('statConversion').textContent = (stats.conversionRate || 0) + '%';
   }
-}
-
-async function viewUserDownloads(userEmail) {
-  notify(`Viewing downloads for ${userEmail}...`, 'info', 2000);
-  // In production, this would open a modal with user's downloads
-  // For now, just a notification
+  
+  const tbody = $('usersTableBody'); tbody.innerHTML = '';
+  (users?.users || []).forEach(u => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${u.email}</td><td>${u.name}</td><td><span class="status-badge ${u.isPro?'pro':'free'}">${u.isPro?'Pro':'Free'}</span></td><td>${u.plan||'N/A'}</td><td>${new Date(u.createdAt).toLocaleDateString()}</td><td>${new Date(u.lastActive||u.createdAt).toLocaleDateString()}</td>`;
+    tbody.appendChild(tr);
+  });
+  
+  const payTbody = $('paymentsTableBody'); payTbody.innerHTML = '';
+  (payments?.payments || []).forEach(p => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${p.email}</td><td>$${p.amount}</td><td><span class="status-badge pro">${p.status}</span></td><td>${new Date(p.date).toLocaleDateString()}</td>`;
+    payTbody.appendChild(tr);
+  });
 }
 
 // === MODALS ===
@@ -870,14 +598,7 @@ function openModal(t) {
   ['loginEmail','loginPass','signupName','signupEmail','signupPass','signupPassConfirm','joinEmail','forgotEmail'].forEach(id => { if ($(id)) $(id).value = ''; });
   if ($(`${t}Modal`)) $(`${t}Modal`).classList.add('show');
 }
-function closeModal() { 
-  document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
-  // Clear errors
-  document.querySelectorAll('.error-msg, .success-msg').forEach(el => {
-    el.textContent = '';
-    el.classList.remove('show');
-  });
-}
+function closeModal() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('show')); }
 function toggleAuth(m) { closeModal(); setTimeout(() => openModal(m), 100); }
 
 // === INIT ===
@@ -897,11 +618,6 @@ async function init() {
   
   // Auto-render on input change
   ['cWidth','cHeight','fontSize','bgColor'].forEach(id => $(id)?.addEventListener('input', renderCanvas));
-  
-  // Track initial page view
-  if (state.user) {
-    setTimeout(() => api.trackActivity(), 1000);
-  }
 }
 
 init();
