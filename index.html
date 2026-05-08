@@ -1033,29 +1033,38 @@
       { t: "The best time to plant a tree was 20 years ago. The second best time is now.", a: "Chinese Proverb" }
     ];
 
-    // ===== API CLIENT =====
+    // ===== API CLIENT WITH TIMEOUT =====
     const api = {
-      async req(endpoint, opts = {}) {
+      async req(endpoint, opts = {}, timeout = 10000) {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+        
         const headers = { 'Content-Type': 'application/json', ...opts.headers };
         if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
         
         try {
-          const res = await fetch(`${API}${endpoint}`, { ...opts, headers });
+          const res = await fetch(`${API}${endpoint}`, { 
+            ...opts, 
+            headers,
+            signal: controller.signal
+          });
+          clearTimeout(id);
+          
           const data = await res.json().catch(() => ({}));
           
           if (res.status === 401) { 
             this.logout(); 
             return null; 
           }
-          if (!res.ok) return { error: data.error || `HTTP ${res.status}: ${res.statusText}` };
+          if (!res.ok) return { error: data.error || `HTTP ${res.status}` };
           
           return data;
         } catch (e) {
+          clearTimeout(id);
           console.warn(`API ${endpoint} failed:`, e);
-          return { error: 'Connection failed. Check your internet or server status.' };
+          return { error: e.name === 'AbortError' ? 'Request timeout. Please try again.' : 'Connection failed' };
         }
       },
-
       async signup(data) { return this.req('/api/signup', { method: 'POST', body: JSON.stringify(data) }); },
       async login(data) { return this.req('/api/login', { method: 'POST', body: JSON.stringify(data) }); },
       async me() { return this.req('/api/me'); },
@@ -1072,7 +1081,6 @@
         location.reload();
       }
     };
-
     // ===== CACHE HELPERS =====
     const cache = {
       get(k) {
@@ -1309,89 +1317,154 @@
       });
     }
 
-    // ===== AUTHENTICATION - STABLE VERSION =====
+
+// ===== IMPROVED AUTH APPLICATION =====
     async function applyAuth(u, token) {
-      // Prevent multiple calls
-      if (state.authChecked && state.user) return;
+      console.log('🔑 Applying auth for:', u.email, 'isPro:', u.isPro);
       
       state.user = u;
       state.token = token;
       state.isPro = u?.isPro === true;
       state.authChecked = true;
       
-      // Update navigation
-      $('guestNav').style.display = state.user ? 'none' : 'flex';
-      $('userNav').style.display = state.user ? 'flex' : 'none';
+      // Update navigation immediately
+      $('guestNav').style.display = 'none';
+      $('userNav').style.display = 'flex';
       
-      if (state.user) {
-        $('avatarLetter').textContent = u?.name?.[0]?.toUpperCase() || 'U';
-        $('userName').textContent = u?.name || 'User';
-        
-        // Update badge
-        $('tierBadge').textContent = state.isPro ? '✨ Pro' : 'Free';
-        $('tierBadge').className = 'badge' + (state.isPro ? ' pro' : '');
-        
-        // Update avatar
-        const avatar = $('avatarLetter');
-        if (state.isPro) avatar.classList.add('pro');
-        else avatar.classList.remove('pro');
-        
-        // Show/hide pro banner
-        show($('proBanner'), state.isPro);
-        
-        // Show admin button only for admin
-        $('adminBtn').style.display = (u?.email === ADMIN_EMAIL) ? 'inline-block' : 'none';
-        
-        // ===== CRITICAL: Hide Join Pro button for paid members =====
-        const joinProBtn = $('joinProBtn');
-        if (joinProBtn) {
-          joinProBtn.style.display = state.isPro ? 'none' : 'inline-block';
-        }
+      // Update user info
+      $('avatarLetter').textContent = u?.name?.[0]?.toUpperCase() || 'U';
+      $('userName').textContent = u?.name || 'User';
+      
+      // Update badge with proper class
+      $('tierBadge').textContent = state.isPro ? '✨ Pro' : 'Free';
+      $('tierBadge').className = 'badge' + (state.isPro ? ' pro' : '');
+      
+      // Show/hide pro banner
+      const proBanner = $('proBanner');
+      if (state.isPro) {
+        proBanner.classList.add('show');
+      } else {
+        proBanner.classList.remove('show');
       }
       
-      // Load quotes based on tier
+      // Show admin button only for admin
+      const adminBtn = $('adminBtn');
+      if (u?.email === ADMIN_EMAIL) {
+        adminBtn.style.display = 'inline-block';
+      } else {
+        adminBtn.style.display = 'none';
+      }
+      
+      // ===== CRITICAL: Show/hide upgrade nudge based on Pro status =====
+      const upgradeNudge = $('upgradeNudge');
+      if (!state.isPro && u?.email !== ADMIN_EMAIL) {
+        upgradeNudge.classList.add('show');
+      } else {
+        upgradeNudge.classList.remove('show');
+      }
+      
+      // Load quotes based on membership
       state.quotes = state.isPro ? [...FREE_Q, ...PRO_Q] : [...FREE_Q];
       state.qIdx = 0;
       buildSlider();
       renderCanvas();
       
+      // Show downloads section
       $('downloadsSection').classList.add('show');
-      renderDownloads();
+      await renderDownloads();
       
-      // ===== CRITICAL: Show upgrade nudge ONLY for non-Pro users =====
-      show($('upgradeNudge'), !state.isPro && u?.email !== ADMIN_EMAIL);
-      
-      // Cache auth
+      // Cache auth data
       if (token) {
         cache.set('qc_token', token);
         cache.set('qc_user', u);
+        console.log('💾 Auth cached for:', u.email);
       }
     }
-    
+
+        
+    // ===== FIXED LOGIN FUNCTION =====
     async function login() {
       const email = $('loginEmail').value.trim().toLowerCase();
       const pass = $('loginPass').value;
       const err = $('loginError');
+      const btn = event.target;
       
+      // Clear previous errors
       err.classList.remove('show');
+      err.textContent = '';
       
-      if (!email.includes('@') || pass.length < 6) {
-        err.textContent = 'Invalid email or password';
+      // Validation
+      if (!email.includes('@')) {
+        err.textContent = '⚠️ Please enter a valid email address';
         err.classList.add('show');
         return;
       }
       
-      const res = await api.login({ email, password: pass });
-      
-      if (res?.token) {
-        applyAuth(res.user, res.token);
-        closeModal();
-        notify('✓ Welcome back!', 'success');
-      } else {
-        err.textContent = res?.error || 'Authentication failed';
+      if (pass.length < 6) {
+        err.textContent = '⚠️ Password must be at least 6 characters';
         err.classList.add('show');
+        return;
+      }
+      
+      // Prevent multiple clicks
+      if (btn.disabled) return;
+      
+      // Show loading state
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span> Verifying...';
+      
+      try {
+        console.log('🔐 Attempting login for:', email);
+        
+        // Call login API with timeout
+        const res = await api.login({ email, password: pass });
+        
+        console.log('📥 Login response:', res);
+        
+        if (res?.token && res?.user) {
+          // Successful login
+          console.log('✅ Login successful for:', email, 'Pro status:', res.user.isPro);
+          
+          // Apply authentication immediately
+          await applyAuth(res.user, res.token);
+          
+          // Close modal and show success
+          closeModal();
+          notify(`✓ Welcome back, ${res.user.name.split(' ')[0]}!`, 'success');
+          
+          // Clear password field
+          $('loginPass').value = '';
+          
+        } else if (res?.error) {
+          // Specific error messages
+          if (res.error.includes('Invalid credentials')) {
+            err.textContent = '❌ Invalid email or password. Please try again.';
+          } else if (res.error.includes('not found') || res.error.includes('404')) {
+            err.textContent = '❌ Account not found. Please sign up first.';
+          } else {
+            err.textContent = `❌ ${res.error}`;
+          }
+          err.classList.add('show');
+          
+        } else {
+          err.textContent = '❌ Login failed. Please check your connection and try again.';
+          err.classList.add('show');
+        }
+        
+      } catch (e) {
+        console.error('Login error:', e);
+        err.textContent = '❌ Connection error. Please check your internet and try again.';
+        err.classList.add('show');
+        
+      } finally {
+        // Restore button
+        btn.disabled = false;
+        btn.innerHTML = originalText;
       }
     }
+
+
     
     async function signup() {
       const name = $('signupName').value.trim();
@@ -1458,29 +1531,39 @@
       }, 2000);
     }
     
+    // ===== FIXED CHECK AUTH ON LOAD =====
     async function checkAuth() {
-      // Prevent multiple checks
-      if (state.authChecked) return;
+      if (state.authChecked) {
+        console.log('⏭️ Auth already checked, skipping');
+        return;
+      }
+      
+      console.log('🔍 Checking existing auth...');
       
       const token = cache.get('qc_token');
       const stored = cache.get('qc_user');
       
       if (!token || !stored) {
+        console.log('ℹ️ No cached auth found');
         state.authChecked = true;
         return;
       }
       
       try {
+        console.log(' Validating token with server...');
         const u = await api.me();
         
         if (u?.email) {
-          applyAuth(u, token);
+          console.log('✅ Token valid for:', u.email);
+          await applyAuth(u, token);
         } else {
+          console.log('❌ Token invalid, clearing cache');
           cache.clear();
           state.authChecked = true;
         }
       } catch (e) {
-        console.warn('Auth check failed:', e);
+        console.warn('⚠️ Auth check failed:', e.message);
+        cache.clear();
         state.authChecked = true;
       }
     }
