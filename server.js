@@ -194,24 +194,45 @@ app.get('/api/config', (req, res) => {
 
 app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
 
-// === AUTH ENDPOINTS ===
+// =========================================================================================
+// === AUTH ENDPOINTS
 
 // SIGNUP - With email uniqueness verification
+
+
+
+
+
+//===============================================================================
+// ===== FIXED SIGNUP ENDPOINT =====
 app.post('/api/signup', authLimiter, async (req, res) => {
+  const startTime = Date.now();
+  
   try {
     const { email, password, name } = req.body;
     
+    console.log(`📝 Signup attempt for: ${email}`);
+    
+    // Validation
     if (!email?.includes('@') || !password || password.length < 6 || !name) {
       return res.status(400).json({ error: 'Valid name, email, and 6+ char password required' });
     }
     
-    // Check if email already exists
-    const existing = await pool.query('SELECT email FROM users WHERE email = $1', [email.toLowerCase()]);
+    // Check if email exists (case-insensitive)
+    const existing = await pool.query(
+      'SELECT email FROM users WHERE email = $1',
+      [email.toLowerCase()]
+    );
+    
     if (existing.rows.length > 0) {
+      console.log(`❌ Email already registered: ${email}`);
       return res.status(400).json({ error: 'Email already registered. Please login instead.' });
     }
     
+    // Hash password
     const passwordHash = await bcrypt.hash(password, 12);
+    
+    // Insert new user
     const result = await pool.query(
       `INSERT INTO users (email, name, password_hash, is_pro) 
        VALUES ($1, $2, $3, $4) 
@@ -220,74 +241,125 @@ app.post('/api/signup', authLimiter, async (req, res) => {
     );
     
     const user = result.rows[0];
-    const token = jwt.sign({ email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
     
-    console.log(`✅ New user registered: ${email}`);
-    res.json({ token, user });
+    // Generate token
+    const token = jwt.sign(
+      { email: user.email, name: user.name },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    
+    const totalTime = Date.now() - startTime;
+    console.log(`✅ User registered: ${email} in ${totalTime}ms`);
+    
+    res.status(201).json({ token, user });
+    
   } catch (err) {
-    console.error('Signup error:', err);
-    res.status(500).json({ error: 'Signup failed' });
+    console.error('❌ Signup error:', err.message);
+    res.status(500).json({ error: 'Signup failed. Please try again.' });
   }
 });
+//=========================================================
 
-// LOGIN
+
+// LOGIN==========================================
+// ===== FIXED LOGIN ENDPOINT =====
 app.post('/api/login', authLimiter, async (req, res) => {
+  const startTime = Date.now();
+  
   try {
     const { email, password } = req.body;
     
+    console.log(`🔐 Login attempt for: ${email} from ${getIP(req)}`);
+    
+    // Validation
     if (!email?.includes('@') || !password) {
+      console.log('❌ Invalid input format');
       return res.status(400).json({ error: 'Valid email and password required' });
     }
     
-    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
+    // Query database - FAST
+    const result = await pool.query(
+      'SELECT email, name, password_hash, is_pro, plan FROM users WHERE email = $1',
+      [email.toLowerCase()]
+    );
+    
+    console.log(`📊 Query time: ${Date.now() - startTime}ms, Rows found: ${result.rows.length}`);
+    
+    // Check if user exists
     if (result.rows.length === 0) {
+      console.log(`❌ User not found: ${email}`);
       return res.status(401).json({ error: 'Invalid credentials' });
     }
     
     const user = result.rows[0];
+    
+    // Verify password
     const valid = await bcrypt.compare(password, user.password_hash);
     
     if (!valid) {
-      console.warn(`Failed login attempt: ${email}`);
+      console.warn(`❌ Invalid password for: ${email}`);
       return res.status(401).json({ error: 'Invalid credentials' });
     }
     
-    await pool.query('UPDATE users SET last_active = NOW() WHERE email = $1', [email]);
+    // Update last active timestamp (async, don't wait)
+    pool.query('UPDATE users SET last_active = NOW() WHERE email = $1', [email])
+      .catch(err => console.error('Failed to update last_active:', err));
     
-    const token = jwt.sign({ email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
+    // Generate JWT token
+    const token = jwt.sign(
+      { email: user.email, name: user.name },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
     
+    const totalTime = Date.now() - startTime;
+    console.log(`✅ Login successful for: ${email} in ${totalTime}ms (Pro: ${user.is_pro})`);
+    
+    // Return user data with explicit isPro field
     res.json({
       token,
-      user: { 
-        email: user.email, 
-        name: user.name, 
-        isPro: user.is_pro, 
-        plan: user.plan 
+      user: {
+        email: user.email,
+        name: user.name,
+        isPro: user.is_pro,  // Explicit boolean
+        plan: user.plan
       }
     });
+    
   } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).json({ error: 'Login failed' });
+    const totalTime = Date.now() - startTime;
+    console.error(`❌ Login error for ${req.body?.email} after ${totalTime}ms:`, err.message);
+    res.status(500).json({ error: 'Login failed. Please try again.' });
   }
 });
+//========================================================================
 
 // GET CURRENT USER - Returns isPro status
+// ===== FIXED GET CURRENT USER ENDPOINT =====
 app.get('/api/me', authMiddleware, async (req, res) => {
   try {
+    const startTime = Date.now();
+    
     const result = await pool.query(
       'SELECT email, name, is_pro as "isPro", plan FROM users WHERE email = $1',
       [req.user.email]
     );
     
-    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    if (result.rows.length === 0) {
+      console.log(`❌ User not found in /me: ${req.user.email}`);
+      return res.status(404).json({ error: 'User not found' });
+    }
     
+    console.log(`✅ /me endpoint: ${req.user.email} in ${Date.now() - startTime}ms`);
     res.json(result.rows[0]);
+    
   } catch (err) {
-    console.error('Profile error:', err);
+    console.error('❌ Profile error:', err.message);
     res.status(500).json({ error: 'Failed to fetch profile' });
   }
 });
-
+//==================================================================
 // === PASSWORD RESET ===
 app.post('/api/forgot-password', authLimiter, async (req, res) => {
   try {
