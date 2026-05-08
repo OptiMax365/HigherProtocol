@@ -1,651 +1,549 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QuoteCards Pro</title>
-<meta name="description" content="Create beautiful quote cards with premium templates">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
-<style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
-  body{background:#0a0a0f;color:#f0f0f0;min-height:100vh;line-height:1.5}
-  nav{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#111118;border-bottom:1px solid #222;position:sticky;top:0;z-index:100}
-  nav .logo{font-size:18px;font-weight:700;background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-  nav .nav-btn{background:#6e3bfa;border:none;color:#fff;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px}
-  nav .nav-btn:hover{background:#5a2fd4}
-  .badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;margin-left:6px;background:#333;color:#aaa}
-  .badge.pro{background:linear-gradient(135deg,#ffd700,#ff9800);color:#000}
-  .slider-section{padding:20px 15px}
-  .slider-wrap{position:relative;overflow:hidden;max-width:700px;margin:0 auto;border-radius:14px;cursor:grab;user-select:none;background:#111118}
-  .slider-wrap:active{cursor:grabbing}
-  .slider-track{display:flex;will-change:transform}
-  .slide{min-width:100%;display:flex;flex-direction:column;align-items:center;padding:25px 20px}
-  .quote-card{width:100%;max-width:550px;min-height:220px;display:flex;align-items:center;justify-content:center;border-radius:12px;padding:25px;text-align:center;font-size:17px;color:#e0e0e0;pointer-events:none;background:linear-gradient(145deg,#1a1a2e,#16213e)}
-  .quote-card .author{display:block;margin-top:12px;font-size:11px;color:#999}
-  .dots{text-align:center;margin-top:8px}
-  .dot{height:7px;width:7px;margin:0 4px;border-radius:50%;display:inline-block;background:#444;cursor:pointer}
-  .dot.active{background:#6e3bfa}
-  .editor-section{max-width:700px;margin:20px auto;padding:18px;background:#111118;border-radius:14px}
-  .editor-section h2{margin-bottom:12px;font-size:18px}
-  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
-  .ctrl-group{display:flex;flex-direction:column;gap:3px}
-  .controls label{font-size:11px;color:#aaa}
-  .controls input[type=number]{width:70px;padding:5px 8px;background:#1a1a24;border:1px solid #333;color:#fff;border-radius:6px;font-size:13px}
-  .controls input[type=color]{width:36px;height:32px;padding:0;border:none;cursor:pointer;border-radius:6px;background:#1a1a24}
-  .controls button{background:#4287ff;border:none;color:#fff;padding:7px 14px;border-radius:7px;cursor:pointer;font-size:13px}
-  .controls button:hover{background:#2e6fd9}
-  #previewCanvas{border:1px solid #333;border-radius:8px;display:block;margin:0 auto;max-width:100%;height:auto}
-  .download-btn{margin-top:12px;background:#6e3bfa;width:100%;padding:11px;border:none;color:#fff;border-radius:9px;cursor:pointer;font-size:14px;font-weight:600}
-  .download-btn:hover{background:#5a2fd4}
-  .downloads-section{max-width:700px;margin:20px auto;padding:18px;background:#111118;border-radius:14px;display:none}
-  .downloads-section.show{display:block}
-  .downloads-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:12px}
-  .download-item{position:relative;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .2s}
-  .download-item:hover{border-color:#6e3bfa}
-  .download-item img{width:100%;height:120px;object-fit:cover;display:block}
-  .download-item .dl-overlay{position:absolute;bottom:0;left:0;right:0;padding:6px;background:rgba(0,0,0,.7);font-size:10px;text-align:center}
-  .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;align-items:center;justify-content:center;padding:15px}
-  .modal.show{display:flex}
-  .modal-box{background:#1a1a24;padding:25px;border-radius:14px;width:100%;max-width:420px;border:1px solid #222;position:relative}
-  .modal-box h2{margin-bottom:15px;background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:20px}
-  .modal-box p{color:#aaa;font-size:13px;margin:8px 0}
-  .modal-box input{width:100%;padding:9px;margin:8px 0;background:#111118;border:1px solid #333;color:#fff;border-radius:7px;font-size:14px}
-  .modal-box button{width:100%;padding:10px;border:none;border-radius:7px;color:#fff;font-size:14px;cursor:pointer;margin-top:5px}
-  .btn-join{background:linear-gradient(135deg,#00c853,#009624);font-weight:600}
-  .btn-login{background:#6e3bfa}
-  #signupModal .modal-box input,#forgotModal .modal-box input{width:100%;padding:9px;margin:4px 0;background:#111118;border:1px solid #333;color:#fff;border-radius:7px;font-size:14px}
-  #signupModal .modal-box input:focus,#forgotModal .modal-box input:focus{outline:none;border-color:#6e3bfa}
-  .close-modal{position:absolute;top:10px;right:14px;background:none;border:none;color:#fff;font-size:20px;cursor:pointer}
-  .plan-cards{display:flex;gap:10px;margin:12px 0}
-  .plan-card{flex:1;padding:12px;background:#111118;border:2px solid transparent;border-radius:9px;cursor:pointer;text-align:center}
-  .plan-card.selected{border-color:#6e3bfa}
-  .plan-card .price{font-size:18px;font-weight:700;margin:5px 0}
-  .plan-card .label{font-size:11px;color:#888}
-  .plan-card .save{font-size:10px;color:#00c853}
-  .switch-text{text-align:center;margin-top:10px;font-size:12px;color:#888;cursor:pointer}
-  .switch-text span{color:#4287ff}
-  .user-status{display:none;align-items:center;gap:6px}
-  .user-status .avatar{width:28px;height:28px;border-radius:50%;background:#6e3bfa;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
-  .pro-banner{background:linear-gradient(135deg,#6e3bfa,#4287ff);color:#fff;padding:8px 15px;border-radius:8px;text-align:center;font-size:13px;margin:15px 0;display:none}
-  .pro-banner.show{display:block}
-  .upgrade-nudge{background:#1a1a2e;border-left:4px solid #ffd700;padding:12px 15px;border-radius:0 8px 8px 0;margin:15px 0;font-size:13px;color:#ccc;display:none}
-  .upgrade-nudge.show{display:flex;align-items:center;gap:10px}
-  .upgrade-nudge button{background:#ffd700;color:#000;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600}
-  .billing-notice{background:#1a1a2e;border:1px solid #333;padding:12px;border-radius:8px;margin:12px 0;font-size:12px;color:#888}
-  .billing-notice strong{color:#f0f0f0}
-  .error-msg{color:#ff4444;font-size:12px;margin:8px 0;display:none}
-  .error-msg.show{display:block}
-  .success-msg{color:#00c853;font-size:12px;margin:8px 0;display:none}
-  .success-msg.show{display:block}
-  .loading{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-radius:50%;border-top-color:#fff;animation:spin 1s ease-in-out infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .admin-panel{display:none;position:fixed;inset:0;background:#0a0a0f;z-index:10000;overflow-y:auto}
-  .admin-panel.show{display:block}
-  .admin-header{padding:20px;background:#111118;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center}
-  .admin-header h2{background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-  .admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;padding:20px}
-  .stat-card{background:#111118;padding:20px;border-radius:12px;border:1px solid #222}
-  .stat-card h3{color:#888;font-size:12px;margin-bottom:8px}
-  .stat-card .value{font-size:28px;font-weight:700;background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-  .admin-table{margin:20px;padding:20px;background:#111118;border-radius:12px}
-  .admin-table h3{margin-bottom:15px}
-  .admin-table table{width:100%;border-collapse:collapse}
-  .admin-table th,.admin-table td{padding:12px;text-align:left;border-bottom:1px solid #222}
-  .admin-table th{color:#888;font-size:12px}
-  .admin-table tr:hover{background:#1a1a24}
-  .status-badge{padding:4px 8px;border-radius:4px;font-size:11px}
-  .status-badge.pro{background:#ffd700;color:#000}
-  .status-badge.free{background:#333;color:#aaa}
-  .close-admin{background:#ff4444;border:none;color:#fff;padding:8px 16px;border-radius:6px;cursor:pointer}
-  @media(max-width:600px){
-    .controls{flex-direction:column;align-items:stretch}
-    .plan-cards{flex-direction:column}
-    nav{padding:10px 15px}
-    .quote-card{min-height:200px;font-size:16px;padding:20px}
-    .editor-section,.downloads-section{margin:15px;padding:15px}
-    .upgrade-nudge{flex-direction:column;align-items:stretch}
-  }
-</style>
-</head>
-<body>
+// server.js - QuoteCards Pro Production Backend
+const express = require('express');
+const Stripe = require('stripe');
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const { Pool } = require('pg');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+require('dotenv').config();
 
-<nav>
-  <div class="logo">QuoteCards Pro</div>
-  <div id="guestNav">
-    <button class="nav-btn" style="background:#4287ff;margin-left:6px" onclick="openModal('signup')">Sign Up</button>
-    <button class="nav-btn" onclick="openModal('login')">SignIn</button>
-    <button class="nav-btn" style="background:linear-gradient(135deg,#00c853,#009624);margin-left:6px" onclick="openModal('join')">✨ Join Pro</button>
-  </div>
-  <div class="user-status" id="userNav">
-    <div class="avatar" id="avatarLetter">U</div>
-    <span id="userName" style="font-size:13px">User</span>
-    <span class="badge" id="tierBadge">Free</span>
-    <button class="nav-btn" id="adminBtn" style="background:#ffd700;color:#000;margin-left:8px;padding:5px 12px;font-size:12px;display:none" onclick="toggleAdmin()">📊 Admin</button>
-    <button class="nav-btn" style="background:#ff4444;margin-left:8px;padding:5px 12px;font-size:12px" onclick="logout()">Logout</button>
-  </div>
-</nav>
-
-<div class="pro-banner" id="proBanner">✨ Pro Active: Higher Mind Quotes Unlocked</div>
-<div class="upgrade-nudge" id="upgradeNudge">
-  <span>🔒 Unlock 50+ Higher Mind quotes. Join Pro for $6/mo.</span>
-  <button onclick="openModal('join')">Upgrade Now</button>
-</div>
-
-<section class="slider-section">
-  <div class="slider-wrap" id="sliderWrap">
-    <div class="slider-track" id="sliderTrack"></div>
-  </div>
-  <div class="dots" id="dots"></div>
-</section>
-
-<section class="editor-section">
-  <h2>🎨 Card Editor</h2>
-  <div class="controls">
-    <div class="ctrl-group"><label>Width</label><input type="number" id="cWidth" value="1080" min="400" max="4000"></div>
-    <div class="ctrl-group"><label>Height</label><input type="number" id="cHeight" value="1080" min="400" max="4000"></div>
-    <div class="ctrl-group"><label>Font</label><input type="number" id="fontSize" value="48" min="16" max="150"></div>
-    <div class="ctrl-group"><label>BG</label><input type="color" id="bgColor" value="#1a1a2e"></div>
-    <button onclick="renderCanvas()">Render</button>
-    <button onclick="cycleQuote()" style="background:#6e3bfa">New Quote</button>
-  </div>
-  <canvas id="previewCanvas"></canvas>
-  <button class="download-btn" onclick="downloadPNG()">⬇ Download PNG</button>
-</section>
-
-<section class="downloads-section" id="downloadsSection">
-  <h2>📁 My Downloads</h2>
-  <div class="downloads-grid" id="downloadsGrid"></div>
-</section>
-
-<!-- SignIn Modal -->
-<div class="modal" id="loginModal">
-  <div class="modal-box">
-    <button class="close-modal" onclick="closeModal()">&times;</button>
-    <h2>SignIn to QuoteCards Pro</h2>
-    <p>Access your saved cards and Higher Mind quotes.</p>
-    <input type="email" id="loginEmail" placeholder="Email Address" autocomplete="email">
-    <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
-    <div class="error-msg" id="loginError"></div>
-    <button class="btn-login" onclick="login()">SignIn</button>
-    <div class="switch-text">Forgot password? <span onclick="toggleAuth('forgot')">Reset it</span></div>
-    <div class="switch-text" style="margin-top:4px">New here? <span onclick="toggleAuth('signup')">Create account</span></div>
-  </div>
-</div>
-
-<!-- Signup Modal -->
-<div class="modal" id="signupModal">
-  <div class="modal-box">
-    <button class="close-modal" onclick="closeModal()">&times;</button>
-    <h2>✨ Create Account</h2>
-    <p>Join QuoteCards Pro and start creating beautiful quote cards.</p>
-    <input type="text" id="signupName" placeholder="Full Name" autocomplete="name">
-    <input type="email" id="signupEmail" placeholder="Email Address" autocomplete="email">
-    <input type="password" id="signupPass" placeholder="Password (min 6 chars)" autocomplete="new-password">
-    <input type="password" id="signupPassConfirm" placeholder="Confirm Password" autocomplete="new-password">
-    <div class="error-msg" id="signupError"></div>
-    <div class="success-msg" id="signupSuccess"></div>
-    <button class="btn-join" onclick="signup()">Create Account</button>
-    <div class="switch-text">Already have an account? <span onclick="toggleAuth('login')">Sign In</span></div>
-  </div>
-</div>
-
-<!-- Forgot Password Modal -->
-<div class="modal" id="forgotModal">
-  <div class="modal-box">
-    <button class="close-modal" onclick="closeModal()">&times;</button>
-    <h2>🔐 Reset Password</h2>
-    <p>Enter your email and we'll send reset instructions.</p>
-    <input type="email" id="forgotEmail" placeholder="Email Address" autocomplete="email">
-    <div class="error-msg" id="forgotError"></div>
-    <div class="success-msg" id="forgotSuccess"></div>
-    <button class="btn-login" onclick="forgotPassword()">Send Reset Link</button>
-    <div class="switch-text">Remembered? <span onclick="toggleAuth('login')">Sign In</span></div>
-  </div>
-</div>
-
-<!-- Join Pro Modal -->
-<div class="modal" id="joinModal">
-  <div class="modal-box">
-    <button class="close-modal" onclick="closeModal()">&times;</button>
-    <h2>✨ Join QuoteCards Pro</h2>
-    <p>Unlock Higher Mind quotes • Save downloads • Premium support</p>
-    <input type="email" id="joinEmail" placeholder="Email Address" style="margin-bottom:12px" autocomplete="email">
-    <div class="plan-cards">
-      <div class="plan-card selected" onclick="selectPlan(this,'monthly')">
-        <div class="label">Monthly</div>
-        <div class="price">$6/mo</div>
-      </div>
-      <div class="plan-card" onclick="selectPlan(this,'yearly')">
-        <div class="label">Yearly</div>
-        <div class="price">$48/yr</div>
-        <div class="save">Save 33%</div>
-      </div>
-    </div>
-    <div class="billing-notice">
-      <strong>🔒 Secure Payment via Stripe</strong><br>
-      By subscribing, you agree to recurring billing. Cancel anytime in your account settings.
-      You will be redirected to Stripe's secure checkout page.
-    </div>
-    <div class="error-msg" id="paymentError"></div>
-    <div class="success-msg" id="paymentSuccess"></div>
-    <button class="btn-join" id="payBtn" onclick="processPayment()">
-      <span id="payBtnText">💳 Subscribe Now</span>
-    </button>
-    <p style="font-size:10px;color:#555;margin-top:6px;text-align:center">
-      Secured by Stripe. Cancel anytime. <a href="/terms" style="color:#6e3bfa">Terms</a> • 
-      <a href="/privacy" style="color:#6e3bfa">Privacy</a>
-    </p>
-  </div>
-</div>
-
-<!-- Admin Dashboard -->
-<div class="admin-panel" id="adminPanel">
-  <div class="admin-header">
-    <h2>📊 QuoteCards Admin Dashboard</h2>
-    <div>
-      <button class="nav-btn" onclick="refreshAdminData()">🔄 Refresh</button>
-      <button class="close-admin" onclick="toggleAdmin()">✕ Close</button>
-    </div>
-  </div>
-  <div class="admin-stats" id="adminStats">
-    <div class="stat-card"><h3>Total Users</h3><div class="value" id="statTotalUsers">0</div></div>
-    <div class="stat-card"><h3>Pro Subscribers</h3><div class="value" id="statProUsers">0</div></div>
-    <div class="stat-card"><h3>Monthly Revenue</h3><div class="value" id="statRevenue">$0</div></div>
-    <div class="stat-card"><h3>Conversion Rate</h3><div class="value" id="statConversion">0%</div></div>
-  </div>
-  <div class="admin-table">
-    <h3>👥 All Users</h3>
-    <table>
-      <thead><tr><th>Email</th><th>Name</th><th>Status</th><th>Plan</th><th>Joined</th><th>Last Active</th></tr></thead>
-      <tbody id="usersTableBody"></tbody>
-    </table>
-  </div>
-  <div class="admin-table">
-    <h3>💰 Recent Payments</h3>
-    <table>
-      <thead><tr><th>User</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
-      <tbody id="paymentsTableBody"></tbody>
-    </table>
-  </div>
-</div>
-
-<script>
-// === CONFIG & STATE ===
-const API = 'https://higherprotocola3.onrender.com';
-const ADMIN_EMAIL = 'olusolaayodeji5112@gmail.com';
-const PAYMENT_LINKS = {
-  monthly: 'https://buy.stripe.com/4gM8wR5Ebg8H1yUa56dAk00',
-  yearly: 'https://buy.stripe.com/eVq7sNc2zcWva5qb9adAk01'
-};
-
-let state = {
-  user: null, token: null, isPro: false, quotes: [], qIdx: 0, 
-  speed: 0.5, selectedPlan: 'monthly', slider: { pos: 0, holding: false, animId: null }
-};
-
-// === QUOTES DATA ===
-const FREE_Q = [
-  {t:"The only limit to our realization of tomorrow is our doubts of today.",a:"Franklin D. Roosevelt"},
-  {t:"In the middle of every difficulty lies opportunity.",a:"Albert Einstein"},
-  {t:"It does not matter how slowly you go as long as you do not stop.",a:"Confucius"},
-  {t:"Believe you can and you're halfway there.",a:"Theodore Roosevelt"},
-  {t:"Act as if what you do makes a difference. It does.",a:"William James"}
+// Validate environment variables
+const requiredEnvVars = [
+  'STRIPE_SECRET_KEY', 'STRIPE_PUBLISHABLE_KEY', 'STRIPE_WEBHOOK_SECRET',
+  'STRIPE_PAYMENT_LINK_MONTHLY', 'STRIPE_PAYMENT_LINK_YEARLY',
+  'JWT_SECRET', 'ADMIN_EMAIL', 'DATABASE_URL', 'CORS_ORIGIN'
 ];
-const PRO_Q = [
-  {t:"The unexamined life is not worth living.",a:"Socrates"},
-  {t:"He who has a why to live can bear almost any how.",a:"Nietzsche"},
-  {t:"The mind is everything. What you think you become.",a:"Buddha"},
-  {t:"We are what we repeatedly do. Excellence is a habit.",a:"Aristotle"},
-  {t:"The greatest glory is rising every time we fall.",a:"Nelson Mandela"},
-  {t:"Your vision becomes clear when you look into your heart.",a:"Carl Jung"},
-  {t:"What lies behind us and what lies before us are tiny matters.",a:"Emerson"},
-  {t:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"Chinese Proverb"}
-];
+const missingVars = requiredEnvVars.filter(key => !process.env[key]);
+if (missingVars.length > 0) {
+  console.error('❌ Missing env vars:', missingVars.join(', '));
+  process.exit(1);
+}
 
-// === API CLIENT (Backend-First, Cache-Fallback) ===
-const api = {
-  async req(endpoint, opts = {}) {
-    const headers = { 'Content-Type': 'application/json', ...opts.headers };
-    if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
-    try {
-      const res = await fetch(`${API}${endpoint}`, { ...opts, headers });
-      const data = await res.json().catch(() => ({}));
-      if (res.status === 401) { this.logout(); return null; }
-      if (!res.ok) return { error: data.error || `HTTP ${res.status}: ${res.statusText}` };
-      return data;
-    } catch (e) {
-      console.warn(`API ${endpoint} failed:`, e);
-      return { error: 'Connection failed. Check your internet or server status.' };
-    }
-},
+const app = express();
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+const JWT_SECRET = process.env.JWT_SECRET;
+const PORT = process.env.PORT || 3000;
+const CORS_ORIGIN = process.env.CORS_ORIGIN;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
-  
-  async signup(data) { return this.req('/api/signup', { method: 'POST', body: JSON.stringify(data) }); },
-  async login(data) { return this.req('/api/login', { method: 'POST', body: JSON.stringify(data) }); },
-  async me() { return this.req('/api/me'); },
-  async adminUsers() { return this.req('/api/admin/users'); },
-  async adminStats() { return this.req('/api/admin/stats'); },
-  async verifyPayment(data) { return this.req('/api/verify-payment', { method: 'POST', body: JSON.stringify(data) }); },
-  async saveDownload(data) { return this.req('/api/downloads', { method: 'POST', body: JSON.stringify(data) }); },
-  async getDownloads() { return this.req('/api/downloads'); },
-  logout() { localStorage.removeItem('qc_token'); localStorage.removeItem('qc_user'); location.reload(); }
-};
+// PostgreSQL pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
 
-// === CACHE HELPERS (localStorage as fallback only) ===
-const cache = {
-  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
-  clear() { ['qc_token','qc_user'].forEach(k => localStorage.removeItem(k)); }
-};
-
-// === UI HELPERS ===
-const $ = (id) => document.getElementById(id);
-const show = (el, s) => el.classList.toggle('show', s);
-const notify = (msg, type = 'info') => {
-  const n = document.createElement('div');
-  n.style.cssText = `position:fixed;top:20px;right:20px;padding:14px 20px;border-radius:10px;color:#fff;font-size:14px;font-weight:500;z-index:10001;animation:slideIn .3s ease;max-width:320px;box-shadow:0 4px 20px rgba(0,0,0,.3);background:${type==='success'?'linear-gradient(135deg,#00c853,#009624)':type==='error'?'linear-gradient(135deg,#ff4444,#cc0000)':'linear-gradient(135deg,#6e3bfa,#4287ff)'}`;
-  n.textContent = msg; document.body.appendChild(n);
-  setTimeout(() => { n.style.animation = 'slideOut .3s ease'; setTimeout(() => n.remove(), 300); }, 4000);
-  if (!$('qc-styles')) {
-    const s = document.createElement('style'); s.id = 'qc-styles';
-    s.textContent = `@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}`;
-    document.head.appendChild(s);
+// Email transporter
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: parseInt(process.env.SMTP_PORT) || 587,
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
   }
-};
+});
 
-// === SLIDER ===
-const track = $('sliderTrack'), wrap = $('sliderWrap'), dotsEl = $('dots');
-function slideW() { return track.children[0]?.offsetWidth || 700; }
-function updateDots() {
-  const idx = Math.round((state.slider.pos / slideW()) % state.quotes.length);
-  dotsEl.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === idx));
-}
-function buildSlider() {
-  track.innerHTML = ''; dotsEl.innerHTML = '';
-  const pool = [...state.quotes, ...state.quotes];
-  pool.forEach(q => {
-    const d = document.createElement('div'); d.className = 'slide';
-    d.innerHTML = `<div class="quote-card">${q.t}<span class="author">— ${q.a}</span></div>`;
-    track.appendChild(d);
-  });
-  pool.forEach((_, i) => {
-    const dot = document.createElement('span'); dot.className = 'dot';
-    dot.onclick = () => { state.slider.pos = (i % state.quotes.length) * slideW(); updateDots(); };
-    dotsEl.appendChild(dot);
-  });
-  updateDots();
-}
-function animate() {
-  if (!state.slider.holding) {
-    state.slider.pos += state.speed;
-    const limit = slideW() * state.quotes.length;
-    if (state.slider.pos >= limit) state.slider.pos -= limit;
-    track.style.transform = `translateX(-${state.slider.pos}px)`;
-    updateDots();
-  }
-  state.slider.animId = requestAnimationFrame(animate);
-}
-['mousedown','touchstart'].forEach(ev => wrap.addEventListener(ev, (e) => { e.preventDefault(); state.slider.holding = true; wrap.style.opacity = '.7'; }, { passive: false }));
-['mouseup','mouseleave','touchend'].forEach(ev => wrap.addEventListener(ev, () => { state.slider.holding = false; wrap.style.opacity = '1'; }));
-
-// === CANVAS ===
-function renderCanvas() {
-  const c = $('previewCanvas'), ctx = c.getContext('2d');
-  const w = +$('cWidth').value, h = +$('cHeight').value, fs = +$('fontSize').value;
-  c.width = w; c.height = h;
-  ctx.fillStyle = $('bgColor').value; ctx.fillRect(0, 0, w, h);
-  ctx.fillStyle = '#e0e0e0'; ctx.font = `bold ${fs}px Segoe UI,sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  wrapText(ctx, state.quotes[state.qIdx].t, w/2, h/2-25, w-70, fs*1.3);
-  ctx.fillStyle = '#999'; ctx.font = `${fs*.5}px Segoe UI,sans-serif`;
-  ctx.fillText('— ' + state.quotes[state.qIdx].a, w/2, h/2+fs*1.8);
-  ctx.fillStyle = '#6e3bfa'; ctx.font = `bold ${fs*.35}px sans-serif`; ctx.fillText('QuoteCards', w/2, h-fs*.5);
-}
-function wrapText(ctx, t, x, y, mw, lh) {
-  const words = t.split(' '); let line = '', lines = [];
-  words.forEach(w => { const test = line + w + ' '; if (ctx.measureText(test).width > mw && line) { lines.push(line.trim()); line = w + ' '; } else line = test; });
-  lines.push(line.trim()); let sy = y - ((lines.length - 1) * lh) / 2;
-  lines.forEach((l, i) => ctx.fillText(l, x, sy + i * lh));
-}
-function cycleQuote() { state.qIdx = (state.qIdx + 1) % state.quotes.length; renderCanvas(); }
-
-// === DOWNLOADS (Backend-Persisted) ===
-async function downloadPNG() {
-  const c = $('previewCanvas'), url = c.toDataURL('image/png');
-  const a = document.createElement('a'); a.download = 'quotecard_' + Date.now() + '.png'; a.href = url; a.click();
-  
-  if (state.user) {
-    // Try backend first
-    const saved = await api.saveDownload({ 
-      imageUrl: url, quote: state.quotes[state.qIdx].t, author: state.quotes[state.qIdx].a,
-      settings: { width: +$('cWidth').value, height: +$('cHeight').value, fontSize: +$('fontSize').value, bgColor: $('bgColor').value }
-    });
-    if (saved) { renderDownloads(); return; }
-    // Fallback: local cache only
-    const key = `qc_dl_${state.user.email}`;
-    const hist = cache.get(key) || [];
-    hist.unshift({ url, time: new Date().toISOString(), quote: state.quotes[state.qIdx].t.slice(0, 40) + '...' });
-    if (hist.length > 20) hist.pop();
-    cache.set(key, hist);
-    renderDownloads();
-  }
-}
-
-async function renderDownloads() {
-  if (!state.user) return;
-  const grid = $('downloadsGrid'); grid.innerHTML = '';
-  
-  // Try backend first
-  const dl = await api.getDownloads();
-  const items = dl?.downloads || cache.get(`qc_dl_${state.user.email}`) || [];
-  
-  if (!items.length) {
-    grid.innerHTML = '<p style="color:#777;font-size:13px;grid-column:1/-1">No downloads yet. Create & download your first card!</p>';
-    return;
-  }
-  
-  items.forEach((item, i) => {
-    const div = document.createElement('div'); div.className = 'download-item';
-    div.innerHTML = `<img src="${item.imageUrl || item.url}" alt="Download ${i+1}" loading="lazy"><div class="dl-overlay">⬇ Tap to redownload</div>`;
-    div.onclick = () => { const a = document.createElement('a'); a.download = 'quotecard_' + i + '.png'; a.href = item.imageUrl || item.url; a.click(); };
-    grid.appendChild(div);
-  });
-}
-
-// === AUTH ===
-async function applyAuth(u, token) {
-  state.user = u; state.token = token; state.isPro = u?.isPro;
-  
-  // Update UI
-  $('guestNav').style.display = 'none'; $('userNav').style.display = 'flex';
-  $('avatarLetter').textContent = u?.name?.[0]?.toUpperCase() || 'U';
-  $('userName').textContent = u?.name || 'User';
-  $('tierBadge').textContent = state.isPro ? '✨ Pro' : 'Free';
-  $('tierBadge').className = 'badge' + (state.isPro ? ' pro' : '');
-  show($('proBanner'), state.isPro);
-  $('adminBtn').style.display = (u?.email === ADMIN_EMAIL) ? 'inline-block' : 'none';
-  
-  // Load quotes & downloads
-  state.quotes = state.isPro ? [...FREE_Q, ...PRO_Q] : [...FREE_Q];
-  state.qIdx = 0; buildSlider(); renderCanvas();
-  $('downloadsSection').classList.add('show');
-  renderDownloads();
-  
-  // Pro nudge
-  show($('upgradeNudge'), !state.isPro && u?.email !== ADMIN_EMAIL);
-  
-  // Cache auth
-  if (token) { cache.set('qc_token', token); cache.set('qc_user', u); }
-}
-
-async function login() {
-  const email = $('loginEmail').value.trim().toLowerCase(), pass = $('loginPass').value;
-  const err = $('loginError'); err.classList.remove('show');
-  
-  if (!email.includes('@') || pass.length < 6) { err.textContent = 'Invalid email or password'; err.classList.add('show'); return; }
-  
-  const res = await api.login({ email, password: pass });
-  if (res?.token) { applyAuth(res.user, res.token); closeModal(); notify('✓ Welcome back!', 'success'); }
-  else { err.textContent = res?.error || 'Authentication failed'; err.classList.add('show'); }
-}
-
-async function signup() {
-  const name = $('signupName').value.trim(), email = $('signupEmail').value.trim().toLowerCase();
-  const pass = $('signupPass').value, confirm = $('signupPassConfirm').value;
-  const err = $('signupError'), ok = $('signupSuccess'), btn = event.target;
-  err.classList.remove('show'); ok.classList.remove('show');
-  
-  if (name.length < 2) { err.textContent = 'Enter your full name'; err.classList.add('show'); return; }
-  if (!email.includes('@')) { err.textContent = 'Enter a valid email'; err.classList.add('show'); return; }
-  if (pass.length < 6) { err.textContent = 'Password must be 6+ characters'; err.classList.add('show'); return; }
-  if (pass !== confirm) { err.textContent = 'Passwords do not match'; err.classList.add('show'); return; }
-  
-  btn.disabled = true;
-  const originalText = btn.innerHTML;
-  btn.innerHTML = '<span class="loading"></span> Creating...';
-  
+// Initialize database
+async function initDB() {
   try {
-    const res = await api.signup({ name, email, password: pass });
-    if (res?.token) {
-      applyAuth(res.user, res.token);
-      closeModal();
-      notify(`✓ Welcome, ${name.split(' ')[0]}!`, 'success');
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        email VARCHAR(255) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        is_pro BOOLEAN DEFAULT FALSE,
+        plan VARCHAR(50),
+        stripe_customer_id VARCHAR(255),
+        stripe_subscription_id VARCHAR(255),
+        paid_at TIMESTAMP,
+        created_at TIMESTAMP DEFAULT NOW(),
+        last_active TIMESTAMP DEFAULT NOW()
+      );
+      CREATE TABLE IF NOT EXISTS payments (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(255) REFERENCES users(email),
+        amount INTEGER NOT NULL,
+        plan VARCHAR(50) NOT NULL,
+        status VARCHAR(50) NOT NULL,
+        session_id VARCHAR(255) UNIQUE,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+      CREATE TABLE IF NOT EXISTS downloads (
+        id SERIAL PRIMARY KEY,
+        user_email VARCHAR(255) REFERENCES users(email),
+        image_url TEXT NOT NULL,
+        quote TEXT,
+        author TEXT,
+        settings JSONB,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+      CREATE TABLE IF NOT EXISTS password_resets (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(255) NOT NULL,
+        token VARCHAR(255) UNIQUE NOT NULL,
+        requested_at TIMESTAMP DEFAULT NOW(),
+        used BOOLEAN DEFAULT FALSE,
+        ip_address VARCHAR(45)
+      );
+      CREATE TABLE IF NOT EXISTS user_activity (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(255) REFERENCES users(email),
+        page VARCHAR(255),
+        user_agent TEXT,
+        timestamp TIMESTAMP DEFAULT NOW(),
+        ip_address VARCHAR(45)
+      );
+      CREATE INDEX IF NOT EXISTS idx_payments_email ON payments(email);
+      CREATE INDEX IF NOT EXISTS idx_users_is_pro ON users(is_pro);
+      CREATE INDEX IF NOT EXISTS idx_activity_email ON user_activity(email);
+      CREATE INDEX IF NOT EXISTS idx_resets_email ON password_resets(email);
+    `);
+    console.log('✅ Database initialized');
+    
+    // Create admin user if not exists
+    const adminCheck = await pool.query('SELECT email FROM users WHERE email = $1', [ADMIN_EMAIL]);
+    if (adminCheck.rows.length === 0) {
+      const adminHash = await bcrypt.hash(ADMIN_PASSWORD, 12);
+      await pool.query(
+        `INSERT INTO users (email, name, password_hash, is_pro) VALUES ($1, $2, $3, $4)`,
+        [ADMIN_EMAIL, 'Admin', adminHash, true]
+      );
+      console.log(`✅ Admin user created: ${ADMIN_EMAIL} with password: ${ADMIN_PASSWORD}`);
     } else {
-      err.textContent = res?.error || 'Signup failed - email may already exist';
-      err.classList.add('show');
+      console.log(`✅ Admin user already exists: ${ADMIN_EMAIL}`);
     }
-  } catch(e) {
-    err.textContent = 'Connection error. Please try again.';
-    err.classList.add('show');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = originalText;
+    
+  } catch (err) {
+    console.error('❌ DB init failed:', err);
+    process.exit(1);
   }
 }
 
-function forgotPassword() {
-  const email = $('forgotEmail').value.trim().toLowerCase();
-  if (!email.includes('@')) { $('forgotError').textContent = 'Valid email required'; $('forgotError').classList.add('show'); return; }
-  $('forgotSuccess').textContent = `✓ Reset link sent to ${email} (if account exists)`; $('forgotSuccess').classList.add('show');
-  setTimeout(() => { $('forgotEmail').value = ''; closeModal(); }, 2000);
-}
+// Middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", 'https://js.stripe.com'],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", 'data:', 'https:'],
+      connectSrc: ["'self'", 'https://api.stripe.com', CORS_ORIGIN],
+      frameSrc: ["'self'", 'https://buy.stripe.com']
+    }
+  }
+}));
+app.use(cors({ origin: CORS_ORIGIN, credentials: true, methods: ['GET','POST','PUT','DELETE'] }));
+app.use(morgan('short'));
+app.use(express.json({ limit: '10mb' }));
 
-async function checkAuth() {
-  const token = cache.get('qc_token'), stored = cache.get('qc_user');
-  if (!token || !stored) return;
-  
-  const u = await api.me();
-  if (u?.email) applyAuth(u, token);
-  else { cache.clear(); applyAuth(stored, token); } // Fallback to cache
-}
+// Rate limiting
+const authLimiter = rateLimit({ windowMs: 15*60*1000, max: 100, message: { error: 'Too many requests' } });
 
-function logout() { api.logout(); }
+// Auth middleware
+const authMiddleware = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ error: 'Authentication required' });
+  try {
+    req.user = jwt.verify(token, JWT_SECRET);
+    next();
+  } catch {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+};
+
+const adminMiddleware = (req, res, next) => {
+  if (req.user.email !== ADMIN_EMAIL) {
+    console.warn(`⚠️ Admin access denied: ${req.user.email}`);
+    return res.status(403).json({ error: 'Admin access required' });
+  }
+  next();
+};
+
+// Helper: Get IP
+const getIP = (req) => req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress;
+
+// === PUBLIC ENDPOINTS ===
+app.get('/api/config', (req, res) => {
+  res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
+});
+
+app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
+
+
+// === AUTH ENDPOINTS ===
+// SIGNUP - FIXED: Ensure proper error handling and response
+app.post('/api/signup', authLimiter, async (req, res) => {
+try {
+const { email, password, name } = req.body;
+if (!email?.includes('@') || !password || password.length < 6 || !name) {
+return res.status(400).json({ error: 'Valid name, email, and 6+ char password required' });
+}
+const existing = await pool.query('SELECT email FROM users WHERE email = $1', [email]);
+if (existing.rows.length > 0) {
+return res.status(400).json({ error: 'Email already registered' });
+}
+const passwordHash = await bcrypt.hash(password, 12);
+const result = await pool.query(
+`INSERT INTO users (email, name, password_hash) VALUES ($1, $2, $3) RETURNING email, name, is_pro as "isPro", plan, created_at`,
+[email, name, passwordHash]
+);
+const user = result.rows[0];
+const token = jwt.sign({ email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
+console.log(`✅ New user: ${email}`);
+res.status(201).json({ token, user }); // Explicit 201 status
+} catch (err) {
+console.error('Signup error:', err);
+res.status(500).json({ error: 'Signup failed: ' + (err.message || 'Server error') });
+}
+});
+
+// LOGIN
+app.post('/api/login', authLimiter, async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email?.includes('@') || !password) {
+      return res.status(400).json({ error: 'Valid email and password required' });
+    }
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    const user = result.rows[0];
+    const valid = await bcrypt.compare(password, user.password_hash);
+    if (!valid) {
+      console.warn(`Failed login: ${email}`);
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    await pool.query('UPDATE users SET last_active = NOW() WHERE email = $1', [email]);
+    const token = jwt.sign({ email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
+    res.json({
+      token,
+      user: { email: user.email, name: user.name, isPro: user.is_pro, plan: user.plan }
+    });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ error: 'Login failed' });
+  }
+});
+
+// GET CURRENT USER
+app.get('/api/me', authMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT email, name, is_pro as "isPro", plan FROM users WHERE email = $1',
+      [req.user.email]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Profile error:', err);
+    res.status(500).json({ error: 'Failed to fetch profile' });
+  }
+});
+
+// === PASSWORD RESET ===
+app.post('/api/forgot-password', authLimiter, async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email?.includes('@')) return res.status(400).json({ error: 'Valid email required' });
+    const token = crypto.randomBytes(32).toString('hex');
+    const ip = getIP(req);
+    await pool.query(
+      `INSERT INTO password_resets (email, token, ip_address) VALUES ($1, $2, $3)`,
+      [email, token, ip]
+    );
+    if (process.env.SMTP_USER) {
+      await transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: ADMIN_EMAIL,
+        subject: '🔐 Password Reset Request - QuoteCards Pro',
+        html: `
+          <h3>Password Reset Request</h3>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>IP:</strong> ${ip}</p>
+          <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+          <p>Log into admin dashboard to send recovery email.</p>
+        `
+      });
+    }
+    console.log(`🔐 Reset requested: ${email} from ${ip}`);
+    res.json({ success: true, message: 'Reset request recorded. Admin notified.' });
+  } catch (err) {
+    console.error('Forgot password error:', err);
+    res.status(500).json({ error: 'Failed to process request' });
+  }
+});
+
+// ADMIN: Send Recovery Email
+app.post('/api/admin/send-recovery', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const { email, adminEmail } = req.body;
+    if (!email?.includes('@')) return res.status(400).json({ error: 'Valid email required' });
+    const user = await pool.query('SELECT name FROM users WHERE email = $1', [email]);
+    if (user.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetLink = `${CORS_ORIGIN}/reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
+    await pool.query(
+      `INSERT INTO password_resets (email, token, used) VALUES ($1, $2, true)`,
+      [email, resetToken]
+    );
+    if (process.env.SMTP_USER) {
+      await transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: email,
+        subject: '🔐 Reset Your QuoteCards Pro Password',
+        html: `
+          <h3>Reset Your Password</h3>
+          <p>Hi ${user.rows[0].name},</p>
+          <p>Click the link below to reset your password:</p>
+          <p><a href="${resetLink}" style="background:#6e3bfa;color:#fff;padding:10px 20px;text-decoration:none;border-radius:6px">Reset Password</a></p>
+          <p>This link expires in 1 hour.</p>
+          <p>Requested by admin: ${adminEmail}</p>
+        `
+      });
+    }
+    await pool.query('UPDATE password_resets SET used = true WHERE email = $1 ORDER BY requested_at DESC LIMIT 1', [email]);
+    console.log(`✅ Recovery email sent to ${email}`);
+    res.json({ success: true, message: 'Recovery email sent' });
+  } catch (err) {
+    console.error('Send recovery error:', err);
+    res.status(500).json({ error: 'Failed to send recovery email' });
+  }
+});
+
+// === ACTIVITY TRACKING ===
+app.post('/api/activity', authMiddleware, async (req, res) => {
+  try {
+    const { page, userAgent, timestamp } = req.body;
+    await pool.query(
+      `INSERT INTO user_activity (email, page, user_agent, timestamp, ip_address)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [req.user.email, page, userAgent, timestamp || new Date().toISOString(), getIP(req)]
+    );
+    await pool.query('UPDATE users SET last_active = NOW() WHERE email = $1', [req.user.email]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Activity tracking error:', err);
+    res.status(500).json({ error: 'Failed to track activity' });
+  }
+});
+
+// === DOWNLOADS ===
+app.post('/api/downloads', authMiddleware, async (req, res) => {
+  try {
+    const { imageUrl, quote, author, settings } = req.body;
+    if (!imageUrl) return res.status(400).json({ error: 'Image URL required' });
+    await pool.query(
+      `INSERT INTO downloads (user_email, image_url, quote, author, settings)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [req.user.email, imageUrl, quote, author, settings || {}]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Save download error:', err);
+    res.status(500).json({ error: 'Failed to save download' });
+  }
+});
+
+app.get('/api/downloads', authMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, image_url as "imageUrl", quote, author, settings, created_at
+       FROM downloads WHERE user_email = $1 ORDER BY created_at DESC LIMIT 50`,
+      [req.user.email]
+    );
+    res.json({ downloads: result.rows });
+  } catch (err) {
+    console.error('Fetch downloads error:', err);
+    res.status(500).json({ error: 'Failed to fetch downloads' });
+  }
+});
 
 // === PAYMENTS ===
-function selectPlan(el, plan) {
-  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected'); state.selectedPlan = plan;
-}
-
-async function processPayment() {
-  const email = $('joinEmail').value.trim().toLowerCase();
-  if (!email.includes('@')) { $('paymentError').textContent = 'Valid email required'; $('paymentError').classList.add('show'); return; }
-  
-  const btn = $('payBtn'), txt = $('payBtnText');
-  btn.disabled = true; txt.innerHTML = '<span class="loading"></span> Redirecting...';
-  
+app.post('/api/verify-payment', authMiddleware, async (req, res) => {
   try {
-    const link = PAYMENT_LINKS[state.selectedPlan];
-    const sep = link.includes('?') ? '&' : '?';
-    const url = `${link}${sep}prefilled_email=${encodeURIComponent(email)}&client_reference_id=${encodeURIComponent(email)}`;
-    
-    // Track pending
-    cache.set('qc_pending', { email, plan: state.selectedPlan, ts: Date.now() });
-    setTimeout(() => window.location.href = url, 800);
-  } catch (e) {
-    $('paymentError').textContent = 'Payment setup failed'; $('paymentError').classList.add('show');
-    btn.disabled = false; txt.textContent = '💳 Subscribe Now';
-  }
-}
-
-async function verifyPayment() {
-  const params = new URLSearchParams(window.location.search);
-  const sid = params.get('session_id'), canceled = params.get('canceled') === 'true';
-  
-  if (sid && state.token) {
-    const res = await api.verifyPayment({ sessionId: sid });
-    if (res?.success) {
-      const u = await api.me(); if (u) applyAuth(u, state.token);
-      notify('🎉 Pro activated! All features unlocked.', 'success');
+    const { sessionId } = req.body;
+    if (!sessionId) return res.status(400).json({ error: 'Session ID required' });
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    if (session.client_reference_id !== req.user.email) {
+      return res.status(400).json({ error: 'Session mismatch' });
     }
-    cache.set('qc_pending', null);
-    window.history.replaceState({}, '', location.pathname);
-  } else if (canceled) {
-    notify('Payment cancelled. Try again anytime.', 'info');
-    cache.set('qc_pending', null);
-    window.history.replaceState({}, '', location.pathname);
+    if (session.payment_status !== 'paid') {
+      return res.status(400).json({ error: 'Payment not completed' });
+    }
+    const plan = session.metadata?.plan || 'monthly';
+    await pool.query(
+      `UPDATE users SET is_pro = TRUE, plan = $1, stripe_subscription_id = $2, paid_at = NOW() WHERE email = $3`,
+      [plan, session.subscription, req.user.email]
+    );
+    await pool.query(
+      `INSERT INTO payments (email, amount, plan, status, session_id)
+       VALUES ($1, $2, $3, 'paid', $4) ON CONFLICT (session_id) DO NOTHING`,
+      [req.user.email, session.amount_total ? session.amount_total / 100 : 0, plan, session.id]
+    );
+    console.log(`✅ Payment verified: ${req.user.email}`);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Payment verify error:', err);
+    res.status(500).json({ error: 'Failed to verify payment' });
+  }
+});
+
+// === ADMIN ENDPOINTS ===
+app.get('/api/admin/stats', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const [usersRes, proRes, revenueRes] = await Promise.all([
+      pool.query('SELECT COUNT(*) FROM users'),
+      pool.query('SELECT COUNT(*) FROM users WHERE is_pro = TRUE'),
+      pool.query("SELECT COALESCE(SUM(amount), 0) as total FROM payments WHERE status = 'paid'")
+    ]);
+    const totalUsers = parseInt(usersRes.rows[0].count);
+    const proUsers = parseInt(proRes.rows[0].count);
+    const revenue = parseFloat(revenueRes.rows[0].total);
+    res.json({
+      totalUsers, proUsers, revenue,
+      conversionRate: totalUsers > 0 ? Math.round((proUsers / totalUsers) * 100) : 0
+    });
+  } catch (err) {
+    console.error('Admin stats error:', err);
+    res.status(500).json({ error: 'Failed to fetch stats' });
+  }
+});
+
+app.get('/api/admin/users', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT email, name, is_pro as "isPro", plan, created_at as "createdAt", last_active as "lastActive"
+      FROM users ORDER BY created_at DESC
+    `);
+    res.json({ users: result.rows });
+  } catch (err) {
+    console.error('Admin users error:', err);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
+app.get('/api/admin/payments', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT email, amount, plan, status, session_id as "sessionId", created_at as "date"
+      FROM payments ORDER BY created_at DESC LIMIT 100
+    `);
+    res.json({ payments: result.rows });
+  } catch (err) {
+    console.error('Admin payments error:', err);
+    res.status(500).json({ error: 'Failed to fetch payments' });
+  }
+});
+
+app.get('/api/admin/reset-requests', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT email, requested_at, ip_address
+      FROM password_resets
+      WHERE used = false AND requested_at > NOW() - INTERVAL '24 hours'
+      ORDER BY requested_at DESC
+    `);
+    res.json({ requests: result.rows });
+  } catch (err) {
+    console.error('Reset requests error:', err);
+    res.status(500).json({ error: 'Failed to fetch reset requests' });
+  }
+});
+
+// === STRIPE WEBHOOK ===
+app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  if (!sig) return res.status(400).send('Missing signature');
+  try {
+    const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        const session = event.data.object;
+        const email = session.client_reference_id || session.metadata?.userId;
+        if (!email) break;
+        await pool.query(
+          `UPDATE users SET is_pro = TRUE, plan = $1, stripe_customer_id = $2, stripe_subscription_id = $3, paid_at = NOW() WHERE email = $4`,
+          [session.metadata?.plan || 'monthly', session.customer, session.subscription, email]
+        );
+        await pool.query(
+          `INSERT INTO payments (email, amount, plan, status, session_id)
+           VALUES ($1, $2, $3, 'paid', $4) ON CONFLICT (session_id) DO NOTHING`,
+          [email, session.amount_total ? session.amount_total / 100 : 0, session.metadata?.plan || 'monthly', session.id]
+        );
+        console.log(`✅ User ${email} upgraded via webhook`);
+        break;
+      }
+      case 'customer.subscription.deleted':
+      case 'customer.subscription.updated': {
+        const sub = event.data.object;
+        const user = await pool.query('SELECT email FROM users WHERE stripe_subscription_id = $1', [sub.id]);
+        if (user.rows.length > 0) {
+          const email = user.rows[0].email;
+          if (sub.status === 'canceled' || event.type === 'customer.subscription.deleted') {
+            await pool.query('UPDATE users SET is_pro = FALSE, plan = NULL WHERE email = $1', [email]);
+            console.log(`❌ User ${email} downgraded`);
+          }
+        }
+        break;
+      }
+    }
+    res.json({ received: true });
+  } catch (err) {
+    console.error('Webhook error:', err.message);
+    res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+});
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
+app.use((req, res) => res.status(404).json({ error: 'Endpoint not found' }));
+
+// Start server
+async function startServer() {
+  try {
+    await initDB();
+    await pool.query('SELECT NOW()');
+    console.log('✅ DB connected');
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`🔗 Webhook: ${CORS_ORIGIN}/api/webhook`);
+    });
+  } catch (err) {
+    console.error('❌ Startup failed:', err);
+    process.exit(1);
   }
 }
 
-// === ADMIN ===
-function toggleAdmin() { const p = $('adminPanel'); p.classList.toggle('show'); if (p.classList.contains('show')) refreshAdminData(); }
 
-async function refreshAdminData() {
-  if (!state.token || state.user?.email !== ADMIN_EMAIL) return;
-  
-  const [stats, users, payments] = await Promise.all([api.adminStats(), api.adminUsers(), api.req('/api/admin/payments')]);
-  
-  if (stats) {
-    $('statTotalUsers').textContent = stats.totalUsers || 0;
-    $('statProUsers').textContent = stats.proUsers || 0;
-    $('statRevenue').textContent = '$' + (stats.revenue || 0).toLocaleString();
-    $('statConversion').textContent = (stats.conversionRate || 0) + '%';
+// Add to server.js - Track real-time presence
+app.post('/api/ping', authMiddleware, async (req, res) => {
+  try {
+    await pool.query('UPDATE users SET last_active = NOW() WHERE email = $1', [req.user.email]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Ping error:', err);
+    res.status(500).json({ error: 'Failed to update activity' });
   }
-  
-  const tbody = $('usersTableBody'); tbody.innerHTML = '';
-  (users?.users || []).forEach(u => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${u.email}</td><td>${u.name}</td><td><span class="status-badge ${u.isPro?'pro':'free'}">${u.isPro?'Pro':'Free'}</span></td><td>${u.plan||'N/A'}</td><td>${new Date(u.createdAt).toLocaleDateString()}</td><td>${new Date(u.lastActive||u.createdAt).toLocaleDateString()}</td>`;
-    tbody.appendChild(tr);
-  });
-  
-  const payTbody = $('paymentsTableBody'); payTbody.innerHTML = '';
-  (payments?.payments || []).forEach(p => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${p.email}</td><td>$${p.amount}</td><td><span class="status-badge pro">${p.status}</span></td><td>${new Date(p.date).toLocaleDateString()}</td>`;
-    payTbody.appendChild(tr);
-  });
-}
+});
 
-// === MODALS ===
-function openModal(t) {
-  document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
-  document.querySelectorAll('.error-msg, .success-msg').forEach(el => el.classList.remove('show'));
-  ['loginEmail','loginPass','signupName','signupEmail','signupPass','signupPassConfirm','joinEmail','forgotEmail'].forEach(id => { if ($(id)) $(id).value = ''; });
-  if ($(`${t}Modal`)) $(`${t}Modal`).classList.add('show');
-}
-function closeModal() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('show')); }
-function toggleAuth(m) { closeModal(); setTimeout(() => openModal(m), 100); }
 
-// === INIT ===
-async function init() {
-  // Build slider with free quotes initially
-  state.quotes = [...FREE_Q]; buildSlider(); animate(); renderCanvas();
-  
-  // Check auth
-  await checkAuth();
-  
-  // Verify payment redirect
-  await verifyPayment();
-  
-  // Event listeners
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-  document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m) closeModal(); }));
-  
-  // Auto-render on input change
-  ['cWidth','cHeight','fontSize','bgColor'].forEach(id => $(id)?.addEventListener('input', renderCanvas));
-}
+process.on('SIGTERM', async () => {
+  console.log('🔄 Shutting down...');
+  await pool.end();
+  process.exit(0);
+});
 
-init();
-</script>
-</body>
-</html>
+startServer();
