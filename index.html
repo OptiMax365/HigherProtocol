@@ -8,7 +8,6 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
   
   <style>
-    /* ===== RESET & BASE ===== */
     * {
       margin: 0;
       padding: 0;
@@ -21,15 +20,8 @@
       color: #f0f0f0;
       min-height: 100vh;
       line-height: 1.5;
-      transition: opacity 0.15s ease;
     }
 
-    body.loading {
-      opacity: 0.7;
-      pointer-events: none;
-    }
-
-    /* ===== NAVIGATION ===== */
     nav {
       display: flex;
       justify-content: space-between;
@@ -58,11 +50,12 @@
       border-radius: 8px;
       cursor: pointer;
       font-size: 13px;
-      transition: background 0.2s;
+      transition: all 0.2s;
     }
 
     nav .nav-btn:hover {
       background: #5a2fd4;
+      transform: translateY(-1px);
     }
 
     .badge {
@@ -81,7 +74,34 @@
       color: #fff;
     }
 
-    /* ===== SLIDER SECTION ===== */
+    .user-nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6e3bfa, #4287ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .avatar.pro {
+      background: linear-gradient(135deg, #00c853, #009624);
+    }
+
     .slider-section {
       padding: 20px 15px;
     }
@@ -129,10 +149,9 @@
       color: #e0e0e0;
       pointer-events: none;
       background: linear-gradient(145deg, #1a1a2e, #16213e);
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
     }
 
-    /* Pro quote cards - GREEN THEME */
     .quote-card.pro {
       background: linear-gradient(145deg, #1a472a, #0d3b22);
       border: 2px solid #00c853;
@@ -143,10 +162,6 @@
       margin-top: 12px;
       font-size: 11px;
       color: #999;
-    }
-
-    .quote-card.pro .author {
-      color: #88c9a1;
     }
 
     .dots {
@@ -169,7 +184,6 @@
       background: #6e3bfa;
     }
 
-    /* ===== EDITOR SECTION ===== */
     .editor-section {
       max-width: 700px;
       margin: 20px auto;
@@ -230,11 +244,12 @@
       border-radius: 7px;
       cursor: pointer;
       font-size: 13px;
-      transition: background 0.2s;
+      transition: all 0.2s;
     }
 
     .controls button:hover {
       background: #2e6fd9;
+      transform: translateY(-1px);
     }
 
     #previewCanvas {
@@ -257,14 +272,14 @@
       cursor: pointer;
       font-size: 14px;
       font-weight: 600;
-      transition: background 0.2s;
+      transition: all 0.2s;
     }
 
     .download-btn:hover {
       background: #5a2fd4;
+      transform: translateY(-1px);
     }
 
-    /* ===== DOWNLOADS SECTION ===== */
     .downloads-section {
       max-width: 700px;
       margin: 20px auto;
@@ -316,7 +331,6 @@
       text-align: center;
     }
 
-    /* ===== MODALS ===== */
     .modal {
       display: none;
       position: fixed;
@@ -326,11 +340,16 @@
       align-items: center;
       justify-content: center;
       padding: 15px;
-      transition: opacity 0.2s;
+      animation: fadeIn 0.2s ease;
     }
 
     .modal.show {
       display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .modal-box {
@@ -341,6 +360,12 @@
       max-width: 420px;
       border: 1px solid #222;
       position: relative;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     .modal-box h2 {
@@ -382,7 +407,17 @@
       font-size: 14px;
       cursor: pointer;
       margin-top: 5px;
-      transition: opacity 0.2s;
+      transition: all 0.2s;
+    }
+
+    .modal-box button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      opacity: 0.9;
+    }
+
+    .modal-box button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .btn-join {
@@ -403,9 +438,19 @@
       color: #fff;
       font-size: 20px;
       cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: background 0.2s;
     }
 
-    /* ===== PLAN CARDS ===== */
+    .close-modal:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
     .plan-cards {
       display: flex;
       gap: 10px;
@@ -420,11 +465,12 @@
       border-radius: 9px;
       cursor: pointer;
       text-align: center;
-      transition: border-color 0.2s;
+      transition: all 0.2s;
     }
 
     .plan-card.selected {
       border-color: #6e3bfa;
+      background: rgba(110, 59, 250, 0.1);
     }
 
     .plan-card .price {
@@ -455,43 +501,25 @@
       color: #4287ff;
     }
 
-    /* ===== USER STATUS ===== */
-    .user-status {
-      display: none;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .user-status .avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: #6e3bfa;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .user-status.pro .avatar {
-      background: linear-gradient(135deg, #00c853, #009624);
-    }
-
-    /* ===== PRO BANNER & UPGRADE NUDGE ===== */
     .pro-banner {
       background: linear-gradient(135deg, #00c853, #009624);
       color: #fff;
-      padding: 8px 15px;
+      padding: 10px 15px;
       border-radius: 8px;
       text-align: center;
       font-size: 13px;
-      margin: 15px 0;
+      margin: 15px 20px;
       display: none;
+      animation: slideDown 0.3s ease;
     }
 
     .pro-banner.show {
       display: block;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     .upgrade-nudge {
@@ -499,16 +527,17 @@
       border-left: 4px solid #ffd700;
       padding: 12px 15px;
       border-radius: 0 8px 8px 0;
-      margin: 15px 0;
+      margin: 15px 20px;
       font-size: 13px;
       color: #ccc;
       display: none;
+      align-items: center;
+      gap: 10px;
+      animation: slideDown 0.3s ease;
     }
 
     .upgrade-nudge.show {
       display: flex;
-      align-items: center;
-      gap: 10px;
     }
 
     .upgrade-nudge button {
@@ -520,6 +549,12 @@
       cursor: pointer;
       font-size: 12px;
       font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .upgrade-nudge button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
     }
 
     .billing-notice {
@@ -536,12 +571,14 @@
       color: #f0f0f0;
     }
 
-    /* ===== MESSAGES ===== */
     .error-msg {
       color: #ff4444;
       font-size: 12px;
       margin: 8px 0;
       display: none;
+      padding: 8px;
+      background: rgba(255, 68, 68, 0.1);
+      border-radius: 6px;
     }
 
     .error-msg.show {
@@ -553,6 +590,9 @@
       font-size: 12px;
       margin: 8px 0;
       display: none;
+      padding: 8px;
+      background: rgba(0, 200, 83, 0.1);
+      border-radius: 6px;
     }
 
     .success-msg.show {
@@ -573,7 +613,6 @@
       to { transform: rotate(360deg); }
     }
 
-    /* ===== ADMIN PANEL ===== */
     .admin-panel {
       display: none;
       position: fixed;
@@ -685,9 +724,14 @@
       padding: 8px 16px;
       border-radius: 6px;
       cursor: pointer;
+      transition: all 0.2s;
     }
 
-    /* ===== RESPONSIVE ===== */
+    .close-admin:hover {
+      background: #cc0000;
+      transform: translateY(-1px);
+    }
+
     @media (max-width: 600px) {
       .controls {
         flex-direction: column;
@@ -735,12 +779,14 @@
     </div>
     
     <!-- User Navigation -->
-    <div class="user-status" id="userNav">
-      <div class="avatar" id="avatarLetter">U</div>
-      <span id="userName" style="font-size:13px">User</span>
-      <span class="badge" id="tierBadge">Free</span>
-      <button class="nav-btn" id="adminBtn" style="background:#ffd700;color:#000;margin-left:8px;padding:5px 12px;font-size:12px;display:none" onclick="toggleAdmin()">📊 Admin</button>
-      <button class="nav-btn" style="background:#ff4444;margin-left:8px;padding:5px 12px;font-size:12px" onclick="logout()">Logout</button>
+    <div class="user-nav" id="userNav" style="display: none;">
+      <div class="user-info">
+        <div class="avatar" id="avatarLetter">U</div>
+        <span id="userName" style="font-size:13px">User</span>
+        <span class="badge" id="tierBadge">Free</span>
+      </div>
+      <button class="nav-btn" id="adminBtn" style="background:#ffd700;color:#000;padding:5px 12px;font-size:12px;display:none" onclick="toggleAdmin()">📊 Admin</button>
+      <button class="nav-btn" style="background:#ff4444;padding:5px 12px;font-size:12px" onclick="logout()">Logout</button>
     </div>
   </nav>
 
@@ -963,7 +1009,8 @@
       speed: 0.5,
       selectedPlan: 'monthly',
       slider: { pos: 0, holding: false, animId: null },
-      renderDebounce: null
+      renderDebounce: null,
+      authChecked: false
     };
 
     // ===== QUOTES DATA =====
@@ -975,7 +1022,6 @@
       { t: "Act as if what you do makes a difference. It does.", a: "William James" }
     ];
 
-    // ===== EXCLUSIVE PRO QUOTES =====
     const PRO_Q = [
       { t: "The unexamined life is not worth living.", a: "Socrates" },
       { t: "He who has a why to live can bear almost any how.", a: "Nietzsche" },
@@ -984,9 +1030,7 @@
       { t: "The greatest glory is rising every time we fall.", a: "Nelson Mandela" },
       { t: "Your vision becomes clear when you look into your heart.", a: "Carl Jung" },
       { t: "What lies behind us and what lies before us are tiny matters.", a: "Emerson" },
-      { t: "The best time to plant a tree was 20 years ago. The second best time is now.", a: "Chinese Proverb" },
-      { t: "Wisdom begins in wonder.", a: "Socrates" },
-      { t: "The only true wisdom is in knowing you know nothing.", a: "Socrates" }
+      { t: "The best time to plant a tree was 20 years ago. The second best time is now.", a: "Chinese Proverb" }
     ];
 
     // ===== API CLIENT =====
@@ -999,7 +1043,10 @@
           const res = await fetch(`${API}${endpoint}`, { ...opts, headers });
           const data = await res.json().catch(() => ({}));
           
-          if (res.status === 401) { this.logout(); return null; }
+          if (res.status === 401) { 
+            this.logout(); 
+            return null; 
+          }
           if (!res.ok) return { error: data.error || `HTTP ${res.status}: ${res.statusText}` };
           
           return data;
@@ -1021,6 +1068,7 @@
       logout() {
         localStorage.removeItem('qc_token');
         localStorage.removeItem('qc_user');
+        state = { ...state, user: null, token: null, isPro: false, authChecked: true };
         location.reload();
       }
     };
@@ -1043,10 +1091,18 @@
     // ===== UI HELPERS =====
     const $ = (id) => document.getElementById(id);
     
-    const show = (el, s) => el?.classList?.toggle('show', s);
+    const show = (el, s) => {
+      if (!el) return;
+      if (s) el.classList.add('show');
+      else el.classList.remove('show');
+    };
     
     const notify = (msg, type = 'info') => {
+      const existing = document.querySelector('.notification');
+      if (existing) existing.remove();
+      
       const n = document.createElement('div');
+      n.className = 'notification';
       n.style.cssText = `
         position:fixed;top:20px;right:20px;
         padding:14px 20px;border-radius:10px;
@@ -1093,10 +1149,7 @@
       pool.forEach(q => {
         const d = document.createElement('div');
         d.className = 'slide';
-        
-        // Check if quote is from PRO_Q array for green styling
         const isProQuote = PRO_Q.some(pq => pq.t === q.t);
-        
         d.innerHTML = `<div class="quote-card${isProQuote ? ' pro' : ''}">${q.t}<span class="author">— ${q.a}</span></div>`;
         track.appendChild(d);
       });
@@ -1165,7 +1218,6 @@
         ctx.font = `${fs*.5}px Segoe UI,sans-serif`;
         ctx.fillText('— ' + state.quotes[state.qIdx].a, w/2, h/2+fs*1.8);
         
-        // Green branding for Pro users
         ctx.fillStyle = state.isPro ? '#00c853' : '#6e3bfa';
         ctx.font = `bold ${fs*.35}px sans-serif`;
         ctx.fillText('QuoteCards', w/2, h-fs*.5);
@@ -1220,7 +1272,6 @@
         
         if (saved) { renderDownloads(); return; }
         
-        // Fallback to local cache
         const key = `qc_dl_${state.user.email}`;
         const hist = cache.get(key) || [];
         hist.unshift({ url, time: new Date().toISOString(), quote: state.quotes[state.qIdx].t.slice(0, 40) + '...' });
@@ -1258,39 +1309,47 @@
       });
     }
 
-    // ===== AUTHENTICATION =====
+    // ===== AUTHENTICATION - STABLE VERSION =====
     async function applyAuth(u, token) {
-      // Prevent UI flicker: add loading state before DOM updates
-      document.body.classList.add('loading');
+      // Prevent multiple calls
+      if (state.authChecked && state.user) return;
       
       state.user = u;
       state.token = token;
       state.isPro = u?.isPro === true;
+      state.authChecked = true;
       
-      // Update navigation visibility
-      $('guestNav').style.display = state.user ? 'none' : 'block';
+      // Update navigation
+      $('guestNav').style.display = state.user ? 'none' : 'flex';
       $('userNav').style.display = state.user ? 'flex' : 'none';
       
       if (state.user) {
         $('avatarLetter').textContent = u?.name?.[0]?.toUpperCase() || 'U';
         $('userName').textContent = u?.name || 'User';
+        
+        // Update badge
         $('tierBadge').textContent = state.isPro ? '✨ Pro' : 'Free';
         $('tierBadge').className = 'badge' + (state.isPro ? ' pro' : '');
         
-        // Add pro class to user nav for green avatar
-        $('userNav').className = 'user-status' + (state.isPro ? ' pro' : '');
+        // Update avatar
+        const avatar = $('avatarLetter');
+        if (state.isPro) avatar.classList.add('pro');
+        else avatar.classList.remove('pro');
         
+        // Show/hide pro banner
         show($('proBanner'), state.isPro);
+        
+        // Show admin button only for admin
         $('adminBtn').style.display = (u?.email === ADMIN_EMAIL) ? 'inline-block' : 'none';
         
-        // ===== KEY FIX: Hide Join Pro button for paid members =====
+        // ===== CRITICAL: Hide Join Pro button for paid members =====
         const joinProBtn = $('joinProBtn');
         if (joinProBtn) {
           joinProBtn.style.display = state.isPro ? 'none' : 'inline-block';
         }
       }
       
-      // Load quotes based on membership tier
+      // Load quotes based on tier
       state.quotes = state.isPro ? [...FREE_Q, ...PRO_Q] : [...FREE_Q];
       state.qIdx = 0;
       buildSlider();
@@ -1299,17 +1358,14 @@
       $('downloadsSection').classList.add('show');
       renderDownloads();
       
-      // Show upgrade nudge ONLY for non-Pro, non-admin users
+      // ===== CRITICAL: Show upgrade nudge ONLY for non-Pro users =====
       show($('upgradeNudge'), !state.isPro && u?.email !== ADMIN_EMAIL);
       
-      // Cache auth state
+      // Cache auth
       if (token) {
         cache.set('qc_token', token);
         cache.set('qc_user', u);
       }
-      
-      // Remove loading state after brief delay for smooth transition
-      setTimeout(() => document.body.classList.remove('loading'), 150);
     }
     
     async function login() {
@@ -1403,21 +1459,29 @@
     }
     
     async function checkAuth() {
+      // Prevent multiple checks
+      if (state.authChecked) return;
+      
       const token = cache.get('qc_token');
       const stored = cache.get('qc_user');
       
       if (!token || !stored) {
-        document.body.classList.remove('loading');
+        state.authChecked = true;
         return;
       }
       
-      const u = await api.me();
-      
-      if (u?.email) {
-        applyAuth(u, token);
-      } else {
-        cache.clear();
-        applyAuth(stored, token);
+      try {
+        const u = await api.me();
+        
+        if (u?.email) {
+          applyAuth(u, token);
+        } else {
+          cache.clear();
+          state.authChecked = true;
+        }
+      } catch (e) {
+        console.warn('Auth check failed:', e);
+        state.authChecked = true;
       }
     }
     
@@ -1452,7 +1516,6 @@
         const sep = link.includes('?') ? '&' : '?';
         const url = `${link}${sep}prefilled_email=${encodeURIComponent(email)}&client_reference_id=${encodeURIComponent(email)}`;
         
-        // Track pending payment
         cache.set('qc_pending', { email, plan: state.selectedPlan, ts: Date.now() });
         
         setTimeout(() => window.location.href = url, 800);
@@ -1569,7 +1632,7 @@
       animate();
       renderCanvas();
       
-      // Check authentication
+      // Check auth ONCE
       await checkAuth();
       
       // Verify payment redirect
