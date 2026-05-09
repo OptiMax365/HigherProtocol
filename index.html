@@ -2,93 +2,138 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>QuoteCards Pro</title>
 <meta name="description" content="Create beautiful quote cards with premium templates">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+<link rel="icon" href="image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
-body{background:#0a0a0f;color:#f0f0f0;min-height:100vh;line-height:1.5;transition:opacity 0.2s ease}
-body.auth-loading{opacity:0.6;pointer-events:none}
-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#111118;border-bottom:1px solid #222;position:sticky;top:0;z-index:100;will-change:transform}
-nav .logo{font-size:18px;font-weight:700;background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-nav .nav-btn{background:#6e3bfa;border:none;color:#fff;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px;transition:background 0.2s}
+/* === BASE RESET & PERFORMANCE === */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+html,body{height:100%;overflow-x:hidden}
+body{background:#0a0a0f;color:#f0f0f0;min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+
+/* === NAVIGATION === */
+nav{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#111118;border-bottom:1px solid #222;position:sticky;top:0;z-index:100;will-change:transform;transform:translateZ(0)}
+nav .logo{font-size:18px;font-weight:700;background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+nav .nav-btn{background:#6e3bfa;border:none;color:#fff;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px;transition:background 0.2s ease,transform 0.1s ease}
 nav .nav-btn:hover{background:#5a2fd4}
-.badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;margin-left:6px;background:#333;color:#aaa;transition:all 0.2s}
+nav .nav-btn:active{transform:scale(0.98)}
+.badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;margin-left:6px;background:#333;color:#aaa}
 .badge.pro{background:linear-gradient(135deg,#ffd700,#ff9800);color:#000}
+
+/* === PRO BANNER & NUDGE === */
+.pro-banner{background:linear-gradient(135deg,#6e3bfa,#4287ff);color:#fff;padding:8px 15px;border-radius:8px;text-align:center;font-size:13px;margin:15px 0;transition:opacity 0.3s ease,transform 0.3s ease;will-change:transform}
+.pro-banner.show{display:block;animation:slideInDown 0.3s ease}
+.pro-banner.hide{display:none}
+.upgrade-nudge{background:#1a1a2e;border-left:4px solid #ffd700;padding:12px 15px;border-radius:0 8px 8px 0;margin:15px 0;font-size:13px;color:#ccc;transition:opacity 0.3s ease,transform 0.3s ease;will-change:transform}
+.upgrade-nudge.show{display:flex;align-items:center;gap:10px;animation:slideInRight 0.3s ease}
+.upgrade-nudge.hide{display:none}
+.upgrade-nudge button{background:#ffd700;color:#000;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:transform 0.1s ease}
+.upgrade-nudge button:hover{transform:scale(1.05)}
+.upgrade-nudge button:active{transform:scale(0.98)}
+
+/* === SLIDER - OPTIMIZED FOR PERFORMANCE === */
 .slider-section{padding:20px 15px}
-.slider-wrap{position:relative;overflow:hidden;max-width:700px;margin:0 auto;border-radius:14px;cursor:grab;user-select:none;background:#111118;contain:layout}
+.slider-wrap{position:relative;overflow:hidden;max-width:700px;margin:0 auto;border-radius:14px;cursor:grab;user-select:none;background:#111118;will-change:transform;transform:translateZ(0);touch-action:pan-y}
 .slider-wrap:active{cursor:grabbing}
-.slider-track{display:flex;will-change:transform;transition:transform 0.1s linear}
-.slide{min-width:100%;display:flex;flex-direction:column;align-items:center;padding:25px 20px}
-.quote-card{width:100%;max-width:550px;min-height:220px;display:flex;align-items:center;justify-content:center;border-radius:12px;padding:25px;text-align:center;font-size:17px;color:#e0e0e0;pointer-events:none;background:linear-gradient(145deg,#1a1a2e,#16213e);transition:background 0.3s}
-.quote-card.pro-quote{background:linear-gradient(145deg,#0d4d2a,#0a3a20);border:2px solid #00c853}
+.slider-track{display:flex;will-change:transform;transform:translateZ(0);backface-visibility:hidden}
+.slide{min-width:100%;display:flex;flex-direction:column;align-items:center;padding:25px 20px;will-change:transform}
+.quote-card{width:100%;max-width:550px;min-height:220px;display:flex;align-items:center;justify-content:center;border-radius:12px;padding:25px;text-align:center;font-size:17px;color:#e0e0e0;pointer-events:none;transition:background 0.3s ease;will-change:transform}
+/* FREE quotes - default gradient */
+.quote-card.free{background:linear-gradient(145deg,#1a1a2e,#16213e)}
+/* PRO quotes - GREEN background as requested */
+.quote-card.pro{background:linear-gradient(145deg,#0d4d2e,#0a3d24);border:2px solid #00c853;box-shadow:0 0 20px rgba(0,200,83,0.2)}
 .quote-card .author{display:block;margin-top:12px;font-size:11px;color:#999}
-.quote-card .pro-badge{display:inline-block;padding:2px 8px;background:#00c853;color:#000;border-radius:4px;font-size:9px;font-weight:700;margin-top:8px}
 .dots{text-align:center;margin-top:8px}
-.dot{height:7px;width:7px;margin:0 4px;border-radius:50%;display:inline-block;background:#444;cursor:pointer;transition:background 0.2s}
-.dot.active{background:#6e3bfa}
-.editor-section{max-width:700px;margin:20px auto;padding:18px;background:#111118;border-radius:14px;transition:opacity 0.2s}
+.dot{height:7px;width:7px;margin:0 4px;border-radius:50%;display:inline-block;background:#444;cursor:pointer;transition:background 0.2s ease,transform 0.1s ease}
+.dot.active{background:#6e3bfa;transform:scale(1.2)}
+.dot:hover{background:#6e3bfa}
+
+/* === EDITOR SECTION === */
+.editor-section{max-width:700px;margin:20px auto;padding:18px;background:#111118;border-radius:14px;transition:opacity 0.2s ease}
 .editor-section h2{margin-bottom:12px;font-size:18px}
 .controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
 .ctrl-group{display:flex;flex-direction:column;gap:3px}
 .controls label{font-size:11px;color:#aaa}
-.controls input[type=number]{width:70px;padding:5px 8px;background:#1a1a24;border:1px solid #333;color:#fff;border-radius:6px;font-size:13px}
+.controls input[type=number]{width:70px;padding:5px 8px;background:#1a1a24;border:1px solid #333;color:#fff;border-radius:6px;font-size:13px;transition:border-color 0.2s}
+.controls input[type=number]:focus{outline:none;border-color:#6e3bfa}
 .controls input[type=color]{width:36px;height:32px;padding:0;border:none;cursor:pointer;border-radius:6px;background:#1a1a24}
-.controls button{background:#4287ff;border:none;color:#fff;padding:7px 14px;border-radius:7px;cursor:pointer;font-size:13px;transition:background 0.2s}
+.controls button{background:#4287ff;border:none;color:#fff;padding:7px 14px;border-radius:7px;cursor:pointer;font-size:13px;transition:background 0.2s,transform 0.1s}
 .controls button:hover{background:#2e6fd9}
-#previewCanvas{border:1px solid #333;border-radius:8px;display:block;margin:0 auto;max-width:100%;height:auto}
-.download-btn{margin-top:12px;background:#6e3bfa;width:100%;padding:11px;border:none;color:#fff;border-radius:9px;cursor:pointer;font-size:14px;font-weight:600;transition:background 0.2s}
+.controls button:active{transform:scale(0.98)}
+#previewCanvas{border:1px solid #333;border-radius:8px;display:block;margin:0 auto;max-width:100%;height:auto;will-change:transform;transform:translateZ(0)}
+.download-btn{margin-top:12px;background:#6e3bfa;width:100%;padding:11px;border:none;color:#fff;border-radius:9px;cursor:pointer;font-size:14px;font-weight:600;transition:background 0.2s,transform 0.1s}
 .download-btn:hover{background:#5a2fd4}
-.downloads-section{max-width:700px;margin:20px auto;padding:18px;background:#111118;border-radius:14px;display:none;transition:opacity 0.3s}
+.download-btn:active{transform:scale(0.99)}
+
+/* === DOWNLOADS SECTION === */
+.downloads-section{max-width:700px;margin:20px auto;padding:18px;background:#111118;border-radius:14px;display:none;transition:opacity 0.3s ease}
 .downloads-section.show{display:block}
 .downloads-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:12px}
-.download-item{position:relative;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color 0.2s}
-.download-item:hover{border-color:#6e3bfa}
+.download-item{position:relative;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color 0.2s,transform 0.1s}
+.download-item:hover{border-color:#6e3bfa;transform:translateY(-2px)}
+.download-item:active{transform:scale(0.98)}
 .download-item img{width:100%;height:120px;object-fit:cover;display:block}
 .download-item .dl-overlay{position:absolute;bottom:0;left:0;right:0;padding:6px;background:rgba(0,0,0,.7);font-size:10px;text-align:center}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;align-items:center;justify-content:center;padding:15px;transition:opacity 0.2s}
-.modal.show{display:flex}
-.modal-box{background:#1a1a24;padding:25px;border-radius:14px;width:100%;max-width:420px;border:1px solid #222;position:relative;animation:modalIn 0.2s ease}
-@keyframes modalIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+
+/* === MODALS - SMOOTH ANIMATIONS === */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;align-items:center;justify-content:center;padding:15px;opacity:0;transition:opacity 0.2s ease}
+.modal.show{display:flex;opacity:1}
+.modal-box{background:#1a1a24;padding:25px;border-radius:14px;width:100%;max-width:420px;border:1px solid #222;position:relative;transform:translateY(20px);transition:transform 0.3s ease,opacity 0.3s ease;opacity:0}
+.modal.show .modal-box{transform:translateY(0);opacity:1}
 .modal-box h2{margin-bottom:15px;background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:20px}
 .modal-box p{color:#aaa;font-size:13px;margin:8px 0}
-.modal-box input{width:100%;padding:9px;margin:8px 0;background:#111118;border:1px solid #333;color:#fff;border-radius:7px;font-size:14px}
-.modal-box button{width:100%;padding:10px;border:none;border-radius:7px;color:#fff;font-size:14px;cursor:pointer;margin-top:5px;transition:opacity 0.2s}
+.modal-box input{width:100%;padding:9px;margin:8px 0;background:#111118;border:1px solid #333;color:#fff;border-radius:7px;font-size:14px;transition:border-color 0.2s}
+.modal-box input:focus{outline:none;border-color:#6e3bfa}
+.modal-box button{width:100%;padding:10px;border:none;border-radius:7px;color:#fff;font-size:14px;cursor:pointer;margin-top:5px;transition:background 0.2s,transform 0.1s}
+.modal-box button:disabled{opacity:0.7;cursor:not-allowed}
+.modal-box button:active:not(:disabled){transform:scale(0.99)}
 .btn-join{background:linear-gradient(135deg,#00c853,#009624);font-weight:600}
+.btn-join:hover{background:linear-gradient(135deg,#00b34a,#008a1f)}
 .btn-login{background:#6e3bfa}
-#signupModal .modal-box input,#forgotModal .modal-box input{width:100%;padding:9px;margin:4px 0;background:#111118;border:1px solid #333;color:#fff;border-radius:7px;font-size:14px}
-#signupModal .modal-box input:focus,#forgotModal .modal-box input:focus{outline:none;border-color:#6e3bfa}
-.close-modal{position:absolute;top:10px;right:14px;background:none;border:none;color:#fff;font-size:20px;cursor:pointer}
+.btn-login:hover{background:#5a2fd4}
+.close-modal{position:absolute;top:10px;right:14px;background:none;border:none;color:#fff;font-size:20px;cursor:pointer;transition:color 0.2s}
+.close-modal:hover{color:#6e3bfa}
+
+/* === PLAN SELECTION === */
 .plan-cards{display:flex;gap:10px;margin:12px 0}
-.plan-card{flex:1;padding:12px;background:#111118;border:2px solid transparent;border-radius:9px;cursor:pointer;text-align:center;transition:border-color 0.2s}
-.plan-card.selected{border-color:#6e3bfa}
+.plan-card{flex:1;padding:12px;background:#111118;border:2px solid transparent;border-radius:9px;cursor:pointer;text-align:center;transition:border-color 0.2s,transform 0.1s}
+.plan-card:hover{transform:translateY(-2px)}
+.plan-card:active{transform:scale(0.99)}
+.plan-card.selected{border-color:#6e3bfa;background:#1a1a2e}
 .plan-card .price{font-size:18px;font-weight:700;margin:5px 0}
 .plan-card .label{font-size:11px;color:#888}
 .plan-card .save{font-size:10px;color:#00c853}
 .switch-text{text-align:center;margin-top:10px;font-size:12px;color:#888;cursor:pointer}
-.switch-text span{color:#4287ff}
-.user-status{display:none;align-items:center;gap:6px;transition:opacity 0.2s}
-.user-status .avatar{width:28px;height:28px;border-radius:50%;background:#6e3bfa;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
-.pro-banner{background:linear-gradient(135deg,#6e3bfa,#4287ff);color:#fff;padding:8px 15px;border-radius:8px;text-align:center;font-size:13px;margin:15px 0;display:none;transition:all 0.3s ease}
-.pro-banner.show{display:block;animation:slideDown 0.3s ease}
-@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-.upgrade-nudge{background:#1a1a2e;border-left:4px solid #ffd700;padding:12px 15px;border-radius:0 8px 8px 0;margin:15px 0;font-size:13px;color:#ccc;display:none;transition:all 0.3s ease}
-.upgrade-nudge.show{display:flex;align-items:center;gap:10px;animation:slideIn 0.3s ease}
-@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
-.upgrade-nudge button{background:#ffd700;color:#000;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600}
+.switch-text span{color:#4287ff;transition:color 0.2s}
+.switch-text span:hover{color:#6e3bfa}
+
+/* === USER STATUS === */
+.user-status{display:none;align-items:center;gap:6px;transition:opacity 0.2s ease}
+.user-status.show{display:flex}
+.user-status .avatar{width:28px;height:28px;border-radius:50%;background:#6e3bfa;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.pro-banner{display:none}
+.pro-banner.show{display:block}
+
+/* === BILLING & MESSAGES === */
 .billing-notice{background:#1a1a2e;border:1px solid #333;padding:12px;border-radius:8px;margin:12px 0;font-size:12px;color:#888}
 .billing-notice strong{color:#f0f0f0}
-.error-msg{color:#ff4444;font-size:12px;margin:8px 0;display:none}
-.error-msg.show{display:block;animation:shake 0.3s}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.error-msg{color:#ff4444;font-size:12px;margin:8px 0;display:none;animation:shake 0.3s ease}
+.error-msg.show{display:block}
 .success-msg{color:#00c853;font-size:12px;margin:8px 0;display:none}
 .success-msg.show{display:block}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+/* === LOADING === */
 .loading{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-radius:50%;border-top-color:#fff;animation:spin 1s ease-in-out infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slideInDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+/* === ADMIN PANEL === */
 .admin-panel{display:none;position:fixed;inset:0;background:#0a0a0f;z-index:10000;overflow-y:auto}
 .admin-panel.show{display:block}
-.admin-header{padding:20px;background:#111118;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center}
+.admin-header{padding:20px;background:#111118;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1}
 .admin-header h2{background:linear-gradient(135deg,#6e3bfa,#4287ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;padding:20px}
 .stat-card{background:#111118;padding:20px;border-radius:12px;border:1px solid #222}
@@ -97,174 +142,207 @@ nav .nav-btn:hover{background:#5a2fd4}
 .admin-table{margin:20px;padding:20px;background:#111118;border-radius:12px}
 .admin-table h3{margin-bottom:15px}
 .admin-table table{width:100%;border-collapse:collapse}
-.admin-table th,.admin-table td{padding:12px;text-align:left;border-bottom:1px solid #222}
-.admin-table th{color:#888;font-size:12px}
+.admin-table th,.admin-table td{padding:12px;text-align:left;border-bottom:1px solid #222;font-size:13px}
+.admin-table th{color:#888;font-size:12px;font-weight:600}
 .admin-table tr:hover{background:#1a1a24}
 .status-badge{padding:4px 8px;border-radius:4px;font-size:11px}
 .status-badge.pro{background:#ffd700;color:#000}
 .status-badge.free{background:#333;color:#aaa}
-.close-admin{background:#ff4444;border:none;color:#fff;padding:8px 16px;border-radius:6px;cursor:pointer}
+.close-admin{background:#ff4444;border:none;color:#fff;padding:8px 16px;border-radius:6px;cursor:pointer;transition:background 0.2s}
+.close-admin:hover{background:#cc0000}
+
+/* === NOTIFICATIONS === */
+.notification{position:fixed;top:20px;right:20px;padding:14px 20px;border-radius:10px;color:#fff;font-size:14px;font-weight:500;z-index:10001;max-width:320px;box-shadow:0 4px 20px rgba(0,0,0,.3);animation:slideIn 0.3s ease;will-change:transform,opacity}
+.notification.success{background:linear-gradient(135deg,#00c853,#009624)}
+.notification.error{background:linear-gradient(135deg,#ff4444,#cc0000)}
+.notification.info{background:linear-gradient(135deg,#6e3bfa,#4287ff)}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}
+
+/* === RESPONSIVE === */
 @media(max-width:600px){
-.controls{flex-direction:column;align-items:stretch}
-.plan-cards{flex-direction:column}
-nav{padding:10px 15px}
-.quote-card{min-height:200px;font-size:16px;padding:20px}
-.editor-section,.downloads-section{margin:15px;padding:15px}
-.upgrade-nudge{flex-direction:column;align-items:stretch}
+  .controls{flex-direction:column;align-items:stretch}
+  .plan-cards{flex-direction:column}
+  nav{padding:10px 15px}
+  nav .logo{font-size:16px}
+  nav .nav-btn{padding:6px 12px;font-size:12px}
+  .quote-card{min-height:200px;font-size:16px;padding:20px}
+  .editor-section,.downloads-section{margin:15px;padding:15px}
+  .upgrade-nudge{flex-direction:column;align-items:stretch}
+  .modal-box{padding:20px;margin:10px}
+  .admin-stats{grid-template-columns:1fr;gap:10px;padding:15px}
+  .admin-table{margin:15px;padding:15px}
+}
+
+/* === REDUCE MOTION === */
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .slider-track{will-change:auto}
 }
 </style>
 </head>
-<body class="auth-loading">
+<body>
 <nav>
-<div class="logo">QuoteCards Pro</div>
-<div id="guestNav">
-<button class="nav-btn" style="background:#4287ff;margin-left:6px" onclick="openModal('signup')">Sign Up</button>
-<button class="nav-btn" onclick="openModal('login')">SignIn</button>
-<button class="nav-btn" style="background:linear-gradient(135deg,#00c853,#009624);margin-left:6px" onclick="openModal('join')">✨ Join Pro</button>
-</div>
-<div class="user-status" id="userNav">
-<div class="avatar" id="avatarLetter">U</div>
-<span id="userName" style="font-size:13px">User</span>
-<span class="badge" id="tierBadge">Free</span>
-<button class="nav-btn" id="adminBtn" style="background:#ffd700;color:#000;margin-left:8px;padding:5px 12px;font-size:12px;display:none" onclick="toggleAdmin()">📊 Admin</button>
-<button class="nav-btn" style="background:#ff4444;margin-left:8px;padding:5px 12px;font-size:12px" onclick="logout()">Logout</button>
-</div>
+  <div class="logo">QuoteCards Pro</div>
+  <div id="guestNav">
+    <button class="nav-btn" style="background:#4287ff;margin-left:6px" onclick="openModal('signup')">Sign Up</button>
+    <button class="nav-btn" onclick="openModal('login')">SignIn</button>
+    <button class="nav-btn" id="guestJoinPro" style="background:linear-gradient(135deg,#00c853,#009624);margin-left:6px" onclick="openModal('join')">✨ Join Pro</button>
+  </div>
+  <div class="user-status" id="userNav">
+    <div class="avatar" id="avatarLetter">U</div>
+    <span id="userName" style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px">User</span>
+    <span class="badge" id="tierBadge">Free</span>
+    <button class="nav-btn" id="adminBtn" style="background:#ffd700;color:#000;margin-left:8px;padding:5px 12px;font-size:12px;display:none" onclick="toggleAdmin()">📊 Admin</button>
+    <button class="nav-btn" style="background:#ff4444;margin-left:8px;padding:5px 12px;font-size:12px" onclick="logout()">Logout</button>
+  </div>
 </nav>
+
 <div class="pro-banner" id="proBanner">✨ Pro Active: Higher Mind Quotes Unlocked</div>
 <div class="upgrade-nudge" id="upgradeNudge">
-<span>🔒 Unlock 50+ Higher Mind quotes. Join Pro for $6/mo.</span>
-<button onclick="openModal('join')">Upgrade Now</button>
+  <span>🔒 Unlock 50+ Higher Mind quotes. Join Pro for $6/mo.</span>
+  <button onclick="openModal('join')">Upgrade Now</button>
 </div>
+
 <section class="slider-section">
-<div class="slider-wrap" id="sliderWrap">
-<div class="slider-track" id="sliderTrack"></div>
-</div>
-<div class="dots" id="dots"></div>
+  <div class="slider-wrap" id="sliderWrap">
+    <div class="slider-track" id="sliderTrack"></div>
+  </div>
+  <div class="dots" id="dots"></div>
 </section>
+
 <section class="editor-section">
-<h2>🎨 Card Editor</h2>
-<div class="controls">
-<div class="ctrl-group"><label>Width</label><input type="number" id="cWidth" value="1080" min="400" max="4000"></div>
-<div class="ctrl-group"><label>Height</label><input type="number" id="cHeight" value="1080" min="400" max="4000"></div>
-<div class="ctrl-group"><label>Font</label><input type="number" id="fontSize" value="48" min="16" max="150"></div>
-<div class="ctrl-group"><label>BG</label><input type="color" id="bgColor" value="#1a1a2e"></div>
-<button onclick="renderCanvas()">Render</button>
-<button onclick="cycleQuote()" style="background:#6e3bfa">New Quote</button>
-</div>
-<canvas id="previewCanvas"></canvas>
-<button class="download-btn" onclick="downloadPNG()">⬇ Download PNG</button>
+  <h2>🎨 Card Editor</h2>
+  <div class="controls">
+    <div class="ctrl-group"><label>Width</label><input type="number" id="cWidth" value="1080" min="400" max="4000"></div>
+    <div class="ctrl-group"><label>Height</label><input type="number" id="cHeight" value="1080" min="400" max="4000"></div>
+    <div class="ctrl-group"><label>Font</label><input type="number" id="fontSize" value="48" min="16" max="150"></div>
+    <div class="ctrl-group"><label>BG</label><input type="color" id="bgColor" value="#1a1a2e"></div>
+    <button onclick="renderCanvas()">Render</button>
+    <button onclick="cycleQuote()" style="background:#6e3bfa">New Quote</button>
+  </div>
+  <canvas id="previewCanvas"></canvas>
+  <button class="download-btn" onclick="downloadPNG()">⬇ Download PNG</button>
 </section>
+
 <section class="downloads-section" id="downloadsSection">
-<h2>📁 My Downloads</h2>
-<div class="downloads-grid" id="downloadsGrid"></div>
+  <h2>📁 My Downloads</h2>
+  <div class="downloads-grid" id="downloadsGrid"></div>
 </section>
+
+<!-- === MODALS === -->
 <!-- SignIn Modal -->
-<div class="modal" id="loginModal">
-<div class="modal-box">
-<button class="close-modal" onclick="closeModal()">&times;</button>
-<h2>SignIn to QuoteCards Pro</h2>
-<p>Access your saved cards and Higher Mind quotes.</p>
-<input type="email" id="loginEmail" placeholder="Email Address" autocomplete="email">
-<input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
-<div class="error-msg" id="loginError"></div>
-<button class="btn-login" onclick="login()">SignIn</button>
-<div class="switch-text">Forgot password? <span onclick="toggleAuth('forgot')">Reset it</span></div>
-<div class="switch-text" style="margin-top:4px">New here? <span onclick="toggleAuth('signup')">Create account</span></div>
+<div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <div class="modal-box">
+    <button class="close-modal" onclick="closeModal()" aria-label="Close">&times;</button>
+    <h2 id="loginTitle">SignIn to QuoteCards Pro</h2>
+    <p>Access your saved cards and Higher Mind quotes.</p>
+    <input type="email" id="loginEmail" placeholder="Email Address" autocomplete="email" aria-label="Email">
+    <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password" aria-label="Password">
+    <div class="error-msg" id="loginError" role="alert"></div>
+    <button class="btn-login" onclick="login()">SignIn</button>
+    <div class="switch-text">Forgot password? <span onclick="toggleAuth('forgot')" role="button" tabindex="0">Reset it</span></div>
+    <div class="switch-text" style="margin-top:4px">New here? <span onclick="toggleAuth('signup')" role="button" tabindex="0">Create account</span></div>
+  </div>
 </div>
-</div>
+
 <!-- Signup Modal -->
-<div class="modal" id="signupModal">
-<div class="modal-box">
-<button class="close-modal" onclick="closeModal()">&times;</button>
-<h2>✨ Create Account</h2>
-<p>Join QuoteCards Pro and start creating beautiful quote cards.</p>
-<input type="text" id="signupName" placeholder="Full Name" autocomplete="name">
-<input type="email" id="signupEmail" placeholder="Email Address" autocomplete="email">
-<input type="password" id="signupPass" placeholder="Password (min 6 chars)" autocomplete="new-password">
-<input type="password" id="signupPassConfirm" placeholder="Confirm Password" autocomplete="new-password">
-<div class="error-msg" id="signupError"></div>
-<div class="success-msg" id="signupSuccess"></div>
-<button class="btn-join" id="signupBtn" onclick="signup(event)">Create Account</button>
-<div class="switch-text">Already have an account? <span onclick="toggleAuth('login')">Sign In</span></div>
+<div class="modal" id="signupModal" role="dialog" aria-modal="true" aria-labelledby="signupTitle">
+  <div class="modal-box">
+    <button class="close-modal" onclick="closeModal()" aria-label="Close">&times;</button>
+    <h2 id="signupTitle">✨ Create Account</h2>
+    <p>Join QuoteCards Pro and start creating beautiful quote cards.</p>
+    <input type="text" id="signupName" placeholder="Full Name" autocomplete="name" aria-label="Full Name">
+    <input type="email" id="signupEmail" placeholder="Email Address" autocomplete="email" aria-label="Email">
+    <input type="password" id="signupPass" placeholder="Password (min 6 chars)" autocomplete="new-password" aria-label="Password">
+    <input type="password" id="signupPassConfirm" placeholder="Confirm Password" autocomplete="new-password" aria-label="Confirm Password">
+    <div class="error-msg" id="signupError" role="alert"></div>
+    <div class="success-msg" id="signupSuccess"></div>
+    <button class="btn-join" id="signupBtn" onclick="signup()">Create Account</button>
+    <div class="switch-text">Already have an account? <span onclick="toggleAuth('login')" role="button" tabindex="0">Sign In</span></div>
+  </div>
 </div>
-</div>
+
 <!-- Forgot Password Modal -->
-<div class="modal" id="forgotModal">
-<div class="modal-box">
-<button class="close-modal" onclick="closeModal()">&times;</button>
-<h2>🔐 Reset Password</h2>
-<p>Enter your email and we'll send reset instructions.</p>
-<input type="email" id="forgotEmail" placeholder="Email Address" autocomplete="email">
-<div class="error-msg" id="forgotError"></div>
-<div class="success-msg" id="forgotSuccess"></div>
-<button class="btn-login" onclick="forgotPassword()">Send Reset Link</button>
-<div class="switch-text">Remembered? <span onclick="toggleAuth('login')">Sign In</span></div>
+<div class="modal" id="forgotModal" role="dialog" aria-modal="true" aria-labelledby="forgotTitle">
+  <div class="modal-box">
+    <button class="close-modal" onclick="closeModal()" aria-label="Close">&times;</button>
+    <h2 id="forgotTitle">🔐 Reset Password</h2>
+    <p>Enter your email and we'll send reset instructions.</p>
+    <input type="email" id="forgotEmail" placeholder="Email Address" autocomplete="email" aria-label="Email">
+    <div class="error-msg" id="forgotError" role="alert"></div>
+    <div class="success-msg" id="forgotSuccess"></div>
+    <button class="btn-login" onclick="forgotPassword()">Send Reset Link</button>
+    <div class="switch-text">Remembered? <span onclick="toggleAuth('login')" role="button" tabindex="0">Sign In</span></div>
+  </div>
 </div>
-</div>
+
 <!-- Join Pro Modal -->
-<div class="modal" id="joinModal">
-<div class="modal-box">
-<button class="close-modal" onclick="closeModal()">&times;</button>
-<h2>✨ Join QuoteCards Pro</h2>
-<p>Unlock Higher Mind quotes • Save downloads • Premium support</p>
-<input type="email" id="joinEmail" placeholder="Email Address" style="margin-bottom:12px" autocomplete="email">
-<div class="plan-cards">
-<div class="plan-card selected" onclick="selectPlan(this,'monthly')">
-<div class="label">Monthly</div>
-<div class="price">$6/mo</div>
+<div class="modal" id="joinModal" role="dialog" aria-modal="true" aria-labelledby="joinTitle">
+  <div class="modal-box">
+    <button class="close-modal" onclick="closeModal()" aria-label="Close">&times;</button>
+    <h2 id="joinTitle">✨ Join QuoteCards Pro</h2>
+    <p>Unlock Higher Mind quotes • Save downloads • Premium support</p>
+    <input type="email" id="joinEmail" placeholder="Email Address" style="margin-bottom:12px" autocomplete="email" aria-label="Email">
+    <div class="plan-cards" role="radiogroup" aria-label="Select subscription plan">
+      <div class="plan-card selected" role="radio" aria-checked="true" tabindex="0" onclick="selectPlan(this,'monthly')" onkeypress="if(event.key==='Enter')selectPlan(this,'monthly')">
+        <div class="label">Monthly</div>
+        <div class="price">$6/mo</div>
+      </div>
+      <div class="plan-card" role="radio" aria-checked="false" tabindex="0" onclick="selectPlan(this,'yearly')" onkeypress="if(event.key==='Enter')selectPlan(this,'yearly')">
+        <div class="label">Yearly</div>
+        <div class="price">$48/yr</div>
+        <div class="save">Save 33%</div>
+      </div>
+    </div>
+    <div class="billing-notice">
+      <strong>🔒 Secure Payment via Stripe</strong><br>
+      By subscribing, you agree to recurring billing. Cancel anytime in your account settings.
+      You will be redirected to Stripe's secure checkout page.
+    </div>
+    <div class="error-msg" id="paymentError" role="alert"></div>
+    <div class="success-msg" id="paymentSuccess"></div>
+    <button class="btn-join" id="payBtn" onclick="processPayment()">
+      <span id="payBtnText">💳 Subscribe Now</span>
+    </button>
+    <p style="font-size:10px;color:#555;margin-top:6px;text-align:center">
+      Secured by Stripe. Cancel anytime. <a href="/terms" style="color:#6e3bfa">Terms</a> •
+      <a href="/privacy" style="color:#6e3bfa">Privacy</a>
+    </p>
+  </div>
 </div>
-<div class="plan-card" onclick="selectPlan(this,'yearly')">
-<div class="label">Yearly</div>
-<div class="price">$48/yr</div>
-<div class="save">Save 33%</div>
-</div>
-</div>
-<div class="billing-notice">
-<strong>🔒 Secure Payment via Stripe</strong><br>
-By subscribing, you agree to recurring billing. Cancel anytime in your account settings.
-You will be redirected to Stripe's secure checkout page.
-</div>
-<div class="error-msg" id="paymentError"></div>
-<div class="success-msg" id="paymentSuccess"></div>
-<button class="btn-join" id="payBtn" onclick="processPayment()">
-<span id="payBtnText">💳 Subscribe Now</span>
-</button>
-<p style="font-size:10px;color:#555;margin-top:6px;text-align:center">
-Secured by Stripe. Cancel anytime. <a href="/terms" style="color:#6e3bfa">Terms</a> •
-<a href="/privacy" style="color:#6e3bfa">Privacy</a>
-</p>
-</div>
-</div>
+
 <!-- Admin Dashboard -->
-<div class="admin-panel" id="adminPanel">
-<div class="admin-header">
-<h2>📊 QuoteCards Admin Dashboard</h2>
-<div>
-<button class="nav-btn" onclick="refreshAdminData()">🔄 Refresh</button>
-<button class="close-admin" onclick="toggleAdmin()">✕ Close</button>
+<div class="admin-panel" id="adminPanel" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+  <div class="admin-header">
+    <h2 id="adminTitle">📊 QuoteCards Admin Dashboard</h2>
+    <div>
+      <button class="nav-btn" onclick="refreshAdminData()">🔄 Refresh</button>
+      <button class="close-admin" onclick="toggleAdmin()">✕ Close</button>
+    </div>
+  </div>
+  <div class="admin-stats" id="adminStats">
+    <div class="stat-card"><h3>Total Users</h3><div class="value" id="statTotalUsers">0</div></div>
+    <div class="stat-card"><h3>Pro Subscribers</h3><div class="value" id="statProUsers">0</div></div>
+    <div class="stat-card"><h3>Monthly Revenue</h3><div class="value" id="statRevenue">$0</div></div>
+    <div class="stat-card"><h3>Conversion Rate</h3><div class="value" id="statConversion">0%</div></div>
+  </div>
+  <div class="admin-table">
+    <h3>👥 All Users</h3>
+    <table>
+      <thead><tr><th>Email</th><th>Name</th><th>Status</th><th>Plan</th><th>Joined</th><th>Last Active</th></tr></thead>
+      <tbody id="usersTableBody"></tbody>
+    </table>
+  </div>
+  <div class="admin-table">
+    <h3>💰 Recent Payments</h3>
+    <table>
+      <thead><tr><th>User</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody id="paymentsTableBody"></tbody>
+    </table>
+  </div>
 </div>
-</div>
-<div class="admin-stats" id="adminStats">
-<div class="stat-card"><h3>Total Users</h3><div class="value" id="statTotalUsers">0</div></div>
-<div class="stat-card"><h3>Pro Subscribers</h3><div class="value" id="statProUsers">0</div></div>
-<div class="stat-card"><h3>Monthly Revenue</h3><div class="value" id="statRevenue">$0</div></div>
-<div class="stat-card"><h3>Conversion Rate</h3><div class="value" id="statConversion">0%</div></div>
-</div>
-<div class="admin-table">
-<h3>👥 All Users</h3>
-<table>
-<thead><tr><th>Email</th><th>Name</th><th>Status</th><th>Plan</th><th>Joined</th><th>Last Active</th></tr></thead>
-<tbody id="usersTableBody"></tbody>
-</table>
-</div>
-<div class="admin-table">
-<h3>💰 Recent Payments</h3>
-<table>
-<thead><tr><th>User</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
-<tbody id="paymentsTableBody"></tbody>
-</table>
-</div>
-</div>
+
 <script>
 // === CONFIG & STATE ===
 const API = 'https://higherprotocola3.onrender.com';
@@ -273,10 +351,17 @@ const PAYMENT_LINKS = {
   monthly: 'https://buy.stripe.com/4gM8wR5Ebg8H1yUa56dAk00',
   yearly: 'https://buy.stripe.com/eVq7sNc2zcWva5qb9adAk01'
 };
+
 let state = {
-  user: null, token: null, isPro: false, quotes: [], qIdx: 0,
-  speed: 0.5, selectedPlan: 'monthly', slider: { pos: 0, holding: false, animId: null },
-  authResolved: false
+  user: null, 
+  token: null, 
+  isPro: false, 
+  quotes: [], 
+  qIdx: 0,
+  speed: 0.5, 
+  selectedPlan: 'monthly', 
+  slider: { pos: 0, holding: false, animId: null },
+  authChecked: false // Track if auth check completed
 };
 
 // === QUOTES DATA ===
@@ -287,15 +372,16 @@ const FREE_Q = [
   {t:"Believe you can and you're halfway there.",a:"Theodore Roosevelt"},
   {t:"Act as if what you do makes a difference. It does.",a:"William James"}
 ];
+
 const PRO_Q = [
-  {t:"The unexamined life is not worth living.",a:"Socrates", isPro: true},
-  {t:"He who has a why to live can bear almost any how.",a:"Nietzsche", isPro: true},
-  {t:"The mind is everything. What you think you become.",a:"Buddha", isPro: true},
-  {t:"We are what we repeatedly do. Excellence is a habit.",a:"Aristotle", isPro: true},
-  {t:"The greatest glory is rising every time we fall.",a:"Nelson Mandela", isPro: true},
-  {t:"Your vision becomes clear when you look into your heart.",a:"Carl Jung", isPro: true},
-  {t:"What lies behind us and what lies before us are tiny matters.",a:"Emerson", isPro: true},
-  {t:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"Chinese Proverb", isPro: true}
+  {t:"The unexamined life is not worth living.",a:"Socrates"},
+  {t:"He who has a why to live can bear almost any how.",a:"Nietzsche"},
+  {t:"The mind is everything. What you think you become.",a:"Buddha"},
+  {t:"We are what we repeatedly do. Excellence is a habit.",a:"Aristotle"},
+  {t:"The greatest glory is rising every time we fall.",a:"Nelson Mandela"},
+  {t:"Your vision becomes clear when you look into your heart.",a:"Carl Jung"},
+  {t:"What lies behind us and what lies before us are tiny matters.",a:"Emerson"},
+  {t:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"Chinese Proverb"}
 ];
 
 // === API CLIENT ===
@@ -303,14 +389,32 @@ const api = {
   async req(endpoint, opts = {}) {
     const headers = { 'Content-Type': 'application/json', ...opts.headers };
     if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
+    
     try {
-      const res = await fetch(`${API}${endpoint}`, { ...opts, headers });
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
+      
+      const res = await fetch(`${API}${endpoint}`, { 
+        ...opts, 
+        headers,
+        signal: controller.signal,
+        credentials: 'include'
+      });
+      clearTimeout(timeout);
+      
       const data = await res.json().catch(() => ({}));
-      if (res.status === 401) { this.logout(); return null; }
+      
+      if (res.status === 401) { 
+        this.logout(); 
+        return null; 
+      }
       if (!res.ok) return { error: data.error || `HTTP ${res.status}: ${res.statusText}` };
       return data;
     } catch (e) {
-      console.warn(`API ${endpoint} failed:`, e);
+      console.warn(`API ${endpoint} failed:`, e.message);
+      if (e.name === 'AbortError') {
+        return { error: 'Request timed out. Please check your connection.' };
+      }
       return { error: 'Connection failed. Check your internet or server status.' };
     }
   },
@@ -322,131 +426,190 @@ const api = {
   async verifyPayment(data) { return this.req('/api/verify-payment', { method: 'POST', body: JSON.stringify(data) }); },
   async saveDownload(data) { return this.req('/api/downloads', { method: 'POST', body: JSON.stringify(data) }); },
   async getDownloads() { return this.req('/api/downloads'); },
-  logout() { localStorage.removeItem('qc_token'); localStorage.removeItem('qc_user'); location.reload(); }
+  logout() { 
+    localStorage.removeItem('qc_token'); 
+    localStorage.removeItem('qc_user'); 
+    // Force reload to reset all state
+    window.location.href = window.location.pathname; 
+  }
 };
 
 // === CACHE HELPERS ===
 const cache = {
-  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
-  clear() { ['qc_token','qc_user'].forEach(k => localStorage.removeItem(k)); }
+  get(k) { 
+    try { 
+      const item = localStorage.getItem(k); 
+      return item ? JSON.parse(item) : null; 
+    } catch { return null; } 
+  },
+  set(k, v) { 
+    try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) { console.warn('Cache set failed:', e); } 
+  },
+  clear() { 
+    ['qc_token','qc_user','qc_pending'].forEach(k => localStorage.removeItem(k)); 
+  }
 };
 
 // === UI HELPERS ===
 const $ = (id) => document.getElementById(id);
-const show = (el, s) => el.classList.toggle('show', s);
-const notify = (msg, type = 'info') => {
-  const n = document.createElement('div');
-  n.style.cssText = `position:fixed;top:20px;right:20px;padding:14px 20px;border-radius:10px;color:#fff;font-size:14px;font-weight:500;z-index:10001;animation:slideIn .3s ease;max-width:320px;box-shadow:0 4px 20px rgba(0,0,0,.3);background:${type==='success'?'linear-gradient(135deg,#00c853,#009624)':type==='error'?'linear-gradient(135deg,#ff4444,#cc0000)':'linear-gradient(135deg,#6e3bfa,#4287ff)'}`;
-  n.textContent = msg; document.body.appendChild(n);
-  setTimeout(() => { n.style.animation = 'slideOut .3s ease'; setTimeout(() => n.remove(), 300); }, 4000);
-  if (!$('qc-styles')) {
-    const s = document.createElement('style'); s.id = 'qc-styles';
-    s.textContent = `@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}`;
-    document.head.appendChild(s);
+const show = (el, s) => {
+  if (!el) return;
+  if (s) {
+    el.classList.add('show');
+    el.classList.remove('hide');
+  } else {
+    el.classList.add('hide');
+    el.classList.remove('show');
   }
 };
 
-// === SLIDER ===
+const notify = (msg, type = 'info') => {
+  // Remove existing notifications first
+  document.querySelectorAll('.notification').forEach(n => n.remove());
+  
+  const n = document.createElement('div');
+  n.className = `notification ${type}`;
+  n.textContent = msg;
+  n.setAttribute('role', 'alert');
+  document.body.appendChild(n);
+  
+  // Auto-remove after 4 seconds
+  setTimeout(() => { 
+    n.style.animation = 'slideOut 0.3s ease'; 
+    setTimeout(() => n.remove(), 300); 
+  }, 4000);
+};
+
+// === SLIDER (Performance Optimized) ===
 const track = $('sliderTrack'), wrap = $('sliderWrap'), dotsEl = $('dots');
-function slideW() { return track.children[0]?.offsetWidth || 700; }
+let sliderWidth = 700; // Cache slide width
+
+function getSlideWidth() { 
+  return sliderWidth = track.children[0]?.offsetWidth || 700; 
+}
+
 function updateDots() {
-  const idx = Math.round((state.slider.pos / slideW()) % state.quotes.length);
+  const slideW = getSlideWidth();
+  const idx = Math.round((state.slider.pos / slideW) % state.quotes.length);
   dotsEl.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === idx));
 }
+
 function buildSlider() {
-  track.innerHTML = ''; dotsEl.innerHTML = '';
+  track.innerHTML = ''; 
+  dotsEl.innerHTML = '';
+  
+  if (!state.quotes.length) return;
+  
+  // Duplicate quotes for seamless looping
   const pool = [...state.quotes, ...state.quotes];
-  pool.forEach(q => {
-    const d = document.createElement('div'); d.className = 'slide';
-    const isPro = q.isPro && state.isPro;
-    d.innerHTML = `<div class="quote-card${isPro?' pro-quote':''}">${q.t}<span class="author">— ${q.a}</span>${isPro?'<span class="pro-badge">✨ PRO</span>':''}</div>`;
+  
+  pool.forEach((q, i) => {
+    const d = document.createElement('div'); 
+    d.className = 'slide';
+    // Add 'pro' class for PRO quotes (visual distinction with green background)
+    const isProQuote = i >= state.quotes.length - PRO_Q.length && state.isPro;
+    d.innerHTML = `<div class="quote-card ${isProQuote ? 'pro' : 'free'}">${q.t}<span class="author">— ${q.a}</span></div>`;
     track.appendChild(d);
   });
+  
   pool.forEach((_, i) => {
-    const dot = document.createElement('span'); dot.className = 'dot';
-    dot.onclick = () => { state.slider.pos = (i % state.quotes.length) * slideW(); updateDots(); };
+    const dot = document.createElement('span'); 
+    dot.className = 'dot';
+    dot.setAttribute('role', 'button');
+    dot.setAttribute('aria-label', `Go to quote ${i + 1}`);
+    dot.setAttribute('tabindex', '0');
+    dot.onclick = () => { 
+      state.slider.pos = (i % state.quotes.length) * getSlideWidth(); 
+      updateDots(); 
+    };
+    dot.onkeypress = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        state.slider.pos = (i % state.quotes.length) * getSlideWidth();
+        updateDots();
+      }
+    };
     dotsEl.appendChild(dot);
   });
   updateDots();
 }
+
 function animate() {
-  if (!state.slider.holding) {
+  if (!state.slider.holding && state.quotes.length > 0) {
     state.slider.pos += state.speed;
-    const limit = slideW() * state.quotes.length;
+    const slideW = getSlideWidth();
+    const limit = slideW * state.quotes.length;
     if (state.slider.pos >= limit) state.slider.pos -= limit;
     track.style.transform = `translateX(-${state.slider.pos}px)`;
     updateDots();
   }
   state.slider.animId = requestAnimationFrame(animate);
 }
-['mousedown','touchstart'].forEach(ev => wrap.addEventListener(ev, (e) => { e.preventDefault(); state.slider.holding = true; wrap.style.opacity = '.7'; }, { passive: true }));
-['mouseup','mouseleave','touchend'].forEach(ev => wrap.addEventListener(ev, () => { state.slider.holding = false; wrap.style.opacity = '1'; }));
 
-// === CANVAS (with Pro Quote Styling) ===
-let renderTimeout;
+// Touch/Mouse events for slider
+['mousedown','touchstart'].forEach(ev => 
+  wrap.addEventListener(ev, (e) => { 
+    e.preventDefault(); 
+    state.slider.holding = true; 
+    wrap.style.opacity = '.7'; 
+  }, { passive: false })
+);
+['mouseup','mouseleave','touchend'].forEach(ev => 
+  wrap.addEventListener(ev, () => { 
+    state.slider.holding = false; 
+    wrap.style.opacity = '1'; 
+  })
+);
+
+// === CANVAS ===
 function renderCanvas() {
-  if (renderTimeout) clearTimeout(renderTimeout);
-  renderTimeout = setTimeout(() => {
-    const c = $('previewCanvas'), ctx = c.getContext('2d');
-    const w = +$('cWidth').value, h = +$('cHeight').value, fs = +$('fontSize').value;
-    c.width = w; c.height = h;
-    
-    const quote = state.quotes[state.qIdx];
-    const isProQuote = quote?.isPro && state.isPro;
-    
-    // Background with pro styling
-    if (isProQuote) {
-      const grad = ctx.createLinearGradient(0, 0, w, h);
-      grad.addColorStop(0, '#0d4d2a');
-      grad.addColorStop(1, '#0a3a20');
-      ctx.fillStyle = grad;
-    } else {
-      ctx.fillStyle = $('bgColor').value;
-    }
-    ctx.fillRect(0, 0, w, h);
-    
-    // Pro border
-    if (isProQuote) {
-      ctx.strokeStyle = '#00c853';
-      ctx.lineWidth = 3;
-      ctx.strokeRect(2, 2, w-4, h-4);
-    }
-    
-    // Quote text
-    ctx.fillStyle = '#e0e0e0';
-    ctx.font = `bold ${fs}px Segoe UI,sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    wrapText(ctx, quote.t, w/2, h/2-25, w-70, fs*1.3);
-    
-    // Author
-    ctx.fillStyle = '#999';
-    ctx.font = `${fs*.5}px Segoe UI,sans-serif`;
-    ctx.fillText('— ' + quote.a, w/2, h/2+fs*1.8);
-    
-    // Pro badge on canvas
-    if (isProQuote) {
-      ctx.fillStyle = '#00c853';
-      ctx.font = `bold ${fs*.3}px sans-serif`;
-      ctx.fillText('✨ PRO QUOTE', w/2, h-fs*.7);
-    }
-    
-    // Branding
-    ctx.fillStyle = isProQuote ? '#00c853' : '#6e3bfa';
-    ctx.font = `bold ${fs*.35}px sans-serif`;
-    ctx.fillText('QuoteCards', w/2, h-fs*.5);
-  }, 50);
+  const c = $('previewCanvas'), ctx = c.getContext('2d');
+  const w = +$('cWidth').value, h = +$('cHeight').value, fs = +$('fontSize').value;
+  
+  c.width = w; 
+  c.height = h;
+  
+  ctx.fillStyle = $('bgColor').value; 
+  ctx.fillRect(0, 0, w, h);
+  
+  ctx.fillStyle = '#e0e0e0'; 
+  ctx.font = `bold ${fs}px Segoe UI,sans-serif`; 
+  ctx.textAlign = 'center'; 
+  ctx.textBaseline = 'middle';
+  
+  wrapText(ctx, state.quotes[state.qIdx]?.t || '', w/2, h/2-25, w-70, fs*1.3);
+  
+  ctx.fillStyle = '#999'; 
+  ctx.font = `${fs*.5}px Segoe UI,sans-serif`;
+  ctx.fillText('— ' + (state.quotes[state.qIdx]?.a || ''), w/2, h/2+fs*1.8);
+  
+  ctx.fillStyle = '#6e3bfa'; 
+  ctx.font = `bold ${fs*.35}px sans-serif`; 
+  ctx.fillText('QuoteCards', w/2, h-fs*.5);
 }
 
-function wrapText(ctx, t, x, y, mw, lh) {
-  const words = t.split(' '); let line = '', lines = [];
-  words.forEach(w => { const test = line + w + ' '; if (ctx.measureText(test).width > mw && line) { lines.push(line.trim()); line = w + ' '; } else line = test; });
-  lines.push(line.trim()); let sy = y - ((lines.length - 1) * lh) / 2;
-  lines.forEach((l, i) => ctx.fillText(l, x, sy + i * lh));
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  if (!text) return;
+  const words = text.split(' '); 
+  let line = '', lines = [];
+  
+  words.forEach(word => { 
+    const test = line + word + ' '; 
+    if (ctx.measureText(test).width > maxWidth && line) { 
+      lines.push(line.trim()); 
+      line = word + ' '; 
+    } else {
+      line = test; 
+    }
+  });
+  lines.push(line.trim()); 
+  
+  const startY = y - ((lines.length - 1) * lineHeight) / 2;
+  lines.forEach((l, i) => ctx.fillText(l, x, startY + i * lineHeight));
 }
 
 function cycleQuote() { 
+  if (state.quotes.length === 0) return;
   state.qIdx = (state.qIdx + 1) % state.quotes.length; 
   renderCanvas(); 
 }
@@ -454,16 +617,32 @@ function cycleQuote() {
 // === DOWNLOADS ===
 async function downloadPNG() {
   const c = $('previewCanvas'), url = c.toDataURL('image/png');
-  const a = document.createElement('a'); a.download = 'quotecard_' + Date.now() + '.png'; a.href = url; a.click();
+  const a = document.createElement('a'); 
+  a.download = 'quotecard_' + Date.now() + '.png'; 
+  a.href = url; 
+  a.click();
+  
   if (state.user) {
+    // Try backend first
     const saved = await api.saveDownload({
-      imageUrl: url, quote: state.quotes[state.qIdx].t, author: state.quotes[state.qIdx].a,
-      settings: { width: +$('cWidth').value, height: +$('cHeight').value, fontSize: +$('fontSize').value, bgColor: $('bgColor').value }
+      imageUrl: url, 
+      quote: state.quotes[state.qIdx]?.t, 
+      author: state.quotes[state.qIdx]?.a,
+      settings: { 
+        width: +$('cWidth').value, 
+        height: +$('cHeight').value, 
+        fontSize: +$('fontSize').value, 
+        bgColor: $('bgColor').value 
+      }
     });
-    if (saved) { renderDownloads(); return; }
+    if (saved && !saved.error) { 
+      renderDownloads(); 
+      return; 
+    }
+    // Fallback: local cache only
     const key = `qc_dl_${state.user.email}`;
     const hist = cache.get(key) || [];
-    hist.unshift({ url, time: new Date().toISOString(), quote: state.quotes[state.qIdx].t.slice(0, 40) + '...' });
+    hist.unshift({ url, time: new Date().toISOString(), quote: (state.quotes[state.qIdx]?.t || '').slice(0, 40) + '...' });
     if (hist.length > 20) hist.pop();
     cache.set(key, hist);
     renderDownloads();
@@ -472,261 +651,515 @@ async function downloadPNG() {
 
 async function renderDownloads() {
   if (!state.user) return;
-  const grid = $('downloadsGrid'); grid.innerHTML = '';
+  const grid = $('downloadsGrid'); 
+  grid.innerHTML = '';
+  
+  // Try backend first
   const dl = await api.getDownloads();
   const items = dl?.downloads || cache.get(`qc_dl_${state.user.email}`) || [];
+  
   if (!items.length) {
-    grid.innerHTML = '<p style="color:#777;font-size:13px;grid-column:1/-1">No downloads yet. Create & download your first card!</p>';
+    grid.innerHTML = '<p style="color:#777;font-size:13px;grid-column:1/-1;text-align:center;padding:20px">No downloads yet. Create & download your first card!</p>';
     return;
   }
+  
   items.forEach((item, i) => {
-    const div = document.createElement('div'); div.className = 'download-item';
+    const div = document.createElement('div'); 
+    div.className = 'download-item';
+    div.setAttribute('role', 'button');
+    div.setAttribute('tabindex', '0');
+    div.setAttribute('aria-label', 'Redownload quote card');
     div.innerHTML = `<img src="${item.imageUrl || item.url}" alt="Download ${i+1}" loading="lazy"><div class="dl-overlay">⬇ Tap to redownload</div>`;
-    div.onclick = () => { const a = document.createElement('a'); a.download = 'quotecard_' + i + '.png'; a.href = item.imageUrl || item.url; a.click(); };
+    div.onclick = () => { 
+      const a = document.createElement('a'); 
+      a.download = 'quotecard_' + i + '.png'; 
+      a.href = item.imageUrl || item.url; 
+      a.click(); 
+    };
+    div.onkeypress = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        const a = document.createElement('a'); 
+        a.download = 'quotecard_' + i + '.png'; 
+        a.href = item.imageUrl || item.url; 
+        a.click(); 
+      }
+    };
     grid.appendChild(div);
   });
 }
 
-// === AUTH (Fixed for Pro Recognition & No Flicker) ===
-async function applyAuth(u, token) {
+// === AUTH (FIXED: Pro Recognition & UI Flicker) ===
+async function applyAuth(u, token, forceRefresh = false) {
+  // Prevent duplicate auth application
+  if (state.authChecked && !forceRefresh) return;
+  
   state.user = u; 
   state.token = token; 
   state.isPro = !!u?.isPro; // Ensure boolean
+  state.authChecked = true;
   
-  // Update navigation
-  $('guestNav').style.display = 'none';
-  $('userNav').style.display = 'flex';
+  // Update UI - with smooth transitions
+  const guestNav = $('guestNav');
+  const userNav = $('userNav');
+  
+  if (guestNav) guestNav.style.display = 'none';
+  if (userNav) {
+    userNav.style.display = 'flex';
+    userNav.classList.add('show');
+  }
   
   // Update user info
-  $('avatarLetter').textContent = u?.name?.[0]?.toUpperCase() || 'U';
-  $('userName').textContent = u?.name || 'User';
-  $('tierBadge').textContent = state.isPro ? '✨ Pro' : 'Free';
-  $('tierBadge').className = 'badge' + (state.isPro ? ' pro' : '');
+  const avatar = $('avatarLetter');
+  const userName = $('userName');
+  const tierBadge = $('tierBadge');
   
-  // Pro banner - show only for pro users
+  if (avatar) avatar.textContent = u?.name?.[0]?.toUpperCase() || 'U';
+  if (userName) userName.textContent = u?.name || 'User';
+  if (tierBadge) {
+    tierBadge.textContent = state.isPro ? '✨ Pro' : 'Free';
+    tierBadge.className = 'badge' + (state.isPro ? ' pro' : '');
+  }
+  
+  // Show/hide Pro banner
   show($('proBanner'), state.isPro);
   
-  // Admin button
-  $('adminBtn').style.display = (u?.email === ADMIN_EMAIL) ? 'inline-block' : 'none';
+  // Show admin button only for admin
+  const adminBtn = $('adminBtn');
+  if (adminBtn) {
+    adminBtn.style.display = (u?.email === ADMIN_EMAIL) ? 'inline-block' : 'none';
+  }
   
-  // Load quotes (pro users get pro quotes)
+  // === CRITICAL FIX: Hide Join Pro button for authenticated users ===
+  const guestJoinPro = $('guestJoinPro');
+  if (guestJoinPro) {
+    guestJoinPro.style.display = 'none'; // Always hide for logged-in users
+  }
+  
+  // Load quotes based on Pro status
   state.quotes = state.isPro ? [...FREE_Q, ...PRO_Q] : [...FREE_Q];
   state.qIdx = 0;
-  buildSlider();
+  
+  // Rebuild slider smoothly
+  buildSlider(); 
   renderCanvas();
   
-  // Downloads section
-  $('downloadsSection').classList.add('show');
+  // Show downloads section for logged-in users
+  const downloadsSection = $('downloadsSection');
+  if (downloadsSection) downloadsSection.classList.add('show');
+  
+  // Render downloads
   renderDownloads();
   
-  // Upgrade nudge - HIDE for pro users AND admin
-  // Only show for: logged-in, NOT pro, NOT admin
-  const shouldShowNudge = !state.isPro && u?.email !== ADMIN_EMAIL;
-  show($('upgradeNudge'), shouldShowNudge);
+  // === CRITICAL FIX: Hide upgrade nudge for Pro users ===
+  const upgradeNudge = $('upgradeNudge');
+  if (upgradeNudge) {
+    // Only show nudge if: NOT pro AND not admin
+    const shouldShow = !state.isPro && u?.email !== ADMIN_EMAIL;
+    show(upgradeNudge, shouldShow);
+  }
   
-  // Remove auth loading state
-  document.body.classList.remove('auth-loading');
-  state.authResolved = true;
+  // Cache auth state
+  if (token && u) { 
+    cache.set('qc_token', token); 
+    cache.set('qc_user', { ...u, isPro: state.isPro }); 
+  }
   
-  // Cache auth
-  if (token) { cache.set('qc_token', token); cache.set('qc_user', u); }
+  // Update body class for CSS targeting
+  document.body.classList.toggle('pro-user', state.isPro);
 }
 
 async function login() {
-  const email = $('loginEmail').value.trim().toLowerCase(), pass = $('loginPass').value;
-  const err = $('loginError'); err.classList.remove('show');
-  if (!email.includes('@') || pass.length < 6) { err.textContent = 'Invalid email or password'; err.classList.add('show'); return; }
-  const res = await api.login({ email, password: pass });
-  if (res?.token) { 
-    applyAuth(res.user, res.token); 
-    closeModal(); 
-    notify('✓ Welcome back!', 'success'); 
-  } else { 
-    err.textContent = res?.error || 'Authentication failed'; 
-    err.classList.add('show'); 
+  const email = $('loginEmail')?.value?.trim()?.toLowerCase(), 
+        pass = $('loginPass')?.value;
+  const err = $('loginError'); 
+  if (err) err.classList.remove('show');
+  
+  if (!email?.includes('@') || !pass || pass.length < 6) { 
+    if (err) {
+      err.textContent = 'Valid email and 6+ character password required'; 
+      err.classList.add('show');
+    }
+    return; 
+  }
+  
+  const btn = event?.target;
+  if (btn) {
+    btn.disabled = true;
+    const originalText = btn.textContent;
+    btn.innerHTML = '<span class="loading"></span> Signing in...';
+  }
+  
+  try {
+    const res = await api.login({ email, password: pass });
+    if (res?.token) { 
+      await applyAuth(res.user, res.token, true); // force refresh
+      closeModal(); 
+      notify('✓ Welcome back!', 'success'); 
+    } else { 
+      if (err) {
+        err.textContent = res?.error || 'Authentication failed'; 
+        err.classList.add('show');
+      }
+    }
+  } catch(e) {
+    if (err) {
+      err.textContent = 'Connection error. Please try again.';
+      err.classList.add('show');
+    }
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'SignIn';
+    }
   }
 }
 
-async function signup(event) {
-  // Prevent default and get button safely
-  if (event) event.preventDefault();
-  const btn = document.getElementById('signupBtn');
+async function signup() {
+  const name = $('signupName')?.value?.trim(), 
+        email = $('signupEmail')?.value?.trim()?.toLowerCase();
+  const pass = $('signupPass')?.value, 
+        confirm = $('signupPassConfirm')?.value;
+  const err = $('signupError'), 
+        ok = $('signupSuccess'), 
+        btn = $('signupBtn');
   
-  const name = $('signupName').value.trim(), email = $('signupEmail').value.trim().toLowerCase();
-  const pass = $('signupPass').value, confirm = $('signupPassConfirm').value;
-  const err = $('signupError'), ok = $('signupSuccess');
+  if (err) err.classList.remove('show');
+  if (ok) ok.classList.remove('show');
   
-  err.classList.remove('show'); ok.classList.remove('show');
+  // Validation
+  if (!name || name.length < 2) { 
+    if (err) { err.textContent = 'Enter your full name'; err.classList.add('show'); }
+    return; 
+  }
+  if (!email?.includes('@')) { 
+    if (err) { err.textContent = 'Enter a valid email'; err.classList.add('show'); }
+    return; 
+  }
+  if (!pass || pass.length < 6) { 
+    if (err) { err.textContent = 'Password must be 6+ characters'; err.classList.add('show'); }
+    return; 
+  }
+  if (pass !== confirm) { 
+    if (err) { err.textContent = 'Passwords do not match'; err.classList.add('show'); }
+    return; 
+  }
   
-  if (name.length < 2) { err.textContent = 'Enter your full name'; err.classList.add('show'); return; }
-  if (!email.includes('@')) { err.textContent = 'Enter a valid email'; err.classList.add('show'); return; }
-  if (pass.length < 6) { err.textContent = 'Password must be 6+ characters'; err.classList.add('show'); return; }
-  if (pass !== confirm) { err.textContent = 'Passwords do not match'; err.classList.add('show'); return; }
-  
-  btn.disabled = true;
-  const originalText = btn.innerHTML;
-  btn.innerHTML = '<span class="loading"></span> Creating...';
+  if (btn) {
+    btn.disabled = true;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="loading"></span> Creating...';
+  }
   
   try {
     const res = await api.signup({ name, email, password: pass });
     if (res?.token) {
-      applyAuth(res.user, res.token);
+      await applyAuth(res.user, res.token, true); // force refresh
       closeModal();
       notify(`✓ Welcome, ${name.split(' ')[0]}!`, 'success');
     } else {
-      err.textContent = res?.error || 'Signup failed - email may already exist';
-      err.classList.add('show');
+      if (err) {
+        err.textContent = res?.error || 'Signup failed - email may already exist';
+        err.classList.add('show');
+      }
     }
   } catch(e) {
-    err.textContent = 'Connection error. Please try again.';
-    err.classList.add('show');
+    if (err) {
+      err.textContent = 'Connection error. Please try again.';
+      err.classList.add('show');
+    }
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = originalText;
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = 'Create Account';
+    }
   }
 }
 
 function forgotPassword() {
-  const email = $('forgotEmail').value.trim().toLowerCase();
-  if (!email.includes('@')) { $('forgotError').textContent = 'Valid email required'; $('forgotError').classList.add('show'); return; }
-  $('forgotSuccess').textContent = `✓ Reset link sent to ${email} (if account exists)`; $('forgotSuccess').classList.add('show');
-  setTimeout(() => { $('forgotEmail').value = ''; closeModal(); }, 2000);
+  const email = $('forgotEmail')?.value?.trim()?.toLowerCase();
+  const err = $('forgotError'), ok = $('forgotSuccess');
+  
+  if (!email?.includes('@')) { 
+    if (err) { err.textContent = 'Valid email required'; err.classList.add('show'); }
+    return; 
+  }
+  
+  if (ok) {
+    ok.textContent = `✓ Reset link sent to ${email} (if account exists)`; 
+    ok.classList.add('show');
+  }
+  
+  setTimeout(() => { 
+    if ($('forgotEmail')) $('forgotEmail').value = ''; 
+    closeModal(); 
+  }, 2000);
 }
 
 async function checkAuth() {
-  const token = cache.get('qc_token'), stored = cache.get('qc_user');
+  // Prevent multiple auth checks
+  if (state.authChecked) return;
   
-  // If no stored auth, resolve immediately and show guest UI
+  const token = cache.get('qc_token'), 
+        stored = cache.get('qc_user');
+  
   if (!token || !stored) {
-    document.body.classList.remove('auth-loading');
-    state.authResolved = true;
-    // Ensure guest nav is visible
-    $('guestNav').style.display = 'flex';
-    $('userNav').style.display = 'none';
+    state.authChecked = true;
     return;
   }
   
-  // Check with backend
+  // Always fetch fresh user data from API
   const u = await api.me();
+  
   if (u?.email) {
-    applyAuth(u, token);
-  } else { 
-    // Fallback to cache if API fails
-    cache.clear(); 
-    applyAuth(stored, token); 
+    // API response is authoritative
+    await applyAuth(u, token, true);
+  } else {
+    // Fallback to cache if API fails, but mark as potentially stale
+    console.warn('Using cached user data (API unavailable)');
+    await applyAuth(stored, token, true);
   }
 }
 
 function logout() { 
+  state.authChecked = false;
   api.logout(); 
 }
 
 // === PAYMENTS ===
 function selectPlan(el, plan) {
-  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected'); state.selectedPlan = plan;
+  document.querySelectorAll('.plan-card').forEach(c => {
+    c.classList.remove('selected');
+    c.setAttribute('aria-checked', 'false');
+  });
+  el.classList.add('selected');
+  el.setAttribute('aria-checked', 'true');
+  state.selectedPlan = plan;
 }
 
 async function processPayment() {
-  const email = $('joinEmail').value.trim().toLowerCase();
-  if (!email.includes('@')) { $('paymentError').textContent = 'Valid email required'; $('paymentError').classList.add('show'); return; }
+  const email = $('joinEmail')?.value?.trim()?.toLowerCase();
+  const err = $('paymentError');
+  
+  if (err) err.classList.remove('show');
+  
+  if (!email?.includes('@')) { 
+    if (err) { err.textContent = 'Valid email required'; err.classList.add('show'); }
+    return; 
+  }
+  
   const btn = $('payBtn'), txt = $('payBtnText');
-  btn.disabled = true; txt.innerHTML = '<span class="loading"></span> Redirecting...';
+  if (btn) btn.disabled = true;
+  if (txt) txt.innerHTML = '<span class="loading"></span> Redirecting...';
+  
   try {
     const link = PAYMENT_LINKS[state.selectedPlan];
     const sep = link.includes('?') ? '&' : '?';
     const url = `${link}${sep}prefilled_email=${encodeURIComponent(email)}&client_reference_id=${encodeURIComponent(email)}`;
+    
+    // Track pending payment
     cache.set('qc_pending', { email, plan: state.selectedPlan, ts: Date.now() });
-    setTimeout(() => window.location.href = url, 800);
+    
+    // Small delay for UX, then redirect
+    setTimeout(() => {
+      window.location.href = url;
+    }, 800);
+    
   } catch (e) {
-    $('paymentError').textContent = 'Payment setup failed'; $('paymentError').classList.add('show');
-    btn.disabled = false; txt.textContent = '💳 Subscribe Now';
+    if (err) { err.textContent = 'Payment setup failed'; err.classList.add('show'); }
+    if (btn) btn.disabled = false;
+    if (txt) txt.textContent = '💳 Subscribe Now';
   }
 }
 
 async function verifyPayment() {
   const params = new URLSearchParams(window.location.search);
-  const sid = params.get('session_id'), canceled = params.get('canceled') === 'true';
+  const sid = params.get('session_id'), 
+        canceled = params.get('canceled') === 'true';
+  
   if (sid && state.token) {
     const res = await api.verifyPayment({ sessionId: sid });
     if (res?.success) {
-      const u = await api.me(); if (u) applyAuth(u, state.token);
+      // CRITICAL: Force fresh user data after payment
+      const u = await api.me(); 
+      if (u) await applyAuth(u, state.token, true);
       notify('🎉 Pro activated! All features unlocked.', 'success');
+    } else if (res?.error) {
+      notify('⚠️ ' + res.error, 'error');
     }
     cache.set('qc_pending', null);
-    window.history.replaceState({}, '', location.pathname);
+    // Clean URL without reload
+    window.history.replaceState({}, document.title, window.location.pathname);
+    
   } else if (canceled) {
     notify('Payment cancelled. Try again anytime.', 'info');
     cache.set('qc_pending', null);
-    window.history.replaceState({}, '', location.pathname);
+    window.history.replaceState({}, document.title, window.location.pathname);
   }
 }
 
 // === ADMIN ===
-function toggleAdmin() { const p = $('adminPanel'); p.classList.toggle('show'); if (p.classList.contains('show')) refreshAdminData(); }
+function toggleAdmin() { 
+  const p = $('adminPanel'); 
+  if (!p) return;
+  p.classList.toggle('show'); 
+  if (p.classList.contains('show')) refreshAdminData(); 
+}
+
 async function refreshAdminData() {
   if (!state.token || state.user?.email !== ADMIN_EMAIL) return;
-  const [stats, users, payments] = await Promise.all([api.adminStats(), api.adminUsers(), api.req('/api/admin/payments')]);
-  if (stats) {
+  
+  const [stats, users, payments] = await Promise.all([
+    api.adminStats(), 
+    api.adminUsers(), 
+    api.req('/api/admin/payments')
+  ]);
+  
+  if (stats && !stats.error) {
     $('statTotalUsers').textContent = stats.totalUsers || 0;
     $('statProUsers').textContent = stats.proUsers || 0;
     $('statRevenue').textContent = '$' + (stats.revenue || 0).toLocaleString();
     $('statConversion').textContent = (stats.conversionRate || 0) + '%';
   }
-  const tbody = $('usersTableBody'); tbody.innerHTML = '';
-  (users?.users || []).forEach(u => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${u.email}</td><td>${u.name}</td><td><span class="status-badge ${u.isPro?'pro':'free'}">${u.isPro?'Pro':'Free'}</span></td><td>${u.plan||'N/A'}</td><td>${new Date(u.createdAt).toLocaleDateString()}</td><td>${new Date(u.lastActive||u.createdAt).toLocaleDateString()}</td>`;
-    tbody.appendChild(tr);
-  });
-  const payTbody = $('paymentsTableBody'); payTbody.innerHTML = '';
-  (payments?.payments || []).forEach(p => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${p.email}</td><td>$${p.amount}</td><td><span class="status-badge pro">${p.status}</span></td><td>${new Date(p.date).toLocaleDateString()}</td>`;
-    payTbody.appendChild(tr);
-  });
+  
+  const tbody = $('usersTableBody'); 
+  if (tbody) {
+    tbody.innerHTML = '';
+    (users?.users || []).forEach(u => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${u.email}</td><td>${u.name}</td><td><span class="status-badge ${u.isPro?'pro':'free'}">${u.isPro?'Pro':'Free'}</span></td><td>${u.plan||'N/A'}</td><td>${new Date(u.createdAt).toLocaleDateString()}</td><td>${new Date(u.lastActive||u.createdAt).toLocaleDateString()}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+  
+  const payTbody = $('paymentsTableBody'); 
+  if (payTbody) {
+    payTbody.innerHTML = '';
+    (payments?.payments || []).forEach(p => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${p.email}</td><td>$${p.amount}</td><td><span class="status-badge pro">${p.status}</span></td><td>${new Date(p.date).toLocaleDateString()}</td>`;
+      payTbody.appendChild(tr);
+    });
+  }
 }
 
 // === MODALS ===
-function openModal(t) {
-  document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
-  document.querySelectorAll('.error-msg, .success-msg').forEach(el => el.classList.remove('show'));
-  ['loginEmail','loginPass','signupName','signupEmail','signupPass','signupPassConfirm','joinEmail','forgotEmail'].forEach(id => { if ($(id)) $(id).value = ''; });
-  if ($(`${t}Modal`)) $(`${t}Modal`).classList.add('show');
+function openModal(type) {
+  // Close all modals first
+  document.querySelectorAll('.modal').forEach(m => {
+    m.classList.remove('show');
+    // Reset modal box transform for re-animation
+    const box = m.querySelector('.modal-box');
+    if (box) {
+      box.style.transform = 'translateY(20px)';
+      box.style.opacity = '0';
+    }
+  });
+  
+  // Clear all messages
+  document.querySelectorAll('.error-msg, .success-msg').forEach(el => {
+    if (el) el.classList.remove('show');
+  });
+  
+  // Clear form inputs
+  ['loginEmail','loginPass','signupName','signupEmail','signupPass','signupPassConfirm','joinEmail','forgotEmail'].forEach(id => { 
+    const el = $(id);
+    if (el) el.value = ''; 
+  });
+  
+  // Open requested modal
+  const modal = $(`${type}Modal`);
+  if (modal) {
+    modal.classList.add('show');
+    // Trigger reflow for animation
+    setTimeout(() => {
+      const box = modal.querySelector('.modal-box');
+      if (box) {
+        box.style.transform = 'translateY(0)';
+        box.style.opacity = '1';
+      }
+    }, 10);
+  }
 }
-function closeModal() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('show')); }
-function toggleAuth(m) { closeModal(); setTimeout(() => openModal(m), 100); }
+
+function closeModal() { 
+  document.querySelectorAll('.modal').forEach(m => {
+    m.classList.remove('show');
+    const box = m.querySelector('.modal-box');
+    if (box) {
+      box.style.transform = 'translateY(20px)';
+      box.style.opacity = '0';
+    }
+  });
+}
+
+function toggleAuth(modalType) { 
+  closeModal(); 
+  setTimeout(() => openModal(modalType), 150); 
+}
 
 // === INIT ===
 async function init() {
-  // Build slider with free quotes initially
+  // Build initial slider with free quotes
   state.quotes = [...FREE_Q]; 
   buildSlider(); 
   animate(); 
   renderCanvas();
   
-  // Check auth (this will remove auth-loading class when done)
+  // Check auth status
   await checkAuth();
   
-  // Verify payment redirect
+  // Handle payment verification redirect
   await verifyPayment();
   
   // Event listeners
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-  document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m) closeModal(); }));
+  document.addEventListener('keydown', e => { 
+    if (e.key === 'Escape') closeModal(); 
+  });
   
-  // Debounced canvas re-render on input
+  document.querySelectorAll('.modal').forEach(m => 
+    m.addEventListener('click', e => { 
+      if (e.target === m) closeModal(); 
+    })
+  );
+  
+  // Auto-render canvas on input change (debounced)
+  let renderTimeout;
   ['cWidth','cHeight','fontSize','bgColor'].forEach(id => {
     const el = $(id);
-    if (el) el.addEventListener('input', () => {
-      if (renderTimeout) clearTimeout(renderTimeout);
-      renderTimeout = setTimeout(renderCanvas, 50);
-    });
+    if (el) {
+      el.addEventListener('input', () => {
+        clearTimeout(renderTimeout);
+        renderTimeout = setTimeout(renderCanvas, 50);
+      });
+    }
   });
+  
+  // Handle visibility change to refresh auth
+  document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState === 'visible' && state.token) {
+      // Refresh user data when tab becomes visible
+      const u = await api.me();
+      if (u?.email) {
+        await applyAuth(u, state.token, true);
+      }
+    }
+  });
+  
+  // Ping server every 5 minutes to keep session alive
+  if (state.token) {
+    setInterval(async () => {
+      await api.req('/api/ping', { method: 'POST' });
+    }, 5 * 60 * 1000);
+  }
 }
 
-// Start everything
-init();
+// Start app when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 </script>
 </body>
 </html>
