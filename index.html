@@ -632,7 +632,8 @@ body{
 
     .bottom-layout{
 
-        grid-template-columns:1fr;
+        grid-template-columns:1fr 1fr;
+
     }
 
     .main-title{
@@ -658,6 +659,49 @@ body{
     .tab{
 
         font-size:14px;
+    }
+}
+
+
+
+
+/* SMALL PHONES */
+
+@media(max-width:600px){
+
+    .main-title{
+
+        font-size:8vw;
+    }
+
+    .quote-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .bottom-layout{
+
+        grid-template-columns:1fr;
+    }
+
+    .timer-container{
+
+        grid-column:auto;
+    }
+
+    .quote-btn{
+
+        min-height:48px;
+    }
+
+    .bet-btn{
+
+        min-height:90px;
+    }
+
+    .tab{
+
+        height:48px;
     }
 }
 
@@ -692,7 +736,7 @@ body{
         0 0 15px #00ff88,
         0 0 30px #00ff88,
         0 0 60px rgba(0,255,136,0.7);
-
+    grid-column:span 2;
     animation:pulseCircle 1s infinite;
 
 }
