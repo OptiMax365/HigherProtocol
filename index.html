@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Motion Quote Cards</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Neon Quote Bet</title>
 
 <style>
 
@@ -11,462 +12,1653 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
 body{
-    background:#0f1117;
-    font-family:Arial, sans-serif;
+    background:
+    radial-gradient(circle at top,#003b2b,#00150f 60%);
+    min-height:100vh;
     overflow-x:hidden;
+    overflow-y:auto;
     color:white;
 }
 
-/* ========================================
-   MAIN APP
-======================================== */
+/* MAIN CARD */
 
-.app{
+.main-card{
+
     width:100%;
     min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding:20px;
-    gap:25px;
-}
 
-/* ========================================
-   MOTION AREA
-======================================== */
+    padding:
+    30px
+    30px
+    120px;
 
-.motion-area{
-    width:100%;
-    max-width:900px;
-    height:420px;
     position:relative;
     overflow:hidden;
-    border-radius:30px;
-    background:linear-gradient(135deg,#151925,#23293a);
-    box-shadow:0 0 40px rgba(0,0,0,0.5);
 }
 
-/* ========================================
-   QUOTE CARD
-======================================== */
+/* TOP BALANCE */
 
-.quote-card{
-    width:320px;
-    min-height:220px;
+.balance-box{
+
     position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    border-radius:30px;
-    padding:30px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
+    top:0;
+    right:0;
+
+    background:#1fd45f;
+
+    width:150px;
+    height:45px;
+
+    border-bottom-left-radius:14px;
+
+    padding:6px 10px;
+
+    box-shadow:
+    0 0 20px #1fd45f,
+    0 0 50px rgba(31,212,95,.5);
+
+    animation:balancePulse 2s infinite;
+}
+
+.balance-title{
+    font-size:9px;
+    opacity:.8;
+}
+
+.balance{
+    font-size:28px;
+    font-weight:900;
+}
+
+/* TITLE */
+
+.main-title{
+
     text-align:center;
-    backdrop-filter:blur(15px);
-    background:rgba(255,255,255,0.08);
-    border:1px solid rgba(255,255,255,0.12);
-    animation:floatCard 6s ease-in-out infinite;
-    transition:0.5s;
+
+    margin-top:10px;
+
+    font-size:4.8vw;
+    font-weight:300;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+
+    color:white;
+
+    animation:titlePulse .5s infinite alternate;
 }
 
-.quote{
-    font-size:1.3rem;
-    line-height:1.6;
-    font-weight:bold;
-}
+/* TIMER */
 
-.author{
-    margin-top:20px;
-    font-size:0.95rem;
-    opacity:0.8;
-}
+.timer{
 
-/* ========================================
-   FLOATING ANIMATION
-======================================== */
-
-@keyframes floatCard{
-
-    0%{
-        transform:translate(-50%,-50%) translateY(0px) rotate(-2deg);
-    }
-
-    25%{
-        transform:translate(-50%,-50%) translateY(-10px) rotate(2deg);
-    }
-
-    50%{
-        transform:translate(-50%,-50%) translateY(0px) rotate(-2deg);
-    }
-
-    75%{
-        transform:translate(-50%,-50%) translateY(10px) rotate(2deg);
-    }
-
-    100%{
-        transform:translate(-50%,-50%) translateY(0px) rotate(-2deg);
-    }
-
-}
-
-/* ========================================
-   GLOW CIRCLES
-======================================== */
-
-.glow{
     position:absolute;
-    border-radius:50%;
-    filter:blur(50px);
-    opacity:0.5;
+    top:105px;
+    left:50%;
+    transform:translateX(-50%);
+
+    font-size:32px;
+    font-weight:900;
+
+    color:#39ff14;
+
+    text-shadow:
+    0 0 10px #39ff14,
+    0 0 30px #39ff14;
+
+    opacity:0;
+
+    transition:.4s;
 }
 
-.glow1{
-    width:220px;
-    height:220px;
-    background:#ff0080;
-    top:-40px;
-    left:-40px;
-}
+/* QUOTES */
 
-.glow2{
-    width:240px;
-    height:240px;
-    background:#00c3ff;
-    bottom:-60px;
-    right:-60px;
-}
+.quote-grid{
 
-/* ========================================
-   EDITOR SECTION
-======================================== */
-
-.editor{
     width:100%;
-    max-width:900px;
-    background:#171c28;
-    padding:20px;
-    border-radius:25px;
-    display:flex;
-    flex-direction:column;
-    gap:15px;
+
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+
+    gap:35px;
+
+    margin-top:70px;
 }
 
-.editor h2{
-    font-size:1.3rem;
-}
+.quote-btn{
 
-.input-box{
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-}
+    background:transparent;
 
-textarea,
-input{
-    width:100%;
     border:none;
-    outline:none;
-    border-radius:15px;
-    padding:15px;
-    background:#232a3d;
+
     color:white;
-    font-size:1rem;
-}
 
-textarea{
-    min-height:120px;
-    resize:none;
-}
+    font-size:4vw;
 
-.controls{
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-}
+    font-weight:300;
 
-/* ========================================
-   BUTTONS
-======================================== */
-
-button{
-    flex:1;
-    min-width:120px;
-    border:none;
-    border-radius:15px;
-    padding:15px;
     cursor:pointer;
-    font-size:1rem;
-    font-weight:bold;
-    transition:0.3s;
+
+    padding:25px;
+
+    border-radius:25px;
+
+    transition:.25s;
+
+    position:relative;
+
+    overflow:hidden;
+
+    animation:quotePulse 1.6s infinite;
 }
 
-.generate-btn{
-    background:#00c3ff;
+.quote-btn::before{
+
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    border-radius:25px;
+
+    border:1px solid rgba(57,255,20,.15);
+
+    box-shadow:
+    0 0 20px rgba(57,255,20,.18),
+    inset 0 0 20px rgba(57,255,20,.1);
+
+}
+
+.quote-btn:hover{
+
+    transform:scale(1.06);
+
+    color:#39ff14;
+}
+
+.quote-btn.active{
+
+    background:rgba(57,255,20,.12);
+
+    color:#39ff14;
+
+    box-shadow:
+    0 0 20px #39ff14,
+    0 0 60px rgba(57,255,20,.5);
+}
+
+/* BOTTOM AREA */
+
+.bottom-layout{
+
+    margin-top:200px;
+
+    display:grid;
+    grid-template-columns:
+    1.2fr
+    .8fr
+    .8fr;
+
+    gap:28px;
+
+    align-items:start;
+}
+
+/* ADD MONEY PANEL */
+
+.money-panel{
+
+    background:rgba(5,15,25,.7);
+
+    border-radius:24px;
+
+    padding:16px;
+
+    border:1px solid rgba(57,255,20,.15);
+
+    box-shadow:
+    0 0 20px rgba(57,255,20,.15);
+
+    backdrop-filter:blur(18px);
+}
+
+/* QUICK BUTTONS */
+
+.quick-buttons{
+
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+
+    gap:10px;
+
+    margin-bottom:12px;
+}
+
+.quick-btn{
+
+    height:48px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#162133;
+
     color:white;
+
+    font-weight:900;
+    font-size:20px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    animation:moneyPulse 1.5s infinite;
 }
 
-.download-btn{
-    background:#ff0080;
+.quick-btn:hover{
+
+    transform:translateY(-3px);
+
+    background:#1fd45f;
+}
+
+/* INPUT */
+
+.input-row{
+
+    display:flex;
+    gap:10px;
+}
+
+.amount-input{
+
+    flex:1;
+
+    height:56px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:15px;
+
+    background:#1c2737;
+
+    padding:0 18px;
+
     color:white;
+
+    font-size:22px;
 }
 
-button:hover{
+.add-btn{
+
+    width:70px;
+
+    border:none;
+
+    border-radius:15px;
+
+    background:#1fd45f;
+
+    color:white;
+
+    font-size:38px;
+    font-weight:900;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    animation:addPulse 1s infinite;
+}
+
+.add-btn:hover{
+
+    transform:scale(1.08);
+}
+
+/* BET BUTTON */
+
+.bet-wrap{
+
+    position:relative;
+
+    width:100%;
+
+    max-width:520px;
+
+    margin:auto;
+
+    top:auto;
+    left:auto;
+
+    z-index:100;
+}
+
+.bet-btn{
+
+    width:100%;
+    height:180px;
+
+    border:none;
+
+    border-radius:28px;
+
+    background:
+    linear-gradient(
+    135deg,
+    #1fd45f,
+    #16a34a
+    );
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:30px;
+    font-weight:900;
+
+    position:relative;
+
+    transition:.25s;
+
+    box-shadow:
+    0 0 30px #1fd45f,
+    0 0 70px rgba(31,212,95,.45);
+
+    animation:betPulse 1.2s infinite;
+}
+
+.bet-btn:hover{
+
     transform:scale(1.04);
 }
 
-/* ========================================
-   CARD PREVIEW STRIP
-======================================== */
+.bet-amount{
 
-.preview-strip{
+    display:block;
+
+    font-size:56px;
+
+    margin-top:10px;
+}
+
+/* WIN PANEL */
+
+.win-panel{
+
+    position:relative;
+
     width:100%;
-    display:flex;
-    gap:15px;
-    overflow-x:auto;
-    padding-bottom:10px;
+
+    max-width:420px;
+
+    margin:auto;
+
+    top:auto;
+    right:auto;
+
+    z-index:100;
 }
 
-.small-card{
-    min-width:180px;
-    height:120px;
-    border-radius:20px;
-    background:linear-gradient(135deg,#23293a,#111827);
-    padding:15px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+
+
+
+.win-panel{
+
+    position:relative;
+
+    width:100%;
+
+    max-width:420px;
+
+    margin:auto;
+
+    top:auto;
+    right:auto;
+
+    z-index:100;
+}
+
+
+.win-title{
+
     text-align:center;
-    font-size:0.9rem;
-    flex-shrink:0;
+
+    font-size:34px;
+
+    margin-bottom:18px;
 }
 
-/* ========================================
-   MOBILE RESPONSIVE
-======================================== */
+.win-grid{
 
-@media(max-width:700px){
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
 
-    .motion-area{
-        height:380px;
+    gap:16px;
+}
+
+.win-item{
+
+    background:rgba(57,255,20,.08);
+
+    border:1px solid rgba(57,255,20,.15);
+
+    border-radius:18px;
+
+    padding:18px;
+
+    text-align:center;
+
+    font-size:28px;
+
+    animation:moneyPulse 1.5s infinite;
+}
+
+/* RESULT */
+
+.result{
+
+    margin-top:18px;
+
+    text-align:center;
+
+    font-size:28px;
+    font-weight:900;
+
+    min-height:50px;
+
+    color:#39ff14;
+
+    text-shadow:
+    0 0 10px #39ff14;
+}
+
+/* TABS */
+
+.bottom-tabs{
+
+    position:absolute;
+
+    bottom:0;
+    left:0;
+
+    width:100%;
+
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+
+    gap:2px;
+
+    background:#06110d;
+
+    padding:12px;
+}
+
+.tab{
+
+    height:70px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#091822;
+
+    color:white;
+
+    font-size:20px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    animation:quotePulse 2s infinite;
+}
+
+.tab:hover,
+.tab.active{
+
+    background:#1fd45f;
+
+    box-shadow:
+    0 0 20px #1fd45f;
+}
+
+/* ANIMATIONS */
+
+@keyframes titlePulse{
+
+    0%{
+
+        transform:scale(1);
+
+        text-shadow:
+        0 0 8px white,
+        0 0 20px rgba(57,255,20,.5);
     }
 
-    .quote-card{
-        width:90%;
-        min-height:200px;
-        padding:25px;
+    100%{
+
+        transform:scale(1.03);
+
+        text-shadow:
+        0 0 20px white,
+        0 0 50px #39ff14,
+        0 0 90px #39ff14;
+    }
+}
+
+@keyframes quotePulse{
+
+    0%{
+        transform:scale(1);
     }
 
-    .quote{
-        font-size:1.1rem;
+    50%{
+
+        transform:scale(1.03);
+
+        text-shadow:
+        0 0 10px #39ff14;
     }
 
-    .controls{
+    100%{
+        transform:scale(1);
+    }
+}
+
+@keyframes betPulse{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+
+        transform:scale(1.03);
+
+        box-shadow:
+        0 0 40px #39ff14,
+        0 0 90px rgba(57,255,20,.7);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
+@keyframes addPulse{
+
+    0%{
+        box-shadow:0 0 0px #39ff14;
+    }
+
+    50%{
+        box-shadow:
+        0 0 20px #39ff14,
+        0 0 40px #39ff14;
+    }
+
+    100%{
+        box-shadow:0 0 0px #39ff14;
+    }
+}
+
+@keyframes moneyPulse{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.04);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
+@keyframes balancePulse{
+
+    0%{
+        box-shadow:0 0 10px #1fd45f;
+    }
+
+    50%{
+        box-shadow:
+        0 0 25px #1fd45f,
+        0 0 60px rgba(31,212,95,.6);
+    }
+
+    100%{
+        box-shadow:0 0 10px #1fd45f;
+    }
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+    .quote-grid{
+
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .bottom-layout{
+
+        grid-template-columns:1fr;
+    }
+
+    .main-title{
+
+        font-size:10vw;
+    }
+
+    .quote-btn{
+
+        font-size:9vw;
+    }
+
+    .bet-btn{
+
+        height:140px;
+    }
+
+    .bet-amount{
+
+        font-size:44px;
+    }
+
+    .tab{
+
+        font-size:14px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Timer Box */
+.timer-container{
+    position:absolute;
+
+    bottom:140px;
+    right:30px;
+
+    z-index:2;
+
+    width:200px;
+    height:200px;
+
+    border:4px solid #00ff88;
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:rgba(0, 40, 0, 0.35);
+
+    box-shadow:
+        0 0 15px #00ff88,
+        0 0 30px #00ff88,
+        0 0 60px rgba(0,255,136,0.7);
+
+    animation:pulseCircle 1s infinite;
+
+}
+
+/* Number */
+#countdown{
+    font-size:80px;
+    font-weight:bold;
+    color:#00ff88;
+
+    text-shadow:
+        0 0 10px #00ff88,
+        0 0 20px #00ff88,
+        0 0 40px #00ff88;
+
+    animation:pulseText 1s infinite;
+}
+
+
+
+
+
+
+
+/* =========================
+TRANSPARENT MODAL BACKGROUND
+========================= */
+
+.history-modal{
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.65);
+
+    backdrop-filter:blur(10px);
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:99999;
+}
+
+
+/* =========================
+MODAL BOX
+========================= */
+
+.modal-box{
+
+    width:80%;
+    max-width:900px;
+
+    height:80vh;
+
+    background:rgba(0,40,0,0.45);
+
+    border:3px solid #00ff88;
+
+    border-radius:25px;
+
+    box-shadow:
+        0 0 20px #00ff88,
+        0 0 50px rgba(0,255,136,0.5);
+
+    padding:30px;
+
+    position:relative;
+
+    overflow-y:auto;
+}
+
+
+/* =========================
+MODAL TITLE
+========================= */
+
+#modalTitle{
+
+    color:#00ff88;
+
+    font-size:50px;
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+    text-shadow:
+        0 0 10px #00ff88,
+        0 0 20px #00ff88;
+}
+
+
+/* =========================
+MODAL CONTENT
+========================= */
+
+.modal-content{
+
+    color:white;
+
+    font-size:22px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+}
+
+
+/* =========================
+SINGLE HISTORY ITEM
+========================= */
+
+.history-item{
+
+    background:rgba(0,255,136,0.08);
+
+    border:1px solid rgba(0,255,136,0.3);
+
+    border-radius:15px;
+
+    padding:20px;
+
+    box-shadow:
+        0 0 10px rgba(0,255,136,0.2);
+}
+
+
+/* =========================
+CLOSE BUTTON
+========================= */
+
+.close-modal{
+
+    position:absolute;
+
+    top:15px;
+    right:25px;
+
+    font-size:45px;
+
+    color:#00ff88;
+
+    cursor:pointer;
+
+    text-shadow:
+        0 0 10px #00ff88;
+}
+
+
+
+
+/* Circle Pulse */
+@keyframes pulseCircle{
+
+    0%{
+        transform:scale(1);
+        box-shadow:
+            0 0 15px #00ff88,
+            0 0 30px #00ff88,
+            0 0 60px rgba(0,255,136,0.7);
+    }
+
+    50%{
+        transform:scale(1.08);
+        box-shadow:
+            0 0 25px #00ff88,
+            0 0 50px #00ff88,
+            0 0 90px rgba(0,255,136,1);
+    }
+
+    100%{
+        transform:scale(1);
+        box-shadow:
+            0 0 15px #00ff88,
+            0 0 30px #00ff88,
+            0 0 60px rgba(0,255,136,0.7);
+    }
+}
+
+/* Number Pulse */
+@keyframes pulseText{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.18);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
+
+/* =========================
+MOBILE RESPONSIVE
+========================= */
+
+@media(max-width:900px){
+
+    body{
+        overflow-y:auto;
+    }
+
+    .main-card{
+        padding:20px 15px 180px;
+    }
+
+    .main-title{
+
+        font-size:12vw;
+
+        line-height:1.1;
+
+        margin-top:40px;
+    }
+
+    .quote-grid{
+
+        grid-template-columns:1fr;
+
+        gap:18px;
+
+        margin-top:40px;
+    }
+
+    .quote-btn{
+
+        font-size:12vw;
+
+        padding:20px;
+    }
+
+    .bottom-layout{
+
+        margin-top:60px;
+
+        grid-template-columns:1fr;
+
+        gap:35px;
+    }
+
+    .money-panel{
+        width:100%;
+    }
+
+    .quick-buttons{
+
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .quick-btn{
+
+        height:60px;
+
+        font-size:24px;
+    }
+
+    .input-row{
+
         flex-direction:column;
     }
 
+    .amount-input{
+
+        width:100%;
+
+        font-size:24px;
+    }
+
+    .add-btn{
+
+        width:100%;
+
+        height:70px;
+    }
+
+    .bet-wrap{
+
+        max-width:100%;
+    }
+
+    .bet-btn{
+
+        height:140px;
+
+        font-size:26px;
+    }
+
+    .bet-amount{
+
+        font-size:48px;
+    }
+
+    .win-panel{
+
+        max-width:100%;
+    }
+
+    .win-title{
+
+        font-size:30px;
+    }
+
+    .win-item{
+
+        font-size:24px;
+
+        padding:16px;
+    }
+
+    .bottom-tabs{
+
+        grid-template-columns:repeat(2,1fr);
+
+        gap:10px;
+
+        padding:10px;
+    }
+
+    .tab{
+
+        font-size:16px;
+
+        height:65px;
+    }
+
+    .timer-container{
+
+        width:120px;
+        height:120px;
+
+        bottom:110px;
+        right:10px;
+    }
+
+    #countdown{
+
+        font-size:52px;
+    }
+
+    .modal-box{
+
+        width:95%;
+
+        height:85vh;
+
+        padding:20px;
+    }
+
+    #modalTitle{
+
+        font-size:34px;
+    }
+
 }
+
+
+
+
+
+
+
+
 
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<div class="main-card">
 
-    <!-- ====================================
-         MOTION DISPLAY
-    ===================================== -->
+    <!-- BALANCE -->
+    <div class="balance-box">
 
-    <div class="motion-area" id="captureArea">
+        <div class="balance-title">
+            Available Balance
+        </div>
 
-        <div class="glow glow1"></div>
-        <div class="glow glow2"></div>
+        <div class="balance" id="balance">
+            $0
+        </div>
 
-        <div class="quote-card" id="quoteCard">
+    </div>
 
-            <div class="quote" id="quoteText">
-                “Dream big. Start small. Act now.”
+    <!-- TITLE -->
+    <h1 class="main-title">
+        WIN THE MOST POWERFUL
+    </h1>
+
+    <!-- TIMER -->
+    <div class="timer" id="timer">
+        3
+    </div>
+
+    <!-- QUOTES -->
+    <div class="quote-grid">
+
+        <button class="quote-btn active">
+            Unstoppable
+        </button>
+
+        <button class="quote-btn">
+            Unbeatable
+        </button>
+
+        <button class="quote-btn">
+            Endless
+        </button>
+
+        <button class="quote-btn">
+            Limitless
+        </button>
+
+        <button class="quote-btn">
+            Dominant
+        </button>
+
+        <button class="quote-btn">
+            Invisible
+        </button>
+
+    </div>
+
+    <!-- BOTTOM -->
+    <div class="bottom-layout">
+
+        <!-- MONEY -->
+        <div class="money-panel">
+
+            <div class="quick-buttons">
+
+                <button class="quick-btn">
+                    +5
+                </button>
+
+                <button class="quick-btn">
+                    +10
+                </button>
+
+                <button class="quick-btn">
+                    +20
+                </button>
+
+                <button class="quick-btn">
+                    +50
+                </button>
+
             </div>
 
-            <div class="author" id="authorText">
-                — Motion Quotes
+            <div class="input-row">
+
+                <input
+                type="number"
+                class="amount-input"
+                id="amountInput"
+                placeholder="Enter amount">
+
+                <button class="add-btn" id="addBtn">
+                    +
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- BET -->
+        <div class="bet-wrap">
+
+            <button class="bet-btn" id="betBtn">
+
+                BET
+
+                <span class="bet-amount" id="betAmount">
+                    $0
+                </span>
+
+            </button>
+
+        </div>
+
+        <!-- WIN -->
+        <div class="win-panel">
+
+            <div class="win-title">
+                WIN PRICE
+            </div>
+
+            <div class="win-grid">
+
+                <div class="win-item">+5</div>
+                <div class="win-item">+10</div>
+                <div class="win-item">+20</div>
+                <div class="win-item">+40</div>
+                <div class="win-item">+60</div>
+                <div class="win-item">+80</div>
+
+            </div>
+
+            <div class="result" id="result">
+            </div>
+
+        </div>
+
+
+
+
+        <div class="timer-container">
+            <div id="countdown">6</div>
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+
+    <!--  BOTTOM MENU BUTTONS ADD IDs TO YOUR BUTTONS  -->
+    <div class="bottom-tabs">
+    <button class="tab active" id="betHistoryBtn">Bet History</button>
+
+    <button class="tab" id="moneyHistoryBtn">Add Money History</button>
+
+    <button class="tab" id="winBtn">Win</button>
+
+    <button class="tab" id="loseBtn">Lose Reward</button>
+
+
+
+    <div id="historyModal" class="history-modal">
+
+        <div class="modal-box">
+
+            <!-- CLOSE BUTTON -->
+            <span class="close-modal" id="closeModal">&times;</span>
+
+            <!-- MODAL TITLE -->
+            <h1 id="modalTitle">History</h1>
+
+            <!-- MODAL CONTENT -->
+            <div id="modalContent" class="modal-content">
+
+                <!-- YOUR DATA WILL APPEAR HERE -->
+
             </div>
 
         </div>
 
     </div>
 
-    <!-- ====================================
-         EDITOR
-    ===================================== -->
 
-    <div class="editor">
-
-        <h2>Quote Card Editor</h2>
-
-        <div class="input-box">
-
-            <textarea id="quoteInput" placeholder="Write your quote here..."></textarea>
-
-            <input type="text" id="authorInput" placeholder="Author name...">
-
-        </div>
-
-        <div class="controls">
-
-            <button class="generate-btn" onclick="updateCard()">
-                Update Card
-            </button>
-
-            <button class="download-btn" onclick="downloadCard()">
-                Download PNG
-            </button>
-
-        </div>
-
-        <!-- ====================================
-             CARD PREVIEWS
-        ===================================== -->
-
-        <div class="preview-strip" id="previewStrip">
-
-            <div class="small-card">
-                Success starts with consistency.
-            </div>
-
-            <div class="small-card">
-                Creativity changes everything.
-            </div>
-
-            <div class="small-card">
-                Focus creates power.
-            </div>
-
-            <div class="small-card">
-                Build your future today.
-            </div>
-
-        </div>
-
-    </div>
 
 </div>
 
-<!-- ========================================
-     HTML2CANVAS LIBRARY
-======================================== -->
-
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-
 <script>
 
-/* ========================================
-   QUOTE LIST
-======================================== */
+let balance = 0;
+let betAmount = 0;
 
-const quotes = [
+const balanceText =
+document.getElementById("balance");
 
-{
-    quote:"Dream big. Start small. Act now.",
-    author:"Motion Quotes"
-},
+const betAmountText =
+document.getElementById("betAmount");
 
-{
-    quote:"Your future is built daily.",
-    author:"Creative Mind"
-},
+const result =
+document.getElementById("result");
 
-{
-    quote:"Consistency creates greatness.",
-    author:"Focus Studio"
-},
+const timer =
+document.getElementById("timer");
 
-{
-    quote:"The best designs move emotions.",
-    author:"Visual Motion"
-}
+const betBtn =
+document.getElementById("betBtn");
 
-];
+const amountInput =
+document.getElementById("amountInput");
 
-/* ========================================
-   AUTO SLIDE QUOTES
-======================================== */
+/* SELECT QUOTES */
 
-let currentIndex = 0;
+document.querySelectorAll(".quote-btn")
+.forEach(button=>{
 
-function autoQuotes(){
+    button.addEventListener("click",()=>{
 
-    currentIndex++;
+        document
+        .querySelectorAll(".quote-btn")
+        .forEach(btn=>btn.classList.remove("active"));
 
-    if(currentIndex >= quotes.length){
-        currentIndex = 0;
-    }
-
-    document.getElementById("quoteText").innerHTML =
-    "“" + quotes[currentIndex].quote + "”";
-
-    document.getElementById("authorText").innerHTML =
-    "— " + quotes[currentIndex].author;
-
-}
-
-setInterval(autoQuotes,4000);
-
-/* ========================================
-   UPDATE CARD
-======================================== */
-
-function updateCard(){
-
-    let quote = document.getElementById("quoteInput").value;
-
-    let author = document.getElementById("authorInput").value;
-
-    if(quote.trim() !== ""){
-
-        document.getElementById("quoteText").innerHTML =
-        "“" + quote + "”";
-
-    }
-
-    if(author.trim() !== ""){
-
-        document.getElementById("authorText").innerHTML =
-        "— " + author;
-
-    }
-
-}
-
-/* ========================================
-   DOWNLOAD CARD
-======================================== */
-
-function downloadCard(){
-
-    html2canvas(document.getElementById("captureArea"),{
-
-        scale:3
-
-    }).then(canvas=>{
-
-        let link = document.createElement("a");
-
-        link.download = "quote-card.png";
-
-        link.href = canvas.toDataURL("image/png");
-
-        link.click();
-
+        button.classList.add("active");
     });
+});
 
+/* QUICK MONEY */
+
+document.querySelectorAll(".quick-btn")
+.forEach(button=>{
+
+    button.addEventListener("click",()=>{
+
+        const value =
+        parseInt(button.innerText.replace("+",""));
+
+        addMoney(value);
+    });
+});
+
+/* ADD BUTTON */
+
+document
+.getElementById("addBtn")
+.addEventListener("click",()=>{
+
+    const value =
+    parseInt(amountInput.value);
+
+    if(!value || value <= 0){
+        return;
+    }
+
+    addMoney(value);
+
+    amountInput.value = "";
+});
+
+function addMoney(value){
+
+    balance += value;
+
+    betAmount += value;
+
+    balanceText.innerText =
+    "$" + balance;
+
+    betAmountText.innerText =
+    "$" + betAmount;
 }
+
+/* BET BUTTON */
+
+betBtn.addEventListener("click",()=>{
+
+    if(betAmount <= 0){
+
+        result.innerText =
+        "ADD MONEY";
+
+        return;
+    }
+
+    result.innerText = "";
+
+    timer.style.opacity = 1;
+
+    let count = 3;
+
+    timer.innerText = count;
+
+    const countdown =
+    setInterval(()=>{
+
+        count--;
+
+        if(count > 0){
+
+            timer.innerText = count;
+        }
+
+        else if(count === 0){
+
+            timer.innerText = "WIN";
+        }
+
+        else{
+
+            clearInterval(countdown);
+
+            timer.style.opacity = 0;
+
+            const random =
+            Math.random();
+
+            if(random > .4){
+
+                const wins =
+                [5,10,20,40,60,80];
+
+                const reward =
+                wins[
+                Math.floor(
+                Math.random() * wins.length
+                )];
+
+                result.innerText =
+                "WIN +" + reward;
+
+                balance += reward;
+
+                balanceText.innerText =
+                "$" + balance;
+            }
+
+            else{
+
+                result.innerText =
+                "LOSE GET REWARD";
+            }
+
+            betAmount = 0;
+
+            betAmountText.innerText =
+            "$0";
+        }
+
+    },1000);
+});
+
+/* TABS */
+
+document.querySelectorAll(".tab")
+.forEach(tab=>{
+
+    tab.addEventListener("click",()=>{
+
+        document
+        .querySelectorAll(".tab")
+        .forEach(t=>t.classList.remove("active"));
+
+        tab.classList.add("active");
+    });
+});
+
+
+
+
+const countdown = document.getElementById("countdown");
+
+let number = 0;
+
+function startCountdown(){
+
+    countdown.textContent = number;
+
+    number++;
+
+    if(number > 5 ){
+        number = 0;
+    }
+}   
+
+startCountdown();
+
+setInterval(startCountdown, 1000);
+
+
+
+
+
+
+
+/* =========================
+GET ELEMENTS
+========================= */
+
+const historyModal = document.getElementById("historyModal");
+
+const modalTitle = document.getElementById("modalTitle");
+
+const modalContent = document.getElementById("modalContent");
+
+const closeModal = document.getElementById("closeModal");
+
+
+/* =========================
+BUTTONS
+========================= */
+
+const betHistoryBtn = document.getElementById("betHistoryBtn");
+
+const moneyHistoryBtn = document.getElementById("moneyHistoryBtn");
+
+const winBtn = document.getElementById("winBtn");
+
+const loseBtn = document.getElementById("loseBtn");
+
+
+/* =========================
+OPEN MODAL FUNCTION
+========================= */
+
+function openModal(title, data){
+
+    modalTitle.innerHTML = title;
+
+    modalContent.innerHTML = data;
+
+    historyModal.style.display = "flex";
+}
+
+
+/* =========================
+BET HISTORY
+========================= */
+
+betHistoryBtn.onclick = () => {
+
+    openModal(
+
+        "Bet History",
+
+        `
+        <div class="history-item">
+            Bet Amount: $20
+        </div>
+
+        <div class="history-item">
+            Bet Amount: $50
+        </div>
+
+        <div class="history-item">
+            Bet Amount: $100
+        </div>
+        `
+    );
+};
+
+
+/* =========================
+ADD MONEY HISTORY
+========================= */
+
+moneyHistoryBtn.onclick = () => {
+
+    openModal(
+
+        "Add Money History",
+
+        `
+        <div class="history-item">
+            Added $200
+        </div>
+
+        <div class="history-item">
+            Added $500
+        </div>
+        `
+    );
+};
+
+
+/* =========================
+WIN HISTORY
+========================= */
+
+winBtn.onclick = () => {
+
+    openModal(
+
+        "Win Rewards",
+
+        `
+        <div class="history-item">
+            Won +$80
+        </div>
+
+        <div class="history-item">
+            Won +$40
+        </div>
+        `
+    );
+};
+
+
+/* =========================
+LOSE HISTORY
+========================= */
+
+loseBtn.onclick = () => {
+
+    openModal(
+
+        "Lose Rewards",
+
+        `
+        <div class="history-item">
+            Lost -$20
+        </div>
+
+        <div class="history-item">
+            Lost -$50
+        </div>
+        `
+    );
+};
+
+
+/* =========================
+CLOSE MODAL
+========================= */
+
+closeModal.onclick = () => {
+
+    historyModal.style.display = "none";
+};
+
+
+/* =========================
+CLICK OUTSIDE TO CLOSE
+========================= */
+
+window.onclick = (e) => {
+
+    if(e.target === historyModal){
+
+        historyModal.style.display = "none";
+    }
+};
+
+
+
+
+
+
 
 </script>
 
