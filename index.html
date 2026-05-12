@@ -6,16 +6,7 @@
 
 <title>Neon Quote Bet</title>
 
-<!-- REPLACE YOUR CURRENT BODY CSS WITH THIS -->
-
 <style>
-
-html,
-body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
-}
 
 *{
     margin:0;
@@ -25,39 +16,29 @@ body{
 }
 
 body{
-
     background:
     radial-gradient(circle at top,#003b2b,#00150f 60%);
-
+    height:100%;
     color:white;
-
+    width:100%;
     overflow:hidden;
-
     -webkit-tap-highlight-color:transparent;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
 }
 
 /* MAIN CARD */
 
 .main-card{
 
-    width:100vw;
-    height:100vh;
-
-    overflow:hidden;
-
-    display:flex;
-    flex-direction:column;
-
-    position:relative;
+    width:100%;
+    min-height:100vh;
 
     padding:
-    clamp(8px,1vw,18px);
+    30px
+    30px
+    120px;
 
-    gap:1vh;
+    position:relative;
+    overflow:hidden;
 }
 
 /* TOP BALANCE */
@@ -65,20 +46,17 @@ body{
 .balance-box{
 
     position:absolute;
-
     top:0;
     right:0;
 
     background:#1fd45f;
 
-    width:clamp(110px,12vw,150px);
-    height:clamp(38px,5vh,50px);
+    width:150px;
+    height:45px;
 
     border-bottom-left-radius:14px;
 
     padding:6px 10px;
-
-    z-index:20;
 
     box-shadow:
     0 0 20px #1fd45f,
@@ -93,7 +71,7 @@ body{
 }
 
 .balance{
-    font-size:clamp(18px,2vw,28px);
+    font-size:28px;
     font-weight:900;
 }
 
@@ -103,15 +81,12 @@ body{
 
     text-align:center;
 
-    margin-top:5vh;
+    margin-top:10px;
 
-    font-size:clamp(18px,3vw,42px);
-
+    font-size:4.8vw;
     font-weight:300;
 
     letter-spacing:2px;
-
-    line-height:1.1;
 
     text-transform:uppercase;
 
@@ -125,15 +100,11 @@ body{
 .timer{
 
     position:absolute;
-
-    top:12vh;
-
+    top:105px;
     left:50%;
-
     transform:translateX(-50%);
 
-    font-size:clamp(20px,3vw,36px);
-
+    font-size:32px;
     font-weight:900;
 
     color:#39ff14;
@@ -151,20 +122,14 @@ body{
 
 .quote-grid{
 
-    flex:1;
-
     width:100%;
 
     display:grid;
+    grid-template-columns:repeat(3,1fr);
 
-    grid-template-columns:
-    repeat(3,minmax(0,1fr));
+    gap:35px;
 
-    gap:1vh;
-
-    margin-top:2vh;
-
-    overflow:hidden;
+    margin-top:70px;
 }
 
 .quote-btn{
@@ -175,13 +140,13 @@ body{
 
     color:white;
 
-    font-size:clamp(16px,2vw,34px);
+    font-size:4vw;
 
     font-weight:300;
 
     cursor:pointer;
 
-    padding:1vh;
+    padding:25px;
 
     border-radius:25px;
 
@@ -190,12 +155,6 @@ body{
     position:relative;
 
     overflow:hidden;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    text-align:center;
 
     animation:quotePulse 1.6s infinite;
 }
@@ -214,11 +173,12 @@ body{
     box-shadow:
     0 0 20px rgba(57,255,20,.18),
     inset 0 0 20px rgba(57,255,20,.1);
+
 }
 
 .quote-btn:hover{
 
-    transform:scale(1.04);
+    transform:scale(1.06);
 
     color:#39ff14;
 }
@@ -238,21 +198,18 @@ body{
 
 .bottom-layout{
 
+    margin-top:60px;
+
     width:100%;
 
     display:grid;
 
     grid-template-columns:
-    1fr
-    1fr
-    1fr
-    auto;
+    repeat(auto-fit,minmax(280px,1fr));
 
-    gap:1vw;
+    gap:24px;
 
-    align-items:stretch;
-
-    overflow:hidden;
+    align-items:start;
 }
 
 /* ADD MONEY PANEL */
@@ -263,7 +220,7 @@ body{
 
     border-radius:24px;
 
-    padding:1vh;
+    padding:16px;
 
     border:1px solid rgba(57,255,20,.15);
 
@@ -271,8 +228,6 @@ body{
     0 0 20px rgba(57,255,20,.15);
 
     backdrop-filter:blur(18px);
-
-    overflow:hidden;
 }
 
 /* QUICK BUTTONS */
@@ -280,17 +235,16 @@ body{
 .quick-buttons{
 
     display:grid;
-
     grid-template-columns:repeat(4,1fr);
 
-    gap:.6vh;
+    gap:10px;
 
-    margin-bottom:.8vh;
+    margin-bottom:12px;
 }
 
 .quick-btn{
 
-    height:clamp(36px,5vh,52px);
+    height:48px;
 
     border:none;
 
@@ -301,8 +255,7 @@ body{
     color:white;
 
     font-weight:900;
-
-    font-size:clamp(14px,1.5vw,22px);
+    font-size:20px;
 
     cursor:pointer;
 
@@ -323,7 +276,6 @@ body{
 .input-row{
 
     display:flex;
-
     gap:10px;
 }
 
@@ -331,7 +283,7 @@ body{
 
     flex:1;
 
-    height:clamp(40px,6vh,58px);
+    height:56px;
 
     border:none;
 
@@ -345,12 +297,12 @@ body{
 
     color:white;
 
-    font-size:clamp(14px,1.5vw,22px);
+    font-size:22px;
 }
 
 .add-btn{
 
-    width:clamp(55px,6vw,70px);
+    width:70px;
 
     border:none;
 
@@ -360,8 +312,7 @@ body{
 
     color:white;
 
-    font-size:clamp(24px,3vw,38px);
-
+    font-size:38px;
     font-weight:900;
 
     cursor:pointer;
@@ -371,22 +322,30 @@ body{
     animation:addPulse 1s infinite;
 }
 
+.add-btn:hover{
+
+    transform:scale(1.08);
+}
+
 /* BET BUTTON */
 
 .bet-wrap{
 
+    position:relative;
+
     width:100%;
 
-    overflow:hidden;
+    max-width:520px;
+
+    margin:auto;
+
+    z-index:10;
 }
 
 .bet-btn{
 
     width:100%;
-
-    height:100%;
-
-    min-height:120px;
+    height:180px;
 
     border:none;
 
@@ -403,9 +362,10 @@ body{
 
     cursor:pointer;
 
-    font-size:clamp(18px,2vw,30px);
-
+    font-size:30px;
     font-weight:900;
+
+    position:relative;
 
     transition:.25s;
 
@@ -418,14 +378,14 @@ body{
 
 .bet-btn:hover{
 
-    transform:scale(1.03);
+    transform:scale(1.04);
 }
 
 .bet-amount{
 
     display:block;
 
-    font-size:clamp(28px,4vw,56px);
+    font-size:56px;
 
     margin-top:10px;
 }
@@ -434,27 +394,32 @@ body{
 
 .win-panel{
 
+    position:relative;
+
     width:100%;
 
-    overflow:hidden;
+    max-width:420px;
+
+    margin:auto;
+
+    z-index:10;
 }
 
 .win-title{
 
     text-align:center;
 
-    font-size:clamp(18px,2vw,32px);
+    font-size:34px;
 
-    margin-bottom:1vh;
+    margin-bottom:18px;
 }
 
 .win-grid{
 
     display:grid;
-
     grid-template-columns:repeat(2,1fr);
 
-    gap:.8vh;
+    gap:16px;
 }
 
 .win-item{
@@ -465,26 +430,27 @@ body{
 
     border-radius:18px;
 
-    padding:1vh;
+    padding:18px;
 
     text-align:center;
 
-    font-size:clamp(14px,1.7vw,24px);
+    font-size:28px;
 
     animation:moneyPulse 1.5s infinite;
 }
 
+/* RESULT */
+
 .result{
 
-    margin-top:1vh;
+    margin-top:18px;
 
     text-align:center;
 
-    font-size:clamp(14px,2vw,28px);
-
+    font-size:28px;
     font-weight:900;
 
-    min-height:20px;
+    min-height:50px;
 
     color:#39ff14;
 
@@ -492,73 +458,30 @@ body{
     0 0 10px #39ff14;
 }
 
-/* TIMER CONTAINER */
-
-.timer-container{
-
-    position:relative;
-
-    margin:auto;
-
-    width:clamp(80px,10vw,150px);
-    height:clamp(80px,10vw,150px);
-
-    border:4px solid #00ff88;
-
-    border-radius:50%;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    background:rgba(0,40,0,0.35);
-
-    box-shadow:
-    0 0 15px #00ff88,
-    0 0 30px #00ff88,
-    0 0 60px rgba(0,255,136,0.7);
-
-    animation:pulseCircle 1s infinite;
-}
-
-#countdown{
-
-    font-size:clamp(32px,4vw,70px);
-
-    font-weight:bold;
-
-    color:#00ff88;
-
-    text-shadow:
-    0 0 10px #00ff88,
-    0 0 20px #00ff88,
-    0 0 40px #00ff88;
-
-    animation:pulseText 1s infinite;
-}
-
 /* TABS */
 
 .bottom-tabs{
 
+    position:absolute;
+
+    bottom:0;
+    left:0;
+
     width:100%;
 
     display:grid;
-
     grid-template-columns:repeat(4,1fr);
 
-    gap:.5vw;
+    gap:2px;
 
     background:#06110d;
 
-    padding:.6vh;
-
-    overflow:hidden;
+    padding:12px;
 }
 
 .tab{
 
-    height:clamp(42px,7vh,70px);
+    height:70px;
 
     border:none;
 
@@ -568,7 +491,7 @@ body{
 
     color:white;
 
-    font-size:clamp(10px,1vw,18px);
+    font-size:20px;
 
     cursor:pointer;
 
@@ -586,49 +509,116 @@ body{
     0 0 20px #1fd45f;
 }
 
-/* MODAL */
+/* ANIMATIONS */
 
-.history-modal{
+@keyframes titlePulse{
 
-    position:fixed;
+    0%{
 
-    inset:0;
+        transform:scale(1);
 
-    background:rgba(0,0,0,0.65);
+        text-shadow:
+        0 0 8px white,
+        0 0 20px rgba(57,255,20,.5);
+    }
 
-    backdrop-filter:blur(10px);
+    100%{
 
-    display:none;
+        transform:scale(1.03);
 
-    justify-content:center;
-    align-items:center;
-
-    z-index:99999;
+        text-shadow:
+        0 0 20px white,
+        0 0 50px #39ff14,
+        0 0 90px #39ff14;
+    }
 }
 
-.modal-box{
+@keyframes quotePulse{
 
-    width:90%;
+    0%{
+        transform:scale(1);
+    }
 
-    max-width:900px;
+    50%{
 
-    max-height:85vh;
+        transform:scale(1.03);
 
-    overflow:auto;
+        text-shadow:
+        0 0 10px #39ff14;
+    }
 
-    background:rgba(0,40,0,0.45);
+    100%{
+        transform:scale(1);
+    }
+}
 
-    border:3px solid #00ff88;
+@keyframes betPulse{
 
-    border-radius:25px;
+    0%{
+        transform:scale(1);
+    }
 
-    box-shadow:
-    0 0 20px #00ff88,
-    0 0 50px rgba(0,255,136,0.5);
+    50%{
 
-    padding:20px;
+        transform:scale(1.03);
 
-    position:relative;
+        box-shadow:
+        0 0 40px #39ff14,
+        0 0 90px rgba(57,255,20,.7);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
+@keyframes addPulse{
+
+    0%{
+        box-shadow:0 0 0px #39ff14;
+    }
+
+    50%{
+        box-shadow:
+        0 0 20px #39ff14,
+        0 0 40px #39ff14;
+    }
+
+    100%{
+        box-shadow:0 0 0px #39ff14;
+    }
+}
+
+@keyframes moneyPulse{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.04);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
+@keyframes balancePulse{
+
+    0%{
+        box-shadow:0 0 10px #1fd45f;
+    }
+
+    50%{
+        box-shadow:
+        0 0 25px #1fd45f,
+        0 0 60px rgba(31,212,95,.6);
+    }
+
+    100%{
+        box-shadow:0 0 10px #1fd45f;
+    }
 }
 
 /* MOBILE */
@@ -642,22 +632,618 @@ body{
 
     .bottom-layout{
 
-        grid-template-columns:1fr 1fr;
+        grid-template-columns:1fr;
     }
-
-    .timer-container{
-
-        grid-column:span 2;
-    }
-}
-
-/* SMALL PHONES */
-
-@media(max-width:600px){
 
     .main-title{
 
+        font-size:10vw;
+    }
+
+    .quote-btn{
+
+        font-size:9vw;
+    }
+
+    .bet-btn{
+
+        height:140px;
+    }
+
+    .bet-amount{
+
+        font-size:44px;
+    }
+
+    .tab{
+
+        font-size:14px;
+    }
+}
+
+
+
+
+
+/* Timer Box */
+.timer-container{
+
+    width:100%;
+    position:absolute;
+    margin:auto;
+    top:800px;
+    left:2250px;
+
+    z-index:2;
+
+    width:200px;
+    height:200px;
+
+    border:4px solid #00ff88;
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:rgba(0, 40, 0, 0.35);
+
+    box-shadow:
+        0 0 15px #00ff88,
+        0 0 30px #00ff88,
+        0 0 60px rgba(0,255,136,0.7);
+
+    animation:pulseCircle 1s infinite;
+
+}
+
+/* Number */
+#countdown{
+    font-size:80px;
+    font-weight:bold;
+    color:#00ff88;
+
+    text-shadow:
+        0 0 10px #00ff88,
+        0 0 20px #00ff88,
+        0 0 40px #00ff88;
+
+    animation:pulseText 1s infinite;
+}
+
+
+
+
+
+
+
+/* =========================
+TRANSPARENT MODAL BACKGROUND
+========================= */
+
+.history-modal{
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.65);
+
+    backdrop-filter:blur(10px);
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:99999;
+}
+
+
+/* =========================
+MODAL BOX
+========================= */
+
+.modal-box{
+
+    width:80%;
+    max-width:900px;
+
+    height:80vh;
+
+    background:rgba(0,40,0,0.45);
+
+    border:3px solid #00ff88;
+
+    border-radius:25px;
+
+    box-shadow:
+        0 0 20px #00ff88,
+        0 0 50px rgba(0,255,136,0.5);
+
+    padding:30px;
+
+    position:relative;
+
+    overflow-y:auto;
+}
+
+
+/* =========================
+MODAL TITLE
+========================= */
+
+#modalTitle{
+
+    color:#00ff88;
+
+    font-size:50px;
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+    text-shadow:
+        0 0 10px #00ff88,
+        0 0 20px #00ff88;
+}
+
+
+/* =========================
+MODAL CONTENT
+========================= */
+
+.modal-content{
+
+    color:white;
+
+    font-size:22px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+}
+
+
+/* =========================
+SINGLE HISTORY ITEM
+========================= */
+
+.history-item{
+
+    background:rgba(0,255,136,0.08);
+
+    border:1px solid rgba(0,255,136,0.3);
+
+    border-radius:15px;
+
+    padding:20px;
+
+    box-shadow:
+        0 0 10px rgba(0,255,136,0.2);
+}
+
+
+/* =========================
+CLOSE BUTTON
+========================= */
+
+.close-modal{
+
+    position:absolute;
+
+    top:15px;
+    right:25px;
+
+    font-size:45px;
+
+    color:#00ff88;
+
+    cursor:pointer;
+
+    text-shadow:
+        0 0 10px #00ff88;
+}
+
+
+
+
+/* Circle Pulse */
+@keyframes pulseCircle{
+
+    0%{
+        transform:scale(1);
+        box-shadow:
+            0 0 15px #00ff88,
+            0 0 30px #00ff88,
+            0 0 60px rgba(0,255,136,0.7);
+    }
+
+    50%{
+        transform:scale(1.08);
+        box-shadow:
+            0 0 25px #00ff88,
+            0 0 50px #00ff88,
+            0 0 90px rgba(0,255,136,1);
+    }
+
+    100%{
+        transform:scale(1);
+        box-shadow:
+            0 0 15px #00ff88,
+            0 0 30px #00ff88,
+            0 0 60px rgba(0,255,136,0.7);
+    }
+}
+
+/* Number Pulse */
+@keyframes pulseText{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.18);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
+
+
+
+/* =========================================================
+MOBILE + TABLET RESPONSIVE DESIGN
+DOES NOT AFFECT DESKTOP/WINDOWS VIEWPORT
+========================================================= */
+
+@media screen and (max-width:1200px){
+
+    body{
+        overflow-x:hidden;
+        overflow-y:auto;
+    }
+
+    .main-card{
+
+        padding:
+        20px
+        16px
+        140px;
+
+        min-height:auto;
+    }
+
+    /* =========================
+    BALANCE
+    ========================= */
+
+    .balance-box{
+
+        width:120px;
+        height:40px;
+
+        top:0;
+        right:0;
+
+        border-bottom-left-radius:16px;
+
+        padding:6px 10px;
+    }
+
+    .balance-title{
+        font-size:8px;
+    }
+
+    .balance{
+        font-size:22px;
+    }
+
+    /* =========================
+    TITLE
+    ========================= */
+
+    .main-title{
+
+        margin-top:55px;
+
         font-size:8vw;
+
+        line-height:1.1;
+
+        padding:0 10px;
+    }
+
+    /* =========================
+    QUOTE GRID
+    ========================= */
+
+    .quote-grid{
+
+        grid-template-columns:
+        repeat(2,1fr);
+
+        gap:14px;
+
+        margin-top:40px;
+    }
+
+    .quote-btn{
+
+        font-size:6vw;
+
+        padding:18px 10px;
+
+        border-radius:18px;
+
+        min-height:90px;
+    }
+
+    /* =========================
+    TIMER
+    ========================= */
+
+    .timer{
+
+        top:120px;
+
+        font-size:26px;
+    }
+
+    /* =========================
+    BOTTOM LAYOUT
+    ========================= */
+
+    .bottom-layout{
+
+        margin-top:40px;
+
+        display:flex;
+
+        flex-direction:column;
+
+        gap:22px;
+    }
+
+    /* =========================
+    MONEY PANEL
+    ========================= */
+
+    .money-panel{
+
+        width:100%;
+
+        padding:14px;
+
+        border-radius:20px;
+    }
+
+    .quick-buttons{
+
+        grid-template-columns:
+        repeat(2,1fr);
+
+        gap:12px;
+    }
+
+    .quick-btn{
+
+        height:54px;
+
+        font-size:20px;
+    }
+
+    .input-row{
+
+        flex-direction:row;
+
+        gap:10px;
+    }
+
+    .amount-input{
+
+        height:54px;
+
+        font-size:18px;
+    }
+
+    .add-btn{
+
+        width:65px;
+
+        height:54px;
+
+        font-size:34px;
+    }
+
+    /* =========================
+    BET BUTTON
+    ========================= */
+
+    .bet-wrap{
+
+        position:relative;
+
+        top:auto;
+        left:auto;
+
+        width:100%;
+    }
+
+    .bet-btn{
+
+        width:100%;
+
+        height:120px;
+
+        border-radius:24px;
+
+        font-size:26px;
+    }
+
+    .bet-amount{
+
+        font-size:42px;
+    }
+
+    /* =========================
+    WIN PANEL
+    ========================= */
+
+    .win-panel{
+
+        position:relative;
+
+        top:auto;
+        right:auto;
+
+        width:100%;
+    }
+
+    .win-title{
+
+        font-size:28px;
+    }
+
+    .win-grid{
+
+        gap:12px;
+    }
+
+    .win-item{
+
+        font-size:22px;
+
+        padding:16px;
+    }
+
+    /* =========================
+    RESULT
+    ========================= */
+
+    .result{
+
+        font-size:22px;
+
+        min-height:40px;
+    }
+
+    /* =========================
+    COUNTDOWN CIRCLE
+    ========================= */
+
+    .timer-container{
+
+        position:relative;
+
+        top:auto;
+        left:auto;
+
+        margin:auto;
+
+        width:140px;
+        height:140px;
+    }
+
+    #countdown{
+
+        font-size:54px;
+    }
+
+    /* =========================
+    TABS
+    ========================= */
+
+    .bottom-tabs{
+
+        position:fixed;
+
+        bottom:0;
+        left:0;
+
+        width:100%;
+
+        padding:10px;
+
+        gap:8px;
+
+        z-index:9999;
+
+        background:
+        rgba(0,0,0,.88);
+
+        backdrop-filter:blur(10px);
+    }
+
+    .tab{
+
+        height:58px;
+
+        font-size:13px;
+
+        border-radius:14px;
+
+        padding:6px;
+    }
+
+    /* =========================
+    MODAL
+    ========================= */
+
+    .modal-box{
+
+        width:94%;
+
+        height:85vh;
+
+        padding:18px;
+
+        border-radius:22px;
+    }
+
+    #modalTitle{
+
+        font-size:34px;
+
+        margin-bottom:18px;
+    }
+
+    .modal-content{
+
+        font-size:18px;
+    }
+
+    .history-item{
+
+        padding:16px;
+    }
+
+    .close-modal{
+
+        font-size:34px;
+
+        top:10px;
+        right:16px;
+    }
+}
+
+/* =========================================================
+SMALL PHONES
+========================================================= */
+
+@media screen and (max-width:600px){
+
+    .main-title{
+
+        font-size:10vw;
     }
 
     .quote-grid{
@@ -665,31 +1251,131 @@ body{
         grid-template-columns:1fr;
     }
 
-    .bottom-layout{
-
-        grid-template-columns:1fr;
-    }
-
-    .timer-container{
-
-        grid-column:auto;
-    }
-
     .quote-btn{
 
-        min-height:48px;
+        font-size:8vw;
+
+        min-height:85px;
+    }
+
+    .quick-buttons{
+
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+
+    .quick-btn{
+
+        font-size:18px;
     }
 
     .bet-btn{
 
-        min-height:90px;
+        height:105px;
+
+        font-size:22px;
+    }
+
+    .bet-amount{
+
+        font-size:36px;
+    }
+
+    .win-item{
+
+        font-size:18px;
+    }
+
+    .timer-container{
+
+        width:120px;
+        height:120px;
+    }
+
+    #countdown{
+
+        font-size:46px;
     }
 
     .tab{
 
-        height:48px;
+        font-size:11px;
+
+        height:54px;
     }
 }
+
+/* =========================================================
+VERY SMALL DEVICES
+========================================================= */
+
+@media screen and (max-width:380px){
+
+    .main-card{
+
+        padding-left:10px;
+        padding-right:10px;
+    }
+
+    .main-title{
+
+        font-size:11vw;
+    }
+
+    .quote-btn{
+
+        font-size:9vw;
+
+        padding:16px 8px;
+    }
+
+    .quick-btn{
+
+        height:48px;
+
+        font-size:16px;
+    }
+
+    .amount-input{
+
+        font-size:16px;
+    }
+
+    .bet-btn{
+
+        height:95px;
+
+        font-size:20px;
+    }
+
+    .bet-amount{
+
+        font-size:30px;
+    }
+
+    .win-title{
+
+        font-size:24px;
+    }
+
+    .win-item{
+
+        font-size:16px;
+
+        padding:12px;
+    }
+
+    .tab{
+
+        font-size:10px;
+    }
+}
+
+
+
+
+
+
 
 </style>
 </head>
