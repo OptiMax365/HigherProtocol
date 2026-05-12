@@ -199,16 +199,15 @@ body{
 
 .bottom-layout{
 
-    margin-top:60px;
-
-    width:100%;
+    margin-top:200px;
 
     display:grid;
-
     grid-template-columns:
-    repeat(auto-fit,minmax(280px,1fr));
+    1.2fr
+    .8fr
+    .8fr;
 
-    gap:24px;
+    gap:28px;
 
     align-items:start;
 }
@@ -332,15 +331,14 @@ body{
 
 .bet-wrap{
 
-    position:relative;
+    position:absolute;
 
-    width:100%;
+    top:800px;
+    left:1200px;
 
-    max-width:520px;
+    width:520px;
 
-    margin:auto;
-
-    z-index:10;
+    z-index:100;
 }
 
 .bet-btn{
@@ -395,15 +393,14 @@ body{
 
 .win-panel{
 
-    position:relative;
+    position:absolute;
 
-    width:100%;
+    top:700px;
+    right:350px;
 
-    max-width:420px;
+    width:420px;
 
-    margin:auto;
-
-    z-index:10;
+    z-index:100;
 }
 
 .win-title{
@@ -676,10 +673,8 @@ body{
 
 /* Timer Box */
 .timer-container{
+    position:absolute;
 
-
-    position:relative;
-    margin:auto;
     top:800px;
     left:2250px;
 
@@ -1538,6 +1533,26 @@ VERY SMALL DEVICES
 
 
 
+    <!-- TABS -->
+    <div class="bottom-tabs">
+
+        <button class="tab active">
+            Bet History
+        </button>
+
+        <button class="tab">
+            Add Money History
+        </button>
+
+        <button class="tab">
+            Win
+        </button>
+
+        <button class="tab">
+            Loise Win
+        </button>
+
+    </div>
 
 
     <!--  BOTTOM MENU BUTTONS ADD IDs TO YOUR BUTTONS  -->
