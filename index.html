@@ -199,15 +199,16 @@ body{
 
 .bottom-layout{
 
-    margin-top:200px;
+    margin-top:60px;
+
+    width:100%;
 
     display:grid;
-    grid-template-columns:
-    1.2fr
-    .8fr
-    .8fr;
 
-    gap:28px;
+    grid-template-columns:
+    repeat(auto-fit,minmax(280px,1fr));
+
+    gap:24px;
 
     align-items:start;
 }
@@ -331,14 +332,15 @@ body{
 
 .bet-wrap{
 
-    position:absolute;
+    position:relative;
 
-    top:800px;
-    left:1200px;
+    width:100%;
 
-    width:520px;
+    max-width:520px;
 
-    z-index:100;
+    margin:auto;
+
+    z-index:10;
 }
 
 .bet-btn{
@@ -393,14 +395,15 @@ body{
 
 .win-panel{
 
-    position:absolute;
+    position:relative;
 
-    top:700px;
-    right:350px;
+    width:100%;
 
-    width:420px;
+    max-width:420px;
 
-    z-index:100;
+    margin:auto;
+
+    z-index:10;
 }
 
 .win-title{
@@ -663,18 +666,12 @@ body{
 
 
 
-
-
-
-
-
-
-
-
 /* Timer Box */
 .timer-container{
-    position:absolute;
 
+    width:100%;
+    position:absolute;
+    margin:auto;
     top:800px;
     left:2250px;
 
@@ -1533,29 +1530,12 @@ VERY SMALL DEVICES
 
 
 
-    <!-- TABS -->
-    <div class="bottom-tabs">
-
-        <button class="tab active">
-            Bet History
-        </button>
-
-        <button class="tab">
-            Add Money History
-        </button>
-
-        <button class="tab">
-            Win
-        </button>
-
-        <button class="tab">
-            Loise Win
-        </button>
-
-    </div>
 
 
     <!--  BOTTOM MENU BUTTONS ADD IDs TO YOUR BUTTONS  -->
+
+
+    
     <div class="bottom-tabs">
     <button class="tab active" id="betHistoryBtn">Bet History</button>
 
