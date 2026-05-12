@@ -6,7 +6,16 @@
 
 <title>Neon Quote Bet</title>
 
+<!-- REPLACE YOUR CURRENT BODY CSS WITH THIS -->
+
 <style>
+
+html,
+body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
 
 *{
     margin:0;
@@ -16,30 +25,39 @@
 }
 
 body{
+
     background:
     radial-gradient(circle at top,#003b2b,#00150f 60%);
-    min-height:100vh;
+
     color:white;
 
-    overflow-x:hidden;
-    overflow-y:auto;
+    overflow:hidden;
+
     -webkit-tap-highlight-color:transparent;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
 /* MAIN CARD */
 
 .main-card{
 
-    width:100%;
-    min-height:100vh;
+    width:100vw;
+    height:100vh;
 
-    padding:
-    30px
-    30px
-    120px;
+    overflow:hidden;
+
+    display:flex;
+    flex-direction:column;
 
     position:relative;
-    overflow:hidden;
+
+    padding:
+    clamp(8px,1vw,18px);
+
+    gap:1vh;
 }
 
 /* TOP BALANCE */
@@ -47,17 +65,20 @@ body{
 .balance-box{
 
     position:absolute;
+
     top:0;
     right:0;
 
     background:#1fd45f;
 
-    width:150px;
-    height:45px;
+    width:clamp(110px,12vw,150px);
+    height:clamp(38px,5vh,50px);
 
     border-bottom-left-radius:14px;
 
     padding:6px 10px;
+
+    z-index:20;
 
     box-shadow:
     0 0 20px #1fd45f,
@@ -72,7 +93,7 @@ body{
 }
 
 .balance{
-    font-size:28px;
+    font-size:clamp(18px,2vw,28px);
     font-weight:900;
 }
 
@@ -82,12 +103,15 @@ body{
 
     text-align:center;
 
-    margin-top:10px;
+    margin-top:5vh;
 
-    font-size:4.8vw;
+    font-size:clamp(18px,3vw,42px);
+
     font-weight:300;
 
     letter-spacing:2px;
+
+    line-height:1.1;
 
     text-transform:uppercase;
 
@@ -101,11 +125,15 @@ body{
 .timer{
 
     position:absolute;
-    top:105px;
+
+    top:12vh;
+
     left:50%;
+
     transform:translateX(-50%);
 
-    font-size:32px;
+    font-size:clamp(20px,3vw,36px);
+
     font-weight:900;
 
     color:#39ff14;
@@ -123,14 +151,20 @@ body{
 
 .quote-grid{
 
+    flex:1;
+
     width:100%;
 
     display:grid;
-    grid-template-columns:repeat(3,1fr);
 
-    gap:35px;
+    grid-template-columns:
+    repeat(3,minmax(0,1fr));
 
-    margin-top:70px;
+    gap:1vh;
+
+    margin-top:2vh;
+
+    overflow:hidden;
 }
 
 .quote-btn{
@@ -141,13 +175,13 @@ body{
 
     color:white;
 
-    font-size:4vw;
+    font-size:clamp(16px,2vw,34px);
 
     font-weight:300;
 
     cursor:pointer;
 
-    padding:25px;
+    padding:1vh;
 
     border-radius:25px;
 
@@ -156,6 +190,12 @@ body{
     position:relative;
 
     overflow:hidden;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    text-align:center;
 
     animation:quotePulse 1.6s infinite;
 }
@@ -174,12 +214,11 @@ body{
     box-shadow:
     0 0 20px rgba(57,255,20,.18),
     inset 0 0 20px rgba(57,255,20,.1);
-
 }
 
 .quote-btn:hover{
 
-    transform:scale(1.06);
+    transform:scale(1.04);
 
     color:#39ff14;
 }
@@ -199,18 +238,21 @@ body{
 
 .bottom-layout{
 
-    margin-top:60px;
-
     width:100%;
 
     display:grid;
 
     grid-template-columns:
-    repeat(auto-fit,minmax(280px,1fr));
+    1fr
+    1fr
+    1fr
+    auto;
 
-    gap:24px;
+    gap:1vw;
 
-    align-items:start;
+    align-items:stretch;
+
+    overflow:hidden;
 }
 
 /* ADD MONEY PANEL */
@@ -221,7 +263,7 @@ body{
 
     border-radius:24px;
 
-    padding:16px;
+    padding:1vh;
 
     border:1px solid rgba(57,255,20,.15);
 
@@ -229,6 +271,8 @@ body{
     0 0 20px rgba(57,255,20,.15);
 
     backdrop-filter:blur(18px);
+
+    overflow:hidden;
 }
 
 /* QUICK BUTTONS */
@@ -236,16 +280,17 @@ body{
 .quick-buttons{
 
     display:grid;
+
     grid-template-columns:repeat(4,1fr);
 
-    gap:10px;
+    gap:.6vh;
 
-    margin-bottom:12px;
+    margin-bottom:.8vh;
 }
 
 .quick-btn{
 
-    height:48px;
+    height:clamp(36px,5vh,52px);
 
     border:none;
 
@@ -256,7 +301,8 @@ body{
     color:white;
 
     font-weight:900;
-    font-size:20px;
+
+    font-size:clamp(14px,1.5vw,22px);
 
     cursor:pointer;
 
@@ -277,6 +323,7 @@ body{
 .input-row{
 
     display:flex;
+
     gap:10px;
 }
 
@@ -284,7 +331,7 @@ body{
 
     flex:1;
 
-    height:56px;
+    height:clamp(40px,6vh,58px);
 
     border:none;
 
@@ -298,12 +345,12 @@ body{
 
     color:white;
 
-    font-size:22px;
+    font-size:clamp(14px,1.5vw,22px);
 }
 
 .add-btn{
 
-    width:70px;
+    width:clamp(55px,6vw,70px);
 
     border:none;
 
@@ -313,7 +360,8 @@ body{
 
     color:white;
 
-    font-size:38px;
+    font-size:clamp(24px,3vw,38px);
+
     font-weight:900;
 
     cursor:pointer;
@@ -323,30 +371,22 @@ body{
     animation:addPulse 1s infinite;
 }
 
-.add-btn:hover{
-
-    transform:scale(1.08);
-}
-
 /* BET BUTTON */
 
 .bet-wrap{
 
-    position:relative;
-
     width:100%;
 
-    max-width:520px;
-
-    margin:auto;
-
-    z-index:10;
+    overflow:hidden;
 }
 
 .bet-btn{
 
     width:100%;
-    height:180px;
+
+    height:100%;
+
+    min-height:120px;
 
     border:none;
 
@@ -363,10 +403,9 @@ body{
 
     cursor:pointer;
 
-    font-size:30px;
-    font-weight:900;
+    font-size:clamp(18px,2vw,30px);
 
-    position:relative;
+    font-weight:900;
 
     transition:.25s;
 
@@ -379,14 +418,14 @@ body{
 
 .bet-btn:hover{
 
-    transform:scale(1.04);
+    transform:scale(1.03);
 }
 
 .bet-amount{
 
     display:block;
 
-    font-size:56px;
+    font-size:clamp(28px,4vw,56px);
 
     margin-top:10px;
 }
@@ -395,32 +434,27 @@ body{
 
 .win-panel{
 
-    position:relative;
-
     width:100%;
 
-    max-width:420px;
-
-    margin:auto;
-
-    z-index:10;
+    overflow:hidden;
 }
 
 .win-title{
 
     text-align:center;
 
-    font-size:34px;
+    font-size:clamp(18px,2vw,32px);
 
-    margin-bottom:18px;
+    margin-bottom:1vh;
 }
 
 .win-grid{
 
     display:grid;
+
     grid-template-columns:repeat(2,1fr);
 
-    gap:16px;
+    gap:.8vh;
 }
 
 .win-item{
@@ -431,27 +465,26 @@ body{
 
     border-radius:18px;
 
-    padding:18px;
+    padding:1vh;
 
     text-align:center;
 
-    font-size:28px;
+    font-size:clamp(14px,1.7vw,24px);
 
     animation:moneyPulse 1.5s infinite;
 }
 
-/* RESULT */
-
 .result{
 
-    margin-top:18px;
+    margin-top:1vh;
 
     text-align:center;
 
-    font-size:28px;
+    font-size:clamp(14px,2vw,28px);
+
     font-weight:900;
 
-    min-height:50px;
+    min-height:20px;
 
     color:#39ff14;
 
@@ -459,30 +492,73 @@ body{
     0 0 10px #39ff14;
 }
 
+/* TIMER CONTAINER */
+
+.timer-container{
+
+    position:relative;
+
+    margin:auto;
+
+    width:clamp(80px,10vw,150px);
+    height:clamp(80px,10vw,150px);
+
+    border:4px solid #00ff88;
+
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:rgba(0,40,0,0.35);
+
+    box-shadow:
+    0 0 15px #00ff88,
+    0 0 30px #00ff88,
+    0 0 60px rgba(0,255,136,0.7);
+
+    animation:pulseCircle 1s infinite;
+}
+
+#countdown{
+
+    font-size:clamp(32px,4vw,70px);
+
+    font-weight:bold;
+
+    color:#00ff88;
+
+    text-shadow:
+    0 0 10px #00ff88,
+    0 0 20px #00ff88,
+    0 0 40px #00ff88;
+
+    animation:pulseText 1s infinite;
+}
+
 /* TABS */
 
 .bottom-tabs{
 
-    position:absolute;
-
-    bottom:0;
-    left:0;
-
     width:100%;
 
     display:grid;
+
     grid-template-columns:repeat(4,1fr);
 
-    gap:2px;
+    gap:.5vw;
 
     background:#06110d;
 
-    padding:12px;
+    padding:.6vh;
+
+    overflow:hidden;
 }
 
 .tab{
 
-    height:70px;
+    height:clamp(42px,7vh,70px);
 
     border:none;
 
@@ -492,7 +568,7 @@ body{
 
     color:white;
 
-    font-size:20px;
+    font-size:clamp(10px,1vw,18px);
 
     cursor:pointer;
 
@@ -510,226 +586,13 @@ body{
     0 0 20px #1fd45f;
 }
 
-/* ANIMATIONS */
-
-@keyframes titlePulse{
-
-    0%{
-
-        transform:scale(1);
-
-        text-shadow:
-        0 0 8px white,
-        0 0 20px rgba(57,255,20,.5);
-    }
-
-    100%{
-
-        transform:scale(1.03);
-
-        text-shadow:
-        0 0 20px white,
-        0 0 50px #39ff14,
-        0 0 90px #39ff14;
-    }
-}
-
-@keyframes quotePulse{
-
-    0%{
-        transform:scale(1);
-    }
-
-    50%{
-
-        transform:scale(1.03);
-
-        text-shadow:
-        0 0 10px #39ff14;
-    }
-
-    100%{
-        transform:scale(1);
-    }
-}
-
-@keyframes betPulse{
-
-    0%{
-        transform:scale(1);
-    }
-
-    50%{
-
-        transform:scale(1.03);
-
-        box-shadow:
-        0 0 40px #39ff14,
-        0 0 90px rgba(57,255,20,.7);
-    }
-
-    100%{
-        transform:scale(1);
-    }
-}
-
-@keyframes addPulse{
-
-    0%{
-        box-shadow:0 0 0px #39ff14;
-    }
-
-    50%{
-        box-shadow:
-        0 0 20px #39ff14,
-        0 0 40px #39ff14;
-    }
-
-    100%{
-        box-shadow:0 0 0px #39ff14;
-    }
-}
-
-@keyframes moneyPulse{
-
-    0%{
-        transform:scale(1);
-    }
-
-    50%{
-        transform:scale(1.04);
-    }
-
-    100%{
-        transform:scale(1);
-    }
-}
-
-@keyframes balancePulse{
-
-    0%{
-        box-shadow:0 0 10px #1fd45f;
-    }
-
-    50%{
-        box-shadow:
-        0 0 25px #1fd45f,
-        0 0 60px rgba(31,212,95,.6);
-    }
-
-    100%{
-        box-shadow:0 0 10px #1fd45f;
-    }
-}
-
-/* MOBILE */
-
-@media(max-width:900px){
-
-    .quote-grid{
-
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .bottom-layout{
-
-        grid-template-columns:1fr;
-    }
-
-    .main-title{
-
-        font-size:10vw;
-    }
-
-    .quote-btn{
-
-        font-size:9vw;
-    }
-
-    .bet-btn{
-
-        height:140px;
-    }
-
-    .bet-amount{
-
-        font-size:44px;
-    }
-
-    .tab{
-
-        font-size:14px;
-    }
-}
-
-
-
-
-
-/* Timer Box */
-.timer-container{
-
-    width:100%;
-    position:absolute;
-    margin:auto;
-    top:800px;
-    left:2250px;
-
-    z-index:2;
-
-    width:200px;
-    height:200px;
-
-    border:4px solid #00ff88;
-    border-radius:50%;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    background:rgba(0, 40, 0, 0.35);
-
-    box-shadow:
-        0 0 15px #00ff88,
-        0 0 30px #00ff88,
-        0 0 60px rgba(0,255,136,0.7);
-
-    animation:pulseCircle 1s infinite;
-
-}
-
-/* Number */
-#countdown{
-    font-size:80px;
-    font-weight:bold;
-    color:#00ff88;
-
-    text-shadow:
-        0 0 10px #00ff88,
-        0 0 20px #00ff88,
-        0 0 40px #00ff88;
-
-    animation:pulseText 1s infinite;
-}
-
-
-
-
-
-
-
-/* =========================
-TRANSPARENT MODAL BACKGROUND
-========================= */
+/* MODAL */
 
 .history-modal{
+
     position:fixed;
 
-    top:0;
-    left:0;
-
-    width:100%;
-    height:100%;
+    inset:0;
 
     background:rgba(0,0,0,0.65);
 
@@ -743,17 +606,15 @@ TRANSPARENT MODAL BACKGROUND
     z-index:99999;
 }
 
-
-/* =========================
-MODAL BOX
-========================= */
-
 .modal-box{
 
-    width:80%;
+    width:90%;
+
     max-width:900px;
 
-    height:80vh;
+    max-height:85vh;
+
+    overflow:auto;
 
     background:rgba(0,40,0,0.45);
 
@@ -762,489 +623,41 @@ MODAL BOX
     border-radius:25px;
 
     box-shadow:
-        0 0 20px #00ff88,
-        0 0 50px rgba(0,255,136,0.5);
-
-    padding:30px;
-
-    position:relative;
-
-    overflow-y:auto;
-}
-
-
-/* =========================
-MODAL TITLE
-========================= */
-
-#modalTitle{
-
-    color:#00ff88;
-
-    font-size:50px;
-
-    text-align:center;
-
-    margin-bottom:30px;
-
-    text-shadow:
-        0 0 10px #00ff88,
-        0 0 20px #00ff88;
-}
-
-
-/* =========================
-MODAL CONTENT
-========================= */
-
-.modal-content{
-
-    color:white;
-
-    font-size:22px;
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:15px;
-}
-
-
-/* =========================
-SINGLE HISTORY ITEM
-========================= */
-
-.history-item{
-
-    background:rgba(0,255,136,0.08);
-
-    border:1px solid rgba(0,255,136,0.3);
-
-    border-radius:15px;
+    0 0 20px #00ff88,
+    0 0 50px rgba(0,255,136,0.5);
 
     padding:20px;
 
-    box-shadow:
-        0 0 10px rgba(0,255,136,0.2);
+    position:relative;
 }
 
+/* MOBILE */
 
-/* =========================
-CLOSE BUTTON
-========================= */
-
-.close-modal{
-
-    position:absolute;
-
-    top:15px;
-    right:25px;
-
-    font-size:45px;
-
-    color:#00ff88;
-
-    cursor:pointer;
-
-    text-shadow:
-        0 0 10px #00ff88;
-}
-
-
-
-
-/* Circle Pulse */
-@keyframes pulseCircle{
-
-    0%{
-        transform:scale(1);
-        box-shadow:
-            0 0 15px #00ff88,
-            0 0 30px #00ff88,
-            0 0 60px rgba(0,255,136,0.7);
-    }
-
-    50%{
-        transform:scale(1.08);
-        box-shadow:
-            0 0 25px #00ff88,
-            0 0 50px #00ff88,
-            0 0 90px rgba(0,255,136,1);
-    }
-
-    100%{
-        transform:scale(1);
-        box-shadow:
-            0 0 15px #00ff88,
-            0 0 30px #00ff88,
-            0 0 60px rgba(0,255,136,0.7);
-    }
-}
-
-/* Number Pulse */
-@keyframes pulseText{
-
-    0%{
-        transform:scale(1);
-    }
-
-    50%{
-        transform:scale(1.18);
-    }
-
-    100%{
-        transform:scale(1);
-    }
-}
-
-
-
-
-/* =========================================================
-MOBILE + TABLET RESPONSIVE DESIGN
-DOES NOT AFFECT DESKTOP/WINDOWS VIEWPORT
-========================================================= */
-
-@media screen and (max-width:1200px){
-
-    body{
-        overflow-x:hidden;
-        overflow-y:auto;
-    }
-
-    .main-card{
-
-        padding:
-        20px
-        16px
-        140px;
-
-        min-height:auto;
-    }
-
-    /* =========================
-    BALANCE
-    ========================= */
-
-    .balance-box{
-
-        width:120px;
-        height:40px;
-
-        top:0;
-        right:0;
-
-        border-bottom-left-radius:16px;
-
-        padding:6px 10px;
-    }
-
-    .balance-title{
-        font-size:8px;
-    }
-
-    .balance{
-        font-size:22px;
-    }
-
-    /* =========================
-    TITLE
-    ========================= */
-
-    .main-title{
-
-        margin-top:55px;
-
-        font-size:8vw;
-
-        line-height:1.1;
-
-        padding:0 10px;
-    }
-
-    /* =========================
-    QUOTE GRID
-    ========================= */
+@media(max-width:900px){
 
     .quote-grid{
 
-        grid-template-columns:
-        repeat(2,1fr);
-
-        gap:14px;
-
-        margin-top:40px;
+        grid-template-columns:repeat(2,1fr);
     }
-
-    .quote-btn{
-
-        font-size:6vw;
-
-        padding:18px 10px;
-
-        border-radius:18px;
-
-        min-height:90px;
-    }
-
-    /* =========================
-    TIMER
-    ========================= */
-
-    .timer{
-
-        top:120px;
-
-        font-size:26px;
-    }
-
-    /* =========================
-    BOTTOM LAYOUT
-    ========================= */
 
     .bottom-layout{
 
-        margin-top:40px;
-
-        display:flex;
-
-        flex-direction:column;
-
-        gap:22px;
+        grid-template-columns:1fr 1fr;
     }
-
-    /* =========================
-    MONEY PANEL
-    ========================= */
-
-    .money-panel{
-
-        width:100%;
-
-        padding:14px;
-
-        border-radius:20px;
-    }
-
-    .quick-buttons{
-
-        grid-template-columns:
-        repeat(2,1fr);
-
-        gap:12px;
-    }
-
-    .quick-btn{
-
-        height:54px;
-
-        font-size:20px;
-    }
-
-    .input-row{
-
-        flex-direction:row;
-
-        gap:10px;
-    }
-
-    .amount-input{
-
-        height:54px;
-
-        font-size:18px;
-    }
-
-    .add-btn{
-
-        width:65px;
-
-        height:54px;
-
-        font-size:34px;
-    }
-
-    /* =========================
-    BET BUTTON
-    ========================= */
-
-    .bet-wrap{
-
-        position:relative;
-
-        top:auto;
-        left:auto;
-
-        width:100%;
-    }
-
-    .bet-btn{
-
-        width:100%;
-
-        height:120px;
-
-        border-radius:24px;
-
-        font-size:26px;
-    }
-
-    .bet-amount{
-
-        font-size:42px;
-    }
-
-    /* =========================
-    WIN PANEL
-    ========================= */
-
-    .win-panel{
-
-        position:relative;
-
-        top:auto;
-        right:auto;
-
-        width:100%;
-    }
-
-    .win-title{
-
-        font-size:28px;
-    }
-
-    .win-grid{
-
-        gap:12px;
-    }
-
-    .win-item{
-
-        font-size:22px;
-
-        padding:16px;
-    }
-
-    /* =========================
-    RESULT
-    ========================= */
-
-    .result{
-
-        font-size:22px;
-
-        min-height:40px;
-    }
-
-    /* =========================
-    COUNTDOWN CIRCLE
-    ========================= */
 
     .timer-container{
 
-        position:relative;
-
-        top:auto;
-        left:auto;
-
-        margin:auto;
-
-        width:140px;
-        height:140px;
-    }
-
-    #countdown{
-
-        font-size:54px;
-    }
-
-    /* =========================
-    TABS
-    ========================= */
-
-    .bottom-tabs{
-
-        position:fixed;
-
-        bottom:0;
-        left:0;
-
-        width:100%;
-
-        padding:10px;
-
-        gap:8px;
-
-        z-index:9999;
-
-        background:
-        rgba(0,0,0,.88);
-
-        backdrop-filter:blur(10px);
-    }
-
-    .tab{
-
-        height:58px;
-
-        font-size:13px;
-
-        border-radius:14px;
-
-        padding:6px;
-    }
-
-    /* =========================
-    MODAL
-    ========================= */
-
-    .modal-box{
-
-        width:94%;
-
-        height:85vh;
-
-        padding:18px;
-
-        border-radius:22px;
-    }
-
-    #modalTitle{
-
-        font-size:34px;
-
-        margin-bottom:18px;
-    }
-
-    .modal-content{
-
-        font-size:18px;
-    }
-
-    .history-item{
-
-        padding:16px;
-    }
-
-    .close-modal{
-
-        font-size:34px;
-
-        top:10px;
-        right:16px;
+        grid-column:span 2;
     }
 }
 
-/* =========================================================
-SMALL PHONES
-========================================================= */
+/* SMALL PHONES */
 
-@media screen and (max-width:600px){
+@media(max-width:600px){
 
     .main-title{
 
-        font-size:10vw;
+        font-size:8vw;
     }
 
     .quote-grid{
@@ -1252,131 +665,31 @@ SMALL PHONES
         grid-template-columns:1fr;
     }
 
-    .quote-btn{
+    .bottom-layout{
 
-        font-size:8vw;
-
-        min-height:85px;
-    }
-
-    .quick-buttons{
-
-        grid-template-columns:
-        repeat(2,1fr);
-    }
-
-    .quick-btn{
-
-        font-size:18px;
-    }
-
-    .bet-btn{
-
-        height:105px;
-
-        font-size:22px;
-    }
-
-    .bet-amount{
-
-        font-size:36px;
-    }
-
-    .win-item{
-
-        font-size:18px;
+        grid-template-columns:1fr;
     }
 
     .timer-container{
 
-        width:120px;
-        height:120px;
-    }
-
-    #countdown{
-
-        font-size:46px;
-    }
-
-    .tab{
-
-        font-size:11px;
-
-        height:54px;
-    }
-}
-
-/* =========================================================
-VERY SMALL DEVICES
-========================================================= */
-
-@media screen and (max-width:380px){
-
-    .main-card{
-
-        padding-left:10px;
-        padding-right:10px;
-    }
-
-    .main-title{
-
-        font-size:11vw;
+        grid-column:auto;
     }
 
     .quote-btn{
 
-        font-size:9vw;
-
-        padding:16px 8px;
-    }
-
-    .quick-btn{
-
-        height:48px;
-
-        font-size:16px;
-    }
-
-    .amount-input{
-
-        font-size:16px;
+        min-height:48px;
     }
 
     .bet-btn{
 
-        height:95px;
-
-        font-size:20px;
-    }
-
-    .bet-amount{
-
-        font-size:30px;
-    }
-
-    .win-title{
-
-        font-size:24px;
-    }
-
-    .win-item{
-
-        font-size:16px;
-
-        padding:12px;
+        min-height:90px;
     }
 
     .tab{
 
-        font-size:10px;
+        height:48px;
     }
 }
-
-
-
-
-
-
 
 </style>
 </head>
