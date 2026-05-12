@@ -19,9 +19,11 @@ body{
     background:
     radial-gradient(circle at top,#003b2b,#00150f 60%);
     min-height:100vh;
+    color:white;
+
     overflow-x:hidden;
     overflow-y:auto;
-    color:white;
+    -webkit-tap-highlight-color:transparent;
 }
 
 /* MAIN CARD */
@@ -329,16 +331,12 @@ body{
 
 .bet-wrap{
 
-    position:relative;
+    position:absolute;
 
-    width:100%;
+    top:800px;
+    left:1200px;
 
-    max-width:520px;
-
-    margin:auto;
-
-    top:auto;
-    left:auto;
+    width:520px;
 
     z-index:100;
 }
@@ -395,39 +393,15 @@ body{
 
 .win-panel{
 
-    position:relative;
+    position:absolute;
 
-    width:100%;
+    top:700px;
+    right:350px;
 
-    max-width:420px;
-
-    margin:auto;
-
-    top:auto;
-    right:auto;
+    width:420px;
 
     z-index:100;
 }
-
-
-
-
-.win-panel{
-
-    position:relative;
-
-    width:100%;
-
-    max-width:420px;
-
-    margin:auto;
-
-    top:auto;
-    right:auto;
-
-    z-index:100;
-}
-
 
 .win-title{
 
@@ -701,8 +675,8 @@ body{
 .timer-container{
     position:absolute;
 
-    bottom:140px;
-    right:30px;
+    top:800px;
+    left:2250px;
 
     z-index:2;
 
@@ -928,170 +902,478 @@ CLOSE BUTTON
 }
 
 
-/* =========================
-MOBILE RESPONSIVE
-========================= */
 
-@media(max-width:900px){
+
+/* =========================================================
+MOBILE + TABLET RESPONSIVE DESIGN
+DOES NOT AFFECT DESKTOP/WINDOWS VIEWPORT
+========================================================= */
+
+@media screen and (max-width:1200px){
 
     body{
+        overflow-x:hidden;
         overflow-y:auto;
     }
 
     .main-card{
-        padding:20px 15px 180px;
+
+        padding:
+        20px
+        16px
+        140px;
+
+        min-height:auto;
     }
+
+    /* =========================
+    BALANCE
+    ========================= */
+
+    .balance-box{
+
+        width:120px;
+        height:40px;
+
+        top:0;
+        right:0;
+
+        border-bottom-left-radius:16px;
+
+        padding:6px 10px;
+    }
+
+    .balance-title{
+        font-size:8px;
+    }
+
+    .balance{
+        font-size:22px;
+    }
+
+    /* =========================
+    TITLE
+    ========================= */
 
     .main-title{
 
-        font-size:12vw;
+        margin-top:55px;
+
+        font-size:8vw;
 
         line-height:1.1;
 
-        margin-top:40px;
+        padding:0 10px;
     }
+
+    /* =========================
+    QUOTE GRID
+    ========================= */
 
     .quote-grid{
 
-        grid-template-columns:1fr;
+        grid-template-columns:
+        repeat(2,1fr);
 
-        gap:18px;
+        gap:14px;
 
         margin-top:40px;
     }
 
     .quote-btn{
 
-        font-size:12vw;
+        font-size:6vw;
 
-        padding:20px;
+        padding:18px 10px;
+
+        border-radius:18px;
+
+        min-height:90px;
     }
+
+    /* =========================
+    TIMER
+    ========================= */
+
+    .timer{
+
+        top:120px;
+
+        font-size:26px;
+    }
+
+    /* =========================
+    BOTTOM LAYOUT
+    ========================= */
 
     .bottom-layout{
 
-        margin-top:60px;
+        margin-top:40px;
 
-        grid-template-columns:1fr;
+        display:flex;
 
-        gap:35px;
+        flex-direction:column;
+
+        gap:22px;
     }
 
+    /* =========================
+    MONEY PANEL
+    ========================= */
+
     .money-panel{
+
         width:100%;
+
+        padding:14px;
+
+        border-radius:20px;
     }
 
     .quick-buttons{
 
-        grid-template-columns:repeat(2,1fr);
+        grid-template-columns:
+        repeat(2,1fr);
+
+        gap:12px;
     }
 
     .quick-btn{
 
-        height:60px;
+        height:54px;
 
-        font-size:24px;
+        font-size:20px;
     }
 
     .input-row{
 
-        flex-direction:column;
+        flex-direction:row;
+
+        gap:10px;
     }
 
     .amount-input{
 
-        width:100%;
+        height:54px;
 
-        font-size:24px;
+        font-size:18px;
     }
 
     .add-btn{
 
-        width:100%;
+        width:65px;
 
-        height:70px;
+        height:54px;
+
+        font-size:34px;
     }
+
+    /* =========================
+    BET BUTTON
+    ========================= */
 
     .bet-wrap{
 
-        max-width:100%;
+        position:relative;
+
+        top:auto;
+        left:auto;
+
+        width:100%;
     }
 
     .bet-btn{
 
-        height:140px;
+        width:100%;
+
+        height:120px;
+
+        border-radius:24px;
 
         font-size:26px;
     }
 
     .bet-amount{
 
-        font-size:48px;
+        font-size:42px;
     }
+
+    /* =========================
+    WIN PANEL
+    ========================= */
 
     .win-panel{
 
-        max-width:100%;
+        position:relative;
+
+        top:auto;
+        right:auto;
+
+        width:100%;
     }
 
     .win-title{
 
-        font-size:30px;
+        font-size:28px;
+    }
+
+    .win-grid{
+
+        gap:12px;
     }
 
     .win-item{
 
-        font-size:24px;
+        font-size:22px;
 
         padding:16px;
     }
 
+    /* =========================
+    RESULT
+    ========================= */
+
+    .result{
+
+        font-size:22px;
+
+        min-height:40px;
+    }
+
+    /* =========================
+    COUNTDOWN CIRCLE
+    ========================= */
+
+    .timer-container{
+
+        position:relative;
+
+        top:auto;
+        left:auto;
+
+        margin:auto;
+
+        width:140px;
+        height:140px;
+    }
+
+    #countdown{
+
+        font-size:54px;
+    }
+
+    /* =========================
+    TABS
+    ========================= */
+
     .bottom-tabs{
 
-        grid-template-columns:repeat(2,1fr);
+        position:fixed;
 
-        gap:10px;
+        bottom:0;
+        left:0;
+
+        width:100%;
 
         padding:10px;
+
+        gap:8px;
+
+        z-index:9999;
+
+        background:
+        rgba(0,0,0,.88);
+
+        backdrop-filter:blur(10px);
     }
 
     .tab{
 
-        font-size:16px;
+        height:58px;
 
-        height:65px;
+        font-size:13px;
+
+        border-radius:14px;
+
+        padding:6px;
+    }
+
+    /* =========================
+    MODAL
+    ========================= */
+
+    .modal-box{
+
+        width:94%;
+
+        height:85vh;
+
+        padding:18px;
+
+        border-radius:22px;
+    }
+
+    #modalTitle{
+
+        font-size:34px;
+
+        margin-bottom:18px;
+    }
+
+    .modal-content{
+
+        font-size:18px;
+    }
+
+    .history-item{
+
+        padding:16px;
+    }
+
+    .close-modal{
+
+        font-size:34px;
+
+        top:10px;
+        right:16px;
+    }
+}
+
+/* =========================================================
+SMALL PHONES
+========================================================= */
+
+@media screen and (max-width:600px){
+
+    .main-title{
+
+        font-size:10vw;
+    }
+
+    .quote-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .quote-btn{
+
+        font-size:8vw;
+
+        min-height:85px;
+    }
+
+    .quick-buttons{
+
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+
+    .quick-btn{
+
+        font-size:18px;
+    }
+
+    .bet-btn{
+
+        height:105px;
+
+        font-size:22px;
+    }
+
+    .bet-amount{
+
+        font-size:36px;
+    }
+
+    .win-item{
+
+        font-size:18px;
     }
 
     .timer-container{
 
         width:120px;
         height:120px;
-
-        bottom:110px;
-        right:10px;
     }
 
     #countdown{
 
-        font-size:52px;
+        font-size:46px;
     }
 
-    .modal-box{
+    .tab{
 
-        width:95%;
+        font-size:11px;
 
-        height:85vh;
-
-        padding:20px;
+        height:54px;
     }
-
-    #modalTitle{
-
-        font-size:34px;
-    }
-
 }
 
+/* =========================================================
+VERY SMALL DEVICES
+========================================================= */
 
+@media screen and (max-width:380px){
+
+    .main-card{
+
+        padding-left:10px;
+        padding-right:10px;
+    }
+
+    .main-title{
+
+        font-size:11vw;
+    }
+
+    .quote-btn{
+
+        font-size:9vw;
+
+        padding:16px 8px;
+    }
+
+    .quick-btn{
+
+        height:48px;
+
+        font-size:16px;
+    }
+
+    .amount-input{
+
+        font-size:16px;
+    }
+
+    .bet-btn{
+
+        height:95px;
+
+        font-size:20px;
+    }
+
+    .bet-amount{
+
+        font-size:30px;
+    }
+
+    .win-title{
+
+        font-size:24px;
+    }
+
+    .win-item{
+
+        font-size:16px;
+
+        padding:12px;
+    }
+
+    .tab{
+
+        font-size:10px;
+    }
+}
 
 
 
@@ -1251,7 +1533,26 @@ MOBILE RESPONSIVE
 
 
 
+    <!-- TABS -->
+    <div class="bottom-tabs">
 
+        <button class="tab active">
+            Bet History
+        </button>
+
+        <button class="tab">
+            Add Money History
+        </button>
+
+        <button class="tab">
+            Win
+        </button>
+
+        <button class="tab">
+            Loise Win
+        </button>
+
+    </div>
 
 
     <!--  BOTTOM MENU BUTTONS ADD IDs TO YOUR BUTTONS  -->
