@@ -15,32 +15,47 @@
     font-family:Arial, Helvetica, sans-serif;
 }
 
-body{
+html, body{
+    height:100%;
+    max-width:100%;
     background:
     radial-gradient(circle at top,#003b2b,#00150f 60%);
     width:100%;
     color:white;
 
-    overflow-x:hidden;
-    overflow-y:auto;
+    overflow:hidden;
     -webkit-tap-highlight-color:transparent;
 }
 
 /* MAIN CARD */
-
 .main-card{
 
-    width:100%;
-    max-width:100vw;
+    width:100vw;
+    height:100dvh;
 
+    max-width:100vw;
+    max-height:100dvh;
 
     padding:
-    30px
-    30px
-    120px;
+    12px
+    12px
+    82px;
 
+    gap:10px;
     position:relative;
-    overflow-Y:hidden;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+
+}
+
+
+img,
+div,
+button,
+input{
+
+    max-width:100%;
 }
 
 
@@ -88,14 +103,16 @@ body{
 
     margin-top:10px;
 
-    font-size:4.8vw;
-    font-weight:300;
+    font-size:clamp(16px,2vw,34px);
+    font-weight:100;
+    line-height:1;
 
     letter-spacing:2px;
 
     text-transform:uppercase;
 
     color:white;
+    flex-shrink:0;
 
     animation:titlePulse .5s infinite alternate;
 }
@@ -130,11 +147,14 @@ body{
     width:100%;
 
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:
+    repeat(3,minmax(0,1fr));
 
-    gap:35px;
 
-    margin-top:70px;
+    gap:10px;
+
+    margin-top:10px;
+    flex-shrink:0;
 }
 
 .quote-btn{
@@ -145,9 +165,9 @@ body{
 
     color:white;
 
-    font-size:4vw;
+    font-size:1vw;
 
-    font-weight:300;
+    font-weight:100;
 
     cursor:pointer;
 
@@ -203,7 +223,7 @@ body{
 
 .bottom-layout{
 
-    margin-top:200px;
+    margin-top:20px;
 
     display:grid;
     grid-template-columns:
@@ -334,21 +354,21 @@ body{
 /* BET BUTTON */
 
 .bet-wrap{
+ 
+    position:relative;
 
-    position:absolute;
+    width:100%;
 
-    top:800px;
-    left:1200px;
+    max-width:200px;
 
-    width:520px;
-
-    z-index:100;
+    margin:auto;
 }
+
 
 .bet-btn{
 
     width:100%;
-    height:180px;
+    height:100px;
 
     border:none;
 
@@ -366,7 +386,7 @@ body{
     cursor:pointer;
 
     font-size:30px;
-    font-weight:900;
+    font-weight:30;
 
     position:relative;
 
@@ -388,7 +408,7 @@ body{
 
     display:block;
 
-    font-size:56px;
+    font-size:30px;
 
     margin-top:10px;
 }
@@ -397,23 +417,27 @@ body{
 
 .win-panel{
 
-    position:absolute;
+    position:relative;
 
-    top:700px;
-    right:350px;
+    width:100%;
 
-    width:420px;
+    max-width:260px;
+    max-height:300px;
 
-    z-index:100;
+    overflow:hidden;
+
+    margin:auto;
 }
+
+
 
 .win-title{
 
     text-align:center;
 
-    font-size:34px;
+    font-size:12px;
 
-    margin-bottom:18px;
+    margin-bottom:6px;
 }
 
 .win-grid{
@@ -421,7 +445,7 @@ body{
     display:grid;
     grid-template-columns:repeat(2,1fr);
 
-    gap:16px;
+    gap:4px;
 }
 
 .win-item{
@@ -430,13 +454,13 @@ body{
 
     border:1px solid rgba(57,255,20,.15);
 
-    border-radius:18px;
+    border-radius:8px;
 
-    padding:18px;
+    padding:8px;
 
     text-align:center;
 
-    font-size:28px;
+    font-size:10px;
 
     animation:moneyPulse 1.5s infinite;
 }
@@ -677,15 +701,13 @@ body{
 
 /* Timer Box */
 .timer-container{
-    position:absolute;
 
-    top:800px;
-    left:2250px;
+    position:relative;
 
-    z-index:2;
+    margin:auto;
 
-    width:200px;
-    height:200px;
+    width:180px;
+    height:180px;
 
     border:4px solid #00ff88;
     border-radius:50%;
@@ -702,7 +724,6 @@ body{
         0 0 60px rgba(0,255,136,0.7);
 
     animation:pulseCircle 1s infinite;
-
 }
 
 /* Number */
@@ -920,15 +941,22 @@ DOES NOT AFFECT DESKTOP/WINDOWS VIEWPORT
         overflow-y:auto;
     }
 
-    .main-card{
+.main-card{
 
-        padding:
-        20px
-        16px
-        140px;
+    width:100%;
+    max-width:100%;
 
-        min-height:auto;
-    }
+    height:100vh;
+
+    padding:
+    20px
+    20px
+    80px;
+
+    position:relative;
+
+    overflow:hidden;
+}
 
     /* =========================
     BALANCE
@@ -1536,29 +1564,6 @@ VERY SMALL DEVICES
 
 
 
-
-    <!-- TABS -->
-    <div class="bottom-tabs">
-
-        <button class="tab active">
-            Bet History
-        </button>
-
-        <button class="tab">
-            Add Money History
-        </button>
-
-        <button class="tab">
-            Win
-        </button>
-
-        <button class="tab">
-            Loise Win
-        </button>
-
-    </div>
-
-
     <!--  BOTTOM MENU BUTTONS ADD IDs TO YOUR BUTTONS  -->
     <div class="bottom-tabs">
     <button class="tab active" id="betHistoryBtn">Bet History</button>
@@ -1568,7 +1573,7 @@ VERY SMALL DEVICES
     <button class="tab" id="winBtn">Win</button>
 
     <button class="tab" id="loseBtn">Lose Reward</button>
-
+    </div>
 
 
     <div id="historyModal" class="history-modal">
